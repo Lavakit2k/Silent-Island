@@ -1087,12 +1087,22 @@ namespace Silent_Island_PC
 
         public bool InReach()
         {
-            if(MausPos.X > Player.Koordinaten.X + playerReichweite )
+            float minX = Player.Koordinaten.X - playerReichweite;
+            float maxX = Player.Koordinaten.X + playerReichweite;
+
+            if (MausPos.X >= minX && MausPos.X <= maxX)
             {
-                return true;
+                float minY = Player.Koordinaten.Y - playerReichweite;
+                float maxY = Player.Koordinaten.Y + playerReichweite;
+
+                if (MausPos.Y >= minY && MausPos.Y <= maxY)
+                {
+                    return true;
+                }
             }
             return false;
         }
+
     }
 }
 
