@@ -1084,6 +1084,15 @@ namespace Silent_Island_PC
         }
 
         #endregion
+
+        public bool InReach()
+        {
+            if(MausPos.X > Player.Koordinaten.X + playerReichweite )
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
 
