@@ -21,8 +21,7 @@ namespace Silent_Island_PC
             { 1, "Fishing_Rod" },
             { 2, "Chair" },
         };
-
-        public Item(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
+  public Item(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             Textur = textur;
             Koordinaten = koordinaten;
@@ -40,4 +39,5 @@ namespace Silent_Island_PC
         }
         
     }
+      
 }

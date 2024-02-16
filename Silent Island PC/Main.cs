@@ -187,7 +187,9 @@ namespace Silent_Island_PC
         public int worldSizeX;
         public int worldSizeY;
 
-        public int playerReichweite = 64 * 4;
+        //public int playerReichweite = 64 * 4;
+
+        public int angelSchnurRotation = 20;
 
 
 
@@ -262,6 +264,7 @@ namespace Silent_Island_PC
             TTestBlock = Content.Load<Texture2D>("Texturen/TestBlock");
 
             #endregion
+
             #region Objekte
             //Layer
             BlockID = new int[64, 64];
@@ -493,7 +496,7 @@ namespace Silent_Island_PC
                 if (MausTaste(2))
                 {
 
-                    if (AngelStuhl.hit(MausPos, AngelStuhl) && Taste(Keys.LeftShift))
+                    if (AngelStuhl.hit(MausPos, AngelStuhl) && Taste(Keys.LeftShift) && InReach(1, 1))
                     {
                         Player.Koordinaten = new Vector2(AngelStuhl.Koordinaten.X, AngelStuhl.Koordinaten.Y - 64);
                         angeln = true;
@@ -502,7 +505,7 @@ namespace Silent_Island_PC
                     {
                         case 1:
 
-                            if (hitArray(BlockID) != 2)
+                            if (hitArray(BlockID) != 2 && InReach(2, 1))
                             {
                                 ItemLayer[(int)(MausPos.X / 64), (int)(MausPos.Y / 64)].Textur = TAngelStuhl;
                                 ItemLayer[(int)(MausPos.X / 64), (int)(MausPos.Y / 64)].placed = true;
@@ -516,7 +519,7 @@ namespace Silent_Island_PC
 
                             break;
                         case 2:
-                            if (hitArray(BlockID) == 2)
+                            if (hitArray(BlockID) == 2 && InReach(1, 0.5f))
                             {
                                 debug = true;
                                 angeln = true;
@@ -538,16 +541,22 @@ namespace Silent_Island_PC
 
                 }
 
+
+
+                #region Aktualisierung
                 if (rechts)
                 {
                     HandObjekt.Effekt = SpriteEffects.None;
                     objektHandVerschiebung = 0;
-
+                    angelSchnurRotation = 20;
                 }
                 else
                 {
                     HandObjekt.Effekt = SpriteEffects.FlipHorizontally;
                     objektHandVerschiebung = -64;
+                    angelSchnurRotation = -20;
+                    if (ausgeworfen)
+                        AngelSchnur = new Item(new Vector2(HandObjekt.Koordinaten.X -24 + 5, HandObjekt.Koordinaten.Y + 60), TAngelSchnur); 
                 }
 
                 HandObjekt.Textur = SlotObjekt[HotbarSlot].Textur;
@@ -564,7 +573,7 @@ namespace Silent_Island_PC
 
 
                 aktualisieren = true;
-
+                #endregion
                 elapsedTime = 0;
             }
 
@@ -625,7 +634,7 @@ namespace Silent_Island_PC
             if (ausgeworfen)
             {
                 Angel.Textur = TAngelAus;
-                AngelSchnur.LZeichne(spriteBatch, AngelSchnur, 20, new Vector2(30, 1));
+                AngelSchnur.LZeichne(spriteBatch, AngelSchnur, angelSchnurRotation, new Vector2(30, 1));
             }
 
 
@@ -1085,15 +1094,15 @@ namespace Silent_Island_PC
 
         #endregion
 
-        public bool InReach()
-        {
-            float minX = Player.Koordinaten.X - playerReichweite;
-            float maxX = Player.Koordinaten.X + playerReichweite;
+        public bool InReach(float playerReichweiteX, float playerReichweiteY)
+        { 
+            float minX = Player.Koordinaten.X + (Player.Textur.Width / 2) - (playerReichweiteX * 64);
+            float maxX = Player.Koordinaten.X + (Player.Textur.Width / 2) + (playerReichweiteX * 64);
 
             if (MausPos.X >= minX && MausPos.X <= maxX)
             {
-                float minY = Player.Koordinaten.Y - playerReichweite;
-                float maxY = Player.Koordinaten.Y + playerReichweite;
+                float minY = Player.Koordinaten.Y + (Player.Textur.Height / 2) - (playerReichweiteY * 64);
+                float maxY = Player.Koordinaten.Y + (Player.Textur.Height / 2) + (playerReichweiteY * 64);
 
                 if (MausPos.Y >= minY && MausPos.Y <= maxY)
                 {
@@ -1102,6 +1111,7 @@ namespace Silent_Island_PC
             }
             return false;
         }
+
 
     }
 }
