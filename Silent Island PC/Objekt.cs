@@ -19,6 +19,7 @@ namespace Silent_Island_PC
         public Vector2 Hitbox { get; set; }
         public bool aktiv { get; set; }
         public int ID { get; set; }
+        public string Name { get; set; }
         public Objekt(Vector2 koordinaten, Texture2D textur)
         {
             Textur = textur;
@@ -32,6 +33,7 @@ namespace Silent_Island_PC
             Hitbox = new Vector2(koordinaten.X + textur.Width, koordinaten.Y + textur.Height);
             aktiv = true;
             ID = 0;
+            Name = "Empty";
         }
 
         public void Zeichne(SpriteBatch spriteBatch, Objekt objekt)

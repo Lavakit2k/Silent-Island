@@ -20,6 +20,9 @@ namespace Silent_Island_PC
             { 0, "Empty" },
             { 1, "Fishing_Rod" },
             { 2, "Chair" },
+            { 3, "Barrel" },
+            { 4, "Pistol" },
+
         };
   public Item(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
@@ -34,6 +37,7 @@ namespace Silent_Island_PC
             Hitbox = new Vector2(koordinaten.X + textur.Width, koordinaten.Y + textur.Height);
             aktiv = true;
             ID = 0;
+            Name = "Empty";
             amount = 0;
             SlotAnzahl = new string("" + amount);
         }

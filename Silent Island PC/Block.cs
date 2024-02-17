@@ -34,6 +34,7 @@ namespace Silent_Island_PC
             aktiv = true;
             placed = false;
             ID = 0;
+            Name = "Void";
         }
         public void Place(Objekt objekt, Objekt[,] iteem, Vector2 maus)
         {
