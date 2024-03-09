@@ -583,12 +583,12 @@ namespace Silent_Island_PC
                                 }
                                 else
                                 {
-                                    if(count < 1000) { break; }
+                                    if (count < 1000) { break; }
                                     angeln = false;
                                     ausgeworfen = false;
                                     SlotObjekt[1].Textur = TFishing_Rod;
 
-                                    if(random.Next(1,3) == 1)
+                                    if (random.Next(1, 3) == 1)
                                     {
                                         Fish.Aufnehmen(Fish, SlotObjekt);
                                     }
@@ -597,7 +597,7 @@ namespace Silent_Island_PC
                                         Shark.Aufnehmen(Shark, SlotObjekt);
                                     }
                                 }
-                                
+
                             }
 
                             break;
@@ -691,7 +691,7 @@ namespace Silent_Island_PC
                 }
             }
 
-            
+
 
             if (layerPlaced)
                 if (ItemLayer[(int)(MousePos.X / 64), (int)(MousePos.Y / 64)].placed == true)
