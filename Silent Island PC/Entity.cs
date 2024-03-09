@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 
 namespace Silent_Island_PC
@@ -15,7 +10,7 @@ namespace Silent_Island_PC
     {
         public int health { get; set; }
         public int speed { get; set; }
-        
+
         public static Dictionary<int, string> Entitys { get; } = new Dictionary<int, string>()
         {
             { 0, "Empty" },

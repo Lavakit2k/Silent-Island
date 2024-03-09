@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/font.spritefont</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Sounds/AngelAuswurf.wav</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/Angel.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/AngelAus.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/AngelSchnur.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/AngelStuhl.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/BaumBlätter.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/BaumStamm.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/DekoMoos.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/DekoStein.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/DekoSteinMoos.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/EmptyDeko.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/Fass.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/Fisch.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlock.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlockEcke.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlockHoch1.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlockHoch2.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlockRand1.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlockRand2H.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlockRand2L.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlockRand3.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasBlockRand4.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/GrasWurzel.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/Hai.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/Hotbar.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/HotbarSlot.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/Inventar.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/KiesBlock.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/Patrone.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/Pistole.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/PlayerDown.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/PlayerLeft.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/PlayerRight.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/PlayerUp.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/SteinBlock.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/TestBlock.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/TestRand.png</File>
+    <File>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/Texturen/WasserBlock.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>

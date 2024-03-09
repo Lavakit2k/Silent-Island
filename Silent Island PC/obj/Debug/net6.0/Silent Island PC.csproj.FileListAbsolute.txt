@@ -1,0 +1,68 @@
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlock.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\WasserBlock.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Silent Island PC.exe
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Silent Island PC.deps.json
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Silent Island PC.runtimeconfig.json
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Silent Island PC.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Silent Island PC.pdb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\MonoGame.Framework.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\runtimes\linux-x64\native\libopenal.so.1
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\runtimes\osx\native\libSDL2.dylib
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\runtimes\osx\native\libopenal.1.dylib
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\runtimes\win-x64\native\SDL2.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\runtimes\win-x64\native\soft_oal.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\runtimes\win-x86\native\SDL2.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\runtimes\win-x86\native\soft_oal.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.csproj.AssemblyReference.cache
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.AssemblyInfoInputs.cache
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.AssemblyInfo.cs
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.csproj.CoreCompileInputs.cache
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.csproj.CopyComplete
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\refint\Silent Island PC.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.pdb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.genruntimeconfig.cache
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\ref\Silent Island PC.dll
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\font.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\PlayerDown.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\PlayerLeft.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\PlayerRight.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\PlayerUp.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\EmptyDeko.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlockRand1.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlockRand2H.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlockRand2L.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlockRand3.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlockRand4.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlockEcke.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\TestRand.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\TestBlock.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\DekoMoos.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\DekoStein.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Kies.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Stein.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\DekoStein2.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\DekoSteinMoos.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\KiesBlock.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\SteinBlock.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\BaumBlätter.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\BaumStamm.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasWurzel.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Hotbar.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Angel.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\AngelAus.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\AngelSchnur.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\AngelStuhl.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\HotbarSlot.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Fass.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Inventar.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\obj\Debug\net6.0\Silent Island PC.sourcelink.json
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlockHoch1.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\GrasBlockHoch2.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Sounds\AngelAuswurf.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Patrone.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Pistole.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Fisch.xnb
+C:\Users\simon\source\repos\Silent Island PC\Silent Island PC\bin\Debug\net6.0\Content\Texturen\Hai.xnb

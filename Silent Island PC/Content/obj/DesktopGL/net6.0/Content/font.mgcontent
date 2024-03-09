@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/font.spritefont</SourceFile>
+  <SourceTime>2023-12-29T00:13:22.3448199+01:00</SourceTime>
+  <DestFile>C:/Users/simon/source/repos/Silent Island PC/Silent Island PC/Content/bin/DesktopGL/Content/font.xnb</DestFile>
+  <DestTime>2024-01-27T17:52:56.7984657+01:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2023-09-19T07:52:04.8134184+02:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2023-09-19T07:52:04.8134184+02:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

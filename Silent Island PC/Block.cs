@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Silent_Island_PC
 {
@@ -13,12 +8,12 @@ namespace Silent_Island_PC
     {
         public bool placed { get; set; }
         public static Dictionary<int, string> Blocks { get; } = new Dictionary<int, string>()
-        { 
-            { 0, "Empty" },
+        {
+            { 0, "Void" },
             { 1, "Grass" },
             { 2, "Water"},
             { 3, "Gravel" },
-            
+
         };
         public Block(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {

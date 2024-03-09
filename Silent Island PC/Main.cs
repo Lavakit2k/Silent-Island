@@ -91,12 +91,14 @@ namespace Silent_Island_PC
         Texture2D TBarrel;
         Texture2D TPistol;
 
-        //Player
+        //Entitys
         Texture2D TPlayerUp;
         Texture2D TPlayerDown;
         Texture2D TPlayerLeft;
         Texture2D TPlayerRight;
 
+        Texture2D TFish;
+        Texture2D TShark;
         //UI
         Texture2D TInventory;
         Texture2D THotbar;
@@ -171,9 +173,11 @@ namespace Silent_Island_PC
         Block[,] ItemLayer;
         #endregion
 
+
+
         #endregion
 
-        #region Steuerung/Aktionen
+        #region Steuerung/Aktionen/Objekte
         //Allgemein
         public bool action;
         public bool moving;
@@ -193,8 +197,9 @@ namespace Silent_Island_PC
         bool right;
         public int HotbarSlot;
 
-        //Player
+        //Player/entity
         Entity Player;
+
 
         //Angeln
         bool angeln;
@@ -202,6 +207,10 @@ namespace Silent_Island_PC
         Item Angel;
         Item AngelSchnur;
         Block Chair;
+        Item Fish;
+        Item Shark;
+
+
         #endregion
 
         public bool change;
@@ -209,16 +218,17 @@ namespace Silent_Island_PC
         public string sdebug;
 
         //Hinzufügen
-        public int worldSizeX;
-        public int worldSizeY;
+        public int worldSizeX = 64;
+        public int worldSizeY = 64;
 
         public int angelSchnurRotation = 20;
-
 
         Item Pistol;
         int mostCommonNeighborID;
         bool allDifferent = true;
 
+        int InventoryPlatz;
+        double count;
 
 
 
@@ -277,6 +287,9 @@ namespace Silent_Island_PC
             TPlayerLeft = Content.Load<Texture2D>("Texturen/PlayerLeft");
             TPlayerRight = Content.Load<Texture2D>("Texturen/PlayerRight");
 
+            TFish = Content.Load<Texture2D>("Texturen/Fisch");
+            TShark = Content.Load<Texture2D>("Texturen/Hai");
+
             TOak_Log = Content.Load<Texture2D>("Texturen/BaumStamm");
             TOak_Leave = Content.Load<Texture2D>("Texturen/BaumBlätter");
             TFishing_Rod = Content.Load<Texture2D>("Texturen/Angel");
@@ -303,7 +316,9 @@ namespace Silent_Island_PC
             AngelAuswurf = Content.Load<SoundEffect>("Sounds/AngelAuswurf");
 
             #endregion
+
             #region Objekte
+
             //Layer
             BlockID = new int[64, 64];
             BlockLayer = new Block[64, 64];
@@ -316,7 +331,7 @@ namespace Silent_Island_PC
             ItemID = new int[64, 64];
             ItemLayer = new Block[64, 64];
 
-            //UI
+            //Rest
             Player = new Entity(new Vector2(2, 2), TPlayerUp);
             Player.speed = 16;
             Hotbar = new UI(new Vector2(800, 1016), THotbar);
@@ -326,6 +341,10 @@ namespace Silent_Island_PC
             SlotObjekt = new Item[7];
             Inventar = new UI(new Vector2(0, 0), TInventory);
             Pistol = new Item(new Vector2(0, 0), TPistol);
+            Fish = new Item(new Vector2(0, 0), TFish);
+            Fish.ID = 3;
+            Shark = new Item(new Vector2(0, 0), TShark);
+            Shark.ID = 4;
 
 
             for (int i = 0; i < 7; ++i)
@@ -336,12 +355,6 @@ namespace Silent_Island_PC
 
             #endregion
 
-
-
-
-
-
-
             // TEST
             SlotObjekt[0].ID = 1;
             SlotObjekt[0].amount = 1;
@@ -350,8 +363,6 @@ namespace Silent_Island_PC
             SlotObjekt[2].ID = 2;
             SlotObjekt[2].amount = 1;
             change = true;
-
-
 
 
             for (int i = 0; i < 64; ++i)
@@ -392,7 +403,7 @@ namespace Silent_Island_PC
             Keys[] keys = keyboardState.GetPressedKeys();
             MousePos = new Vector2(mouseState.X + cameraPosition.X, mouseState.Y + cameraPosition.Y);
             elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
-
+            count += gameTime.ElapsedGameTime.TotalMilliseconds;
             UpdateInterval = 10;
             #endregion
 
@@ -561,11 +572,32 @@ namespace Silent_Island_PC
                         case 2:
                             if (hitArray(BlockID) == 2 && InReach(1, 1))
                             {
-                                AngelAuswurf.Play();
-                                angeln = true;
-                                ausgeworfen = true;
-                                AngelSchnur = new Item(new Vector2(HandObjekt.Koordinaten.X + 64 - 5, HandObjekt.Koordinaten.Y + 5), TFishing_Line);
-                                SlotObjekt[1].Textur = TFishing_Rod_Out;
+                                if (!ausgeworfen)
+                                {
+                                    AngelAuswurf.Play();
+                                    angeln = true;
+                                    ausgeworfen = true;
+                                    AngelSchnur = new Item(new Vector2(HandObjekt.Koordinaten.X + 64 - 5, HandObjekt.Koordinaten.Y + 5), TFishing_Line);
+                                    SlotObjekt[1].Textur = TFishing_Rod_Out;
+                                    count = 0;
+                                }
+                                else
+                                {
+                                    if(count < 1000) { break; }
+                                    angeln = false;
+                                    ausgeworfen = false;
+                                    SlotObjekt[1].Textur = TFishing_Rod;
+
+                                    if(random.Next(1,3) == 1)
+                                    {
+                                        Fish.Aufnehmen(Fish, SlotObjekt);
+                                    }
+                                    else
+                                    {
+                                        Shark.Aufnehmen(Shark, SlotObjekt);
+                                    }
+                                }
+                                
                             }
 
                             break;
@@ -651,7 +683,6 @@ namespace Silent_Island_PC
                 }
             }
             //Item
-
             for (int i = 0; i < 64; ++i)
             {
                 for (int j = 0; j < 64; ++j)
@@ -660,8 +691,7 @@ namespace Silent_Island_PC
                 }
             }
 
-
-
+            
 
             if (layerPlaced)
                 if (ItemLayer[(int)(MousePos.X / 64), (int)(MousePos.Y / 64)].placed == true)
@@ -682,6 +712,7 @@ namespace Silent_Island_PC
                 for (int i = 0; i < 7; ++i)
                 {
                     SlotObjekt[i].Zeichne(spriteBatch, SlotObjekt[i]);
+                    spriteBatch.DrawString(font, "" + SlotObjekt[i].amount, new Vector2(SlotObjekt[i].Koordinaten.X, SlotObjekt[i].Koordinaten.Y + 50), new Color(255, 255, 255));
                 }
             HotbarSlotFrame.Zeichne(spriteBatch, HotbarSlotFrame);
 
@@ -850,7 +881,7 @@ namespace Silent_Island_PC
                     PGravel = 0;
                 }
             }
-            
+
         }
         public void GenerateDeko()
         {
@@ -1166,10 +1197,28 @@ namespace Silent_Island_PC
             }
             return false;
         }
+        public Item SetItem(Item item, int ID)
+        {
+            switch (ID)
+            {
+                case 1:
+                    item = new Item(new Vector2(0, 0), TFishing_Rod);
+                    item.Name = Item.Items[1];
+                    break;
+                case 2:
+                    item = new Item(new Vector2(0, 0), TFishing_Rod);
+                    item.Name = Item.Items[1];
+                    break;
+
+                default:
+                    item = new Item(new Vector2(0, 0), TEmpty);
+                    break;
+            }
+
+            return item;
+        }
+
         #endregion
-
-
-
 
     }
 }

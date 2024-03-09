@@ -5,9 +5,9 @@ namespace Silent_Island_PC
 {
     public abstract class Objekt
     {
-        #pragma warning disable CS0649 // Dem Feld "Objekt.emptyTexture" wird nie etwas zugewiesen, und es hat immer seinen Standardwert von "null".
+#pragma warning disable CS0649 // Dem Feld "Objekt.emptyTexture" wird nie etwas zugewiesen, und es hat immer seinen Standardwert von "null".
         Texture2D emptyTexture;
-        #pragma warning restore CS0649 // Dem Feld "Objekt.emptyTexture" wird nie etwas zugewiesen, und es hat immer seinen Standardwert von "null".
+#pragma warning restore CS0649 // Dem Feld "Objekt.emptyTexture" wird nie etwas zugewiesen, und es hat immer seinen Standardwert von "null".
         public Vector2 Koordinaten { get; set; }
         public Texture2D Textur { get; set; }
         public Color Färbung { get; set; }
@@ -61,6 +61,20 @@ namespace Silent_Island_PC
                 && maus.X < objekt.Hitbox.X
                 && maus.Y > objekt.Koordinaten.Y
                 && maus.Y < objekt.Hitbox.Y)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool hitObjekt(Objekt objekt1, Objekt objekt2)
+        {
+            if (objekt1.Koordinaten.X > objekt2.Koordinaten.X
+            && objekt1.Hitbox.X < objekt2.Hitbox.X
+            && objekt1.Koordinaten.Y > objekt2.Koordinaten.Y
+                && objekt1.Hitbox.Y < objekt2.Hitbox.Y)
             {
                 return true;
             }

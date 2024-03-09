@@ -1,16 +1,11 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 
 namespace Silent_Island_PC
 {
-    
+
     public class Item : Objekt
     {
         public int amount { get; set; }
@@ -24,7 +19,7 @@ namespace Silent_Island_PC
             { 4, "Pistol" },
 
         };
-  public Item(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
+        public Item(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             Textur = textur;
             Koordinaten = koordinaten;
@@ -41,7 +36,37 @@ namespace Silent_Island_PC
             amount = 0;
             SlotAnzahl = new string("" + amount);
         }
-        
+        public void Aufnehmen(Item item, Item[] HotbarSlot)
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                if (HotbarSlot[i].ID == item.ID && item.amount < 100)
+                {
+                    ++HotbarSlot[i].amount;
+                    break;
+                }
+                else if (HotbarSlot[i].ID != item.ID && HotbarSlot[i].ID == 0)
+                {
+                    ++HotbarSlot[i].amount;
+                    HotbarSlot[i].ID = item.ID;
+                    HotbarSlot[i].Textur = item.Textur;
+                    break;
+                }
+            }
+            /* oben UI InventorySlot hinzufügen
+             * 
+             * for(int i = 0; i < 63; i++)
+            {
+                if (InventorySlot.ID == item.ID && item.amount < 100)
+                {
+                    ++item.amount;
+                }
+                else if (InventorySlot.ID != item.ID || InventorySlot.ID == 0)
+                {
+                    HotbarSlot.ID = item.ID;
+                }
+            }*/
+        }
     }
-      
+
 }
