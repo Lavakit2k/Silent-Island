@@ -230,6 +230,11 @@ namespace Silent_Island_PC
         int InventoryPlatz;
         double count;
 
+        Texture2D TAngelLeiste;
+        Texture2D TAngelLeisteZeiger;
+        UI AngelLeiste;
+        UI AngelLeisteZeiger;
+
 
 
         //TODO: Füge eine PositionHand hinzu wo alle Tools einfädeln
@@ -289,6 +294,9 @@ namespace Silent_Island_PC
 
             TFish = Content.Load<Texture2D>("Texturen/Fisch");
             TShark = Content.Load<Texture2D>("Texturen/Hai");
+            TAngelLeisteZeiger = Content.Load<Texture2D>("Texturen/AngelLeisteZeiger");
+            TAngelLeiste = Content.Load<Texture2D>("Texturen/AngelLeiste");
+
 
             TOak_Log = Content.Load<Texture2D>("Texturen/BaumStamm");
             TOak_Leave = Content.Load<Texture2D>("Texturen/BaumBlätter");
@@ -345,6 +353,8 @@ namespace Silent_Island_PC
             Fish.ID = 3;
             Shark = new Item(new Vector2(0, 0), TShark);
             Shark.ID = 4;
+            AngelLeiste = new UI(new Vector2(0, 0), TAngelLeiste);
+            AngelLeisteZeiger = new UI(new Vector2(0, 0), TAngelLeisteZeiger);
 
 
             for (int i = 0; i < 7; ++i)
@@ -580,22 +590,72 @@ namespace Silent_Island_PC
                                     AngelSchnur = new Item(new Vector2(HandObjekt.Koordinaten.X + 64 - 5, HandObjekt.Koordinaten.Y + 5), TFishing_Line);
                                     SlotObjekt[1].Textur = TFishing_Rod_Out;
                                     count = 0;
+                                    AngelLeiste.Koordinaten = new Vector2(cameraPosition.X + (screenWidth / 2) - (AngelLeiste.Textur.Width / 2), cameraPosition.Y + (screenHeight - 100));
+                                    
                                 }
                                 else
                                 {
-                                    if (count < 1000) { break; }
-                                    angeln = false;
-                                    ausgeworfen = false;
-                                    SlotObjekt[1].Textur = TFishing_Rod;
+                                    if(count < 100) { break; }
+                                    if (AngelLeisteZeiger.Koordinaten.X < AngelLeiste.Koordinaten.X + 52)
+                                    {
+                                        angeln = false;
+                                        ausgeworfen = false;
+                                        SlotObjekt[1].Textur = TFishing_Rod;
+                                        break;
+                                    }
+                                    else if (AngelLeisteZeiger.Koordinaten.X + 8 < AngelLeiste.Koordinaten.X + 100 && AngelLeisteZeiger.Koordinaten.X > AngelLeiste.Koordinaten.X + 52 ||
+                                        AngelLeisteZeiger.Koordinaten.X + 8 < AngelLeiste.Koordinaten.X + 256 && AngelLeisteZeiger.Koordinaten.X > AngelLeiste.Koordinaten.X + 180)
+                                    {
+                                        if (random.Next(1, 4) == 1)
+                                        {
+                                            Fish.Aufnehmen(Fish, SlotObjekt);
+                                        }
+                                        else if(random.Next(1, 4) == 1)
+                                        {
+                                            Shark.Aufnehmen(Shark, SlotObjekt);
+                                        }
+                                        angeln = false;
+                                        ausgeworfen = false;
+                                        SlotObjekt[1].Textur = TFishing_Rod;
+                                        break;
+                                    }
+                                    else if (AngelLeisteZeiger.Koordinaten.X + 8 < AngelLeiste.Koordinaten.X + 124 && AngelLeisteZeiger.Koordinaten.X > AngelLeiste.Koordinaten.X + 100 ||
+                                        AngelLeisteZeiger.Koordinaten.X + 8 < AngelLeiste.Koordinaten.X + 180 && AngelLeisteZeiger.Koordinaten.X > AngelLeiste.Koordinaten.X + 132)
+                                    {
+                                        if (random.Next(1, 2) == 1)
+                                        {
+                                            Fish.Aufnehmen(Fish, SlotObjekt);
+                                        }
+                                        else 
+                                        {
+                                            Shark.Aufnehmen(Shark, SlotObjekt);
+                                        }
+                                        angeln = false;
+                                        ausgeworfen = false;
+                                        SlotObjekt[1].Textur = TFishing_Rod;
+                                        break;
+                                    }
+                                    else if (AngelLeisteZeiger.Koordinaten.X + 8 < AngelLeiste.Koordinaten.X + 132 && AngelLeisteZeiger.Koordinaten.X > AngelLeiste.Koordinaten.X + 124)
+                                    {
+                                        for(int i = 0; i < 2; i++)
+                                        {
+                                            if (random.Next(1, 2) == 1)
+                                            {
+                                                Fish.Aufnehmen(Fish, SlotObjekt);
+                                            }
+                                            else
+                                            {
+                                                Shark.Aufnehmen(Shark, SlotObjekt);
+                                            }
+                                        }
+                                        
+                                        angeln = false;
+                                        ausgeworfen = false;
+                                        SlotObjekt[1].Textur = TFishing_Rod;
+                                        break;
+                                    }
 
-                                    if (random.Next(1, 3) == 1)
-                                    {
-                                        Fish.Aufnehmen(Fish, SlotObjekt);
-                                    }
-                                    else
-                                    {
-                                        Shark.Aufnehmen(Shark, SlotObjekt);
-                                    }
+                                    break;
                                 }
 
                             }
@@ -642,7 +702,17 @@ namespace Silent_Island_PC
                 {
                     SlotObjekt[i].Koordinaten = new Vector2(Hotbar.Koordinaten.X + 64 * i, Hotbar.Koordinaten.Y);
                 }
-
+                if (ausgeworfen)
+                {
+                    if((count / 1000) % 2 < 1)
+                    {
+                        AngelLeisteZeiger.Koordinaten = new Vector2(cameraPosition.X + (screenWidth / 2) - (AngelLeiste.Textur.Width / 2) + ((int)count / 8 % 100) * 2, cameraPosition.Y + (screenHeight - 116));
+                    }
+                    else
+                    {
+                        AngelLeisteZeiger.Koordinaten = new Vector2(cameraPosition.X + (screenWidth / 2) - (AngelLeiste.Textur.Width / 2) - ((int)count / 10 % 100) * 2 + 256, cameraPosition.Y + (screenHeight - 116));
+                    }
+                }
 
                 update = true;
                 #endregion
@@ -704,6 +774,8 @@ namespace Silent_Island_PC
             {
                 Angel.Textur = TFishing_Rod_Out;
                 AngelSchnur.LZeichne(spriteBatch, AngelSchnur, angelSchnurRotation, new Vector2(30, 1));
+                AngelLeiste.Zeichne(spriteBatch, AngelLeiste);
+                AngelLeisteZeiger.Zeichne(spriteBatch, AngelLeisteZeiger);
             }
 
 
