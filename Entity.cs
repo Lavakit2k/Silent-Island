@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 
 namespace Silent_Island_PC
@@ -34,6 +35,16 @@ namespace Silent_Island_PC
             health = 0;
             speed = 0;
         }
+
+        #region Control
+        public void MovePlayer(bool moving, Entity objekt, Texture2D newTexture, int x, int y)
+        {
+            moving = true;
+            objekt.texture = newTexture;
+            objekt.coords = new Vector2(objekt.coords.X + x, objekt.coords.Y + y);
+        }
+
+        #endregion
 
     }
 

@@ -28,13 +28,14 @@ namespace Silent_Island
         //Graphics
         private GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
-        private int screenWidth;
-        private int screenHeight;
+        public int screenWidth { get; private set; }
+        public int screenHeight { get; private set; }
 
         //Classes
         private Textures texture;
         private WorldGeneration generation;
         private Structure structure;
+        //private UI ui;
 
         private Random random = new Random();
 
@@ -78,7 +79,7 @@ namespace Silent_Island
 
         #region Camera
 
-        Vector2 cameraPosition;
+        public Vector2 cameraPosition { get; private set; }
         //TODO Camera scroling?
         /*
         float zoom = 3.0f;
@@ -111,17 +112,18 @@ namespace Silent_Island
         #region Objects
 
         #region UI
-        UI Hotbar;
-        UI HotbarSlot;
-        UI Inventar;
-        UI Top_UI;
-        UI Map_Frame;
-        UI ExtraSlot;
-        UI AngelLeiste;
-        UI AngelLeisteZeiger;
+        public UI Hotbar;
+        public UI Hotbar_Marker;
+        public UI Inventory;
+        public UI Top_UI;
+        public UI Map_Frame;
+        public UI Extra_Hotbar;
+        public UI Extra_Hotbar_Marker;
+        public UI Fishing_Bar;
+        public UI Fishing_Bar_Pointer;
 
-        Entity HandObjekt;
-        Item[] SlotObjekt;
+        public Entity HandObjekt;
+        public Item[] SlotObjekt;
         
         public int HotbarSlotNum;
 
@@ -177,10 +179,10 @@ namespace Silent_Island
             graphics.PreferredBackBufferHeight = 1080;
             graphics.IsFullScreen = true;
 
-            // Framerate auf 60 FPS begrenzen
+            // Framerate = 60 FPS 
             //TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 60.0);
 
-            // V-Sync aktivieren
+            // V-Sync aktiv
             IsFixedTimeStep = true;
             graphics.SynchronizeWithVerticalRetrace = true;
 
@@ -196,15 +198,17 @@ namespace Silent_Island
 
             screenWidth = graphics.PreferredBackBufferWidth;
             screenHeight = graphics.PreferredBackBufferHeight;
-            worldSizeX = 164;
-            worldSizeY = 24;
+            worldSizeX = 32;
+            worldSizeY = 32;
 
             texture = new Textures(Content);
             structure = new Structure();
+            //ui = new UI(texture, Vector2.Zero, texture.Empty);
 
             font = Content.Load<SpriteFont>("font");
             fileSave = "C:\\Users\\simon\\source\\repos\\Silent Island PC\\Silent Island PC\\Content\\Speicher.txt";
 
+            //Load textures
             texture.Initialize(GraphicsDevice);
             spriteBatch = texture.spriteBatch;
             texture.LoadAllTextures();
@@ -220,9 +224,32 @@ namespace Silent_Island
 
             #region Objects
 
+            #region UI
+
+            Hotbar = new UI(new Vector2(0, 0), texture.Hotbar);
+            Hotbar_Marker = new UI(new Vector2(0, 0), texture.HotbarMarker);
+            Inventory = new UI(new Vector2(0, 0), texture.Inventory);
+            Top_UI = new UI(new Vector2(0, 0), texture.TopUI);
+            Map_Frame = new UI(new Vector2(0, 0), texture.Map);
+            Extra_Hotbar = new UI(new Vector2(0, 0), texture.ExtraHotbar);
+            Extra_Hotbar_Marker = new UI(new Vector2(0, 0), texture.HotbarMarker);
+            Fishing_Bar = new UI(new Vector2(0, 0), texture.FishingBar);
+            Fishing_Bar_Pointer = new UI(new Vector2(0, 0), texture.FishingBarPointer);
+
+            HandObjekt = new Entity(new Vector2(0, 0), texture.HotbarMarker);
+            SlotObjekt = new Item[7];
+            for (int i = 0; i < 7; i++)
+            {
+                SlotObjekt[i] = new Item(new Vector2(0, 0), texture.Empty);
+            }
+
+            #endregion
+
             Player = new Entity(new Vector2(10, 10), texture.PlayerUp);
             Fishing_Rod = new Item(new Vector2(0, 0), texture.FishingRod);
-            Player.speed = 20;
+            Player.speed = 10;
+            Fishing_Rod.ID = 1;
+            Fishing_Rod.Aufnehmen(SlotObjekt);
 
             #endregion
 
@@ -249,12 +276,12 @@ namespace Silent_Island
         protected override void Update(GameTime gameTime)
         {
             #region Technik
-            
+
             //Input
             keyboardState = Keyboard.GetState();
-            mouseState = Mouse.GetState();
+            MouseState currentMouseState = Mouse.GetState(); // Hier `currentMouseState` definieren
             Keys[] keys = keyboardState.GetPressedKeys();
-            MousePos = new Vector2(mouseState.X + cameraPosition.X, mouseState.Y + cameraPosition.Y);
+            MousePos = new Vector2(currentMouseState.X + cameraPosition.X, currentMouseState.Y + cameraPosition.Y);
             //Time
             elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
             tickCount += gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -264,8 +291,9 @@ namespace Silent_Island
 
             if (elapsedTime >= UpdateInterval)
             {
-                #region Steuerung
-                
+                #region Key
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
+
                 if (!Taste(Keys.W) && !Taste(Keys.S) && !Taste(Keys.A) && !Taste(Keys.D))
                 {
                     moving = false;
@@ -274,33 +302,25 @@ namespace Silent_Island
                 {
                     if (Taste(Keys.W) && Player.coords.Y > 0)
                     {
-                        moving = true;
-                        Player.texture = texture.PlayerUp;
-                        Player.coords = new Vector2(Player.coords.X, Player.coords.Y - Player.speed);
+                        Player.MovePlayer(moving, Player, texture.PlayerUp, 0, -Player.speed);
+
                     }
 
                     if (Taste(Keys.S) && Player.coords.Y < worldSizeY * 64 - 96)
                     {
-                        moving = true;
-                        Player.texture = texture.PlayerDown;
-                        Player.coords = new Vector2(Player.coords.X, Player.coords.Y + Player.speed);
+                        Player.MovePlayer(moving, Player, texture.PlayerDown, 0, Player.speed);
                     }
 
                     if (Taste(Keys.A) && Player.coords.X > 0)
                     {
-                        moving = true;
-                        Player.texture = texture.PlayerLeft;
-                        Player.coords = new Vector2(Player.coords.X - Player.speed, Player.coords.Y);
-
+                        Player.MovePlayer(moving, Player, texture.PlayerLeft, -Player.speed, 0);
+                        //TODO über Texturen?/ Bitmap
                         lookingRight = false;
-
                     }
 
                     if (Taste(Keys.D) && Player.coords.X < worldSizeX * 64 - 64)
                     {
-                        moving = true;
-                        Player.texture = texture.PlayerRight;
-                        Player.coords = new Vector2(Player.coords.X + Player.speed, Player.coords.Y);
+                        Player.MovePlayer(moving, Player, texture.PlayerRight, Player.speed, 0);
 
                         lookingRight = true;
 
@@ -308,7 +328,28 @@ namespace Silent_Island
 
                     moving = true;
                 }
+                #endregion
 
+                #region Scrolling
+                // UP
+                if (currentMouseState.ScrollWheelValue > previousMouseState.ScrollWheelValue)
+                {
+                    HotbarSlotNum = (HotbarSlotNum + 1) % 7;
+                }
+                // DOWN
+                else if (currentMouseState.ScrollWheelValue < previousMouseState.ScrollWheelValue)
+                {
+                    HotbarSlotNum = (HotbarSlotNum - 1 + 7) % 7;
+                }
+
+                // Aktualisiere `previousMouseState` nur, wenn das Mausrad tatsächlich gescrollt wurde
+                if (currentMouseState.ScrollWheelValue != previousMouseState.ScrollWheelValue)
+                {
+                    previousMouseState = currentMouseState;
+                }
+                #endregion
+
+                #region Logic
                 if (moving)
                 {
                     Fishing_Rod.texture = texture.FishingRod;
@@ -318,7 +359,7 @@ namespace Silent_Island
                 //TODO Speichern
                 if (Taste(Keys.O))
                 {
-                    
+
                     List<string> speicherInhalt = new List<string>();
                     /*
                     for (int i = 0; i < 64; ++i)
@@ -343,7 +384,7 @@ namespace Silent_Island
                 }
                 if (Taste(Keys.P))
                 {
-                    
+
                     /*
                     for (int i = 0; i < 64; ++i)
                     {
@@ -370,13 +411,13 @@ namespace Silent_Island
                 }
                 if (Taste(Keys.E))
                 {
-                    if (Inventar.activ == false)
+                    if (Inventory.activ == false)
                     {
-                        Inventar.activ = true;
+                        Inventory.activ = true;
                     }
                     else
                     {
-                        Inventar.activ = false;
+                        Inventory.activ = false;
                     }
 
 
@@ -385,34 +426,61 @@ namespace Silent_Island
                 update = false;
                 #endregion
 
+                #region Positioning
                 cameraPosition = new Vector2(Player.coords.X - (screenWidth / 2), Player.coords.Y - (screenHeight / 2));
 
+                Hotbar.UpdateUI(this, screenWidth / 2, screenHeight - 50);
+                Hotbar_Marker.UpdateUI(this, screenWidth / 2 - 216 + HotbarSlotNum * 72, screenHeight - 50);
+
+                HandObjekt.coords = new Vector2(Player.coords.X + 30, Player.coords.Y);
+                HandObjekt.texture = SlotObjekt[HotbarSlotNum].texture;
+
+                for(int i = 0; i < 7; i++)
+                {
+                    SlotObjekt[i].coords = new Vector2(Hotbar.coords.X - 216 + i * 72, Hotbar.coords.Y);
+                }
+
+                #endregion
                 elapsedTime = 0;
             }
-            #region Keys
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))Exit();
 
-
-            #endregion
 
             base.Update(gameTime);
         }
+
         protected override void Draw(GameTime gameTime)
         {
+            #region start
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(new Vector3(-cameraPosition, 0)));
 
+            #endregion
 
-            spriteBatch.Draw(texture.TestBlock, new Vector2(100, 100), Color.White);
+            #region Layer
 
-            
             blockLayer.Zeichne(spriteBatch);
             dekoLayer.Zeichne(spriteBatch);
             structureLayer.Zeichne(spriteBatch);
 
+            #endregion
+
+            #region UI
+            Hotbar.Zeichne(spriteBatch);
+            Hotbar_Marker.Zeichne(spriteBatch);
+
+            HandObjekt.Zeichne(spriteBatch);
+            for(int i = 0;i < 7;i++)
+            {
+                SlotObjekt[i].Zeichne(spriteBatch);
+            }
+            #endregion
+
             Player.Zeichne(spriteBatch);
 
-            //debug
+            
+
+            #region end
             if (debug)
             {
                 spriteBatch.Draw(texture.TestBlock, new Vector2(0, 0), Color.White);
@@ -423,9 +491,11 @@ namespace Silent_Island
                 spriteBatch.DrawString(font, sdebug, new Vector2(100, 100), new Color(243, 178, 92));
             }
 
-            spriteBatch.End();
+            //spriteBatch.Draw(texture.TestBlock, new Vector2(100, 100), Color.White);
 
+            spriteBatch.End();
             base.Draw(gameTime);
+            #endregion
         }
 
         #region Methoden
@@ -473,18 +543,7 @@ namespace Silent_Island
         {
             MouseState currentMouseState = Mouse.GetState();
 
-            // UP
-            if (currentMouseState.ScrollWheelValue > previousMouseState.ScrollWheelValue)
-            {
-                previousMouseState = currentMouseState;
-                return 1;
-            }
-            // DOWN
-            else if (currentMouseState.ScrollWheelValue < previousMouseState.ScrollWheelValue)
-            {
-                previousMouseState = currentMouseState;
-                return 2;
-            }
+            
 
             return 0;
         }

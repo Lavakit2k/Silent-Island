@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Silent_Island;
 using System.Collections.Generic;
 
 
@@ -8,6 +9,7 @@ namespace Silent_Island_PC
 
     public class UI : Objekt
     {
+        private Textures textures;
         public static Dictionary<int, string> UIs { get; } = new Dictionary<int, string>()
         {
             { 0, "Empty" },
@@ -15,6 +17,12 @@ namespace Silent_Island_PC
             { 2, "Hotbar" },
             { 3, "HotbarSlot" },
         };
+
+        public UI(Textures textures, Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
+        {
+            this.textures = textures;
+        }
+
         public UI(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             texture = textur;
@@ -30,7 +38,14 @@ namespace Silent_Island_PC
             ID = 0;
             name = "Empty";
         }
-        //TODO Inventar und alles
+
+        //TODO an Resolution anpassbar
+        public void UpdateUI(Main main, int x, int y)
+        {
+            this.coords = new Vector2(main.cameraPosition.X + x, main.cameraPosition.Y + y);
+        }
+
+
         public void HotbarSwitch(int hotbarSlot)
         {
 

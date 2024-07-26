@@ -19,15 +19,15 @@ namespace Silent_Island
         public int smoothness = 10;
         public int heavy;
 
-        //flags kann mehrere richtungen kombinieren
+        //works with Bits
         [Flags]
         public enum Directions
         {
             None = 0,
-            Up = 1,
-            Down = 2,
-            Left = 4,
-            Right = 8
+            Up = 1,     //0001
+            Down = 2,   //0010
+            Left = 4,   //0100
+            Right = 8   //1000
         }
 
 

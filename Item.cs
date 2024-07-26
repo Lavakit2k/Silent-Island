@@ -36,20 +36,20 @@ namespace Silent_Island_PC
             amount = 0;
             slotAmount = new string("" + amount);
         }
-        public void Aufnehmen(Item item, Item[] HotbarSlot)
+        public void Aufnehmen(Item[] HotbarSlot)
         {
             for (int i = 0; i < 7; i++)
             {
-                if (HotbarSlot[i].ID == item.ID && item.amount < 100)
+                if (HotbarSlot[i].ID == this.ID && this.amount < 100)
                 {
                     ++HotbarSlot[i].amount;
                     break;
                 }
-                else if (HotbarSlot[i].ID != item.ID && HotbarSlot[i].ID == 0)
+                else if (HotbarSlot[i].ID != this.ID && HotbarSlot[i].ID == 0)
                 {
                     ++HotbarSlot[i].amount;
-                    HotbarSlot[i].ID = item.ID;
-                    HotbarSlot[i].texture = item.texture;
+                    HotbarSlot[i].ID = this.ID;
+                    HotbarSlot[i].texture = this.texture;
                     break;
                 }
             }
@@ -67,20 +67,20 @@ namespace Silent_Island_PC
                 }
             }*/
         }
-        public void MultiAufnehmen(Item item, Item[] HotbarSlot, int amount)
+        public void MultiAufnehmen(Item[] HotbarSlot, int amount)
         {
             for (int i = 0; i < 7; i++)
             {
-                if (HotbarSlot[i].ID == item.ID && item.amount < 100)
+                if (HotbarSlot[i].ID == this.ID && this.amount < 100)
                 {
                     HotbarSlot[i].amount += amount;
                     break;
                 }
-                else if (HotbarSlot[i].ID != item.ID && HotbarSlot[i].ID == 0)
+                else if (HotbarSlot[i].ID != this.ID && HotbarSlot[i].ID == 0)
                 {
                     HotbarSlot[i].amount += amount;
-                    HotbarSlot[i].ID = item.ID;
-                    HotbarSlot[i].texture = item.texture;
+                    HotbarSlot[i].ID = this.ID;
+                    HotbarSlot[i].texture = this.texture;
                     break;
                 }
             }
