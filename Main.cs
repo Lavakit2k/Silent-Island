@@ -1,15 +1,11 @@
-﻿using Microsoft.VisualBasic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Silent_Island_PC;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Xml.Linq;
 //using System.Reflection.Emit;
 //using System.Numerics;
 //using System.Security.Claims;
@@ -60,20 +56,8 @@ namespace Silent_Island
         private double elapsedTime;
         private double UpdateInterval;
         private double tickCount;
+        private double timeCounter;
 
-        #endregion
-
-        #region Actions
-        public bool action;
-        public bool moving;
-        public bool update;
-        public bool inventoryOpen;
-        public bool chestOpen;
-        public bool angeln;
-        public bool ausgeworfen;
-        public bool lookingRight;
-        public bool change;
-        public bool layerPlaced;
 
         #endregion
 
@@ -124,7 +108,7 @@ namespace Silent_Island
 
         public Entity HandObjekt;
         public Item[] SlotObjekt;
-        
+
         public int HotbarSlotNum;
 
         #endregion
@@ -138,7 +122,7 @@ namespace Silent_Island
         #region Items/Blocks
 
         Item Fishing_Rod;
-        Item AngelSchnur;
+        Item Fishing_Line;
         public int angelSchnurRotation = 20;
         Item Fish;
         Item Shark;
@@ -148,6 +132,22 @@ namespace Silent_Island
         Item Wood;
         Block Chair;
         #endregion
+
+        #endregion
+
+        #region Actions
+        public bool fishing;
+        public bool moving;
+
+        public bool action;
+        public bool update;
+        public bool inventoryOpen;
+        public bool chestOpen;
+
+        public bool ausgeworfen;
+        public bool lookingRight;
+        public bool change;
+        public bool layerPlaced;
 
         #endregion
 
@@ -174,7 +174,7 @@ namespace Silent_Island
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            
+
             graphics.PreferredBackBufferWidth = 1920;
             graphics.PreferredBackBufferHeight = 1080;
             graphics.IsFullScreen = true;
@@ -212,7 +212,7 @@ namespace Silent_Island
             texture.Initialize(GraphicsDevice);
             spriteBatch = texture.spriteBatch;
             texture.LoadAllTextures();
-            
+
 
             #region Sound
 
@@ -246,10 +246,20 @@ namespace Silent_Island
             #endregion
 
             Player = new Entity(new Vector2(10, 10), texture.PlayerUp);
-            Fishing_Rod = new Item(new Vector2(0, 0), texture.FishingRod);
             Player.speed = 10;
+            Fishing_Rod = new Item(Vector2.Zero, texture.FishingRod);
             Fishing_Rod.ID = 1;
+            Fish = new Item(Vector2.Zero, texture.Fish);
+            Fish.ID = 2;
+            Shark = new Item(Vector2.Zero, texture.Shark);
+            Shark.ID = 3;
+            
+            //Shark.Aufnehmen(SlotObjekt);
+            //Fish.Aufnehmen(SlotObjekt);
             Fishing_Rod.Aufnehmen(SlotObjekt);
+            Fishing_Bar = new UI(Vector2.Zero, texture.Empty);
+            Fishing_Bar_Pointer = new UI(Vector2.Zero, texture.Empty);
+            Fishing_Line = new Item(Vector2.Zero, texture.Empty);
 
             #endregion
 
@@ -279,46 +289,50 @@ namespace Silent_Island
 
             //Input
             keyboardState = Keyboard.GetState();
-            MouseState currentMouseState = Mouse.GetState(); // Hier `currentMouseState` definieren
+            previousMouseState = currentMouseState;
+            currentMouseState = Mouse.GetState();
             Keys[] keys = keyboardState.GetPressedKeys();
             MousePos = new Vector2(currentMouseState.X + cameraPosition.X, currentMouseState.Y + cameraPosition.Y);
             //Time
             elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
+            timeCounter += gameTime.ElapsedGameTime.TotalMilliseconds;
             tickCount += gameTime.ElapsedGameTime.TotalMilliseconds;
             UpdateInterval = 10;
+
 
             #endregion
 
             if (elapsedTime >= UpdateInterval)
             {
+
                 #region Key
                 if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
 
-                if (!Taste(Keys.W) && !Taste(Keys.S) && !Taste(Keys.A) && !Taste(Keys.D))
+                if (!KeyDown(Keys.W) && !KeyDown(Keys.S) && !KeyDown(Keys.A) && !KeyDown(Keys.D))
                 {
                     moving = false;
                 }
                 else
                 {
-                    if (Taste(Keys.W) && Player.coords.Y > 0)
+                    if (KeyDown(Keys.W) && Player.coords.Y > 0)
                     {
                         Player.MovePlayer(moving, Player, texture.PlayerUp, 0, -Player.speed);
 
                     }
 
-                    if (Taste(Keys.S) && Player.coords.Y < worldSizeY * 64 - 96)
+                    if (KeyDown(Keys.S) && Player.coords.Y < worldSizeY * 64 - 96)
                     {
                         Player.MovePlayer(moving, Player, texture.PlayerDown, 0, Player.speed);
                     }
 
-                    if (Taste(Keys.A) && Player.coords.X > 0)
+                    if (KeyDown(Keys.A) && Player.coords.X > 0)
                     {
                         Player.MovePlayer(moving, Player, texture.PlayerLeft, -Player.speed, 0);
                         //TODO über Texturen?/ Bitmap
                         lookingRight = false;
                     }
 
-                    if (Taste(Keys.D) && Player.coords.X < worldSizeX * 64 - 64)
+                    if (KeyDown(Keys.D) && Player.coords.X < worldSizeX * 64 - 64)
                     {
                         Player.MovePlayer(moving, Player, texture.PlayerRight, Player.speed, 0);
 
@@ -357,7 +371,7 @@ namespace Silent_Island
                 }
 
                 //TODO Speichern
-                if (Taste(Keys.O))
+                if (KeyDown(Keys.O))
                 {
 
                     List<string> speicherInhalt = new List<string>();
@@ -382,7 +396,7 @@ namespace Silent_Island
 
 
                 }
-                if (Taste(Keys.P))
+                if (KeyDown(Keys.P))
                 {
 
                     /*
@@ -409,7 +423,7 @@ namespace Silent_Island
 
 
                 }
-                if (Taste(Keys.E))
+                if (KeyDown(Keys.E))
                 {
                     if (Inventory.activ == false)
                     {
@@ -426,6 +440,47 @@ namespace Silent_Island
                 update = false;
                 #endregion
 
+                #region Mouse
+
+                //waiting
+                if (timeCounter > 500)
+                {
+
+                    //leftclick
+                    if (MouseKeyDown(1))
+                    {
+                        timeCounter = 0;
+                        switch (SlotObjekt[HotbarSlotNum].ID)
+                        {
+                            //Fishing_Rod
+                            case 1:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    //rightclick
+                    else if (MouseKeyDown(2))
+                    {
+                        timeCounter = 0;
+                        //TODO was wenn NPC da steht?
+                        switch (SlotObjekt[HotbarSlotNum].ID)
+                        {
+                            case 1:
+                                FishingUse();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+
+
+
+                #endregion
+
+
                 #region Positioning
                 cameraPosition = new Vector2(Player.coords.X - (screenWidth / 2), Player.coords.Y - (screenHeight / 2));
 
@@ -435,7 +490,12 @@ namespace Silent_Island
                 HandObjekt.coords = new Vector2(Player.coords.X + 30, Player.coords.Y);
                 HandObjekt.texture = SlotObjekt[HotbarSlotNum].texture;
 
-                for(int i = 0; i < 7; i++)
+                Fishing_Bar.UpdateUI(this, screenWidth / 2 - Fishing_Bar.texture.Width / 2 + 28, screenHeight - 120);
+
+                Fishing_Bar_Pointer.UpdateUI(this, screenWidth / 2 + 20 + 128f * (float)Math.Sin(timeCounter / 1000 * 2f), screenHeight - 132);
+                //start                //amplitude            //t                //frequenz
+
+                for (int i = 0; i < 7; i++)
                 {
                     SlotObjekt[i].coords = new Vector2(Hotbar.coords.X - 216 + i * 72, Hotbar.coords.Y);
                 }
@@ -470,21 +530,26 @@ namespace Silent_Island
             Hotbar_Marker.Zeichne(spriteBatch);
 
             HandObjekt.Zeichne(spriteBatch);
-            for(int i = 0;i < 7;i++)
+            for (int i = 0; i < 7; i++)
             {
                 SlotObjekt[i].Zeichne(spriteBatch);
+                spriteBatch.DrawString(font, "" + SlotObjekt[i].amount, new Vector2(SlotObjekt[i].coords.X + 24, SlotObjekt[i].coords.Y + 20), new Color(255, 255, 255));
             }
             #endregion
 
             Player.Zeichne(spriteBatch);
 
-            
+
+            Fishing_Bar.Zeichne(spriteBatch);
+            Fishing_Bar_Pointer.Zeichne(spriteBatch);
+            Fishing_Line.Zeichne(spriteBatch);
+
 
             #region end
             if (debug)
             {
                 spriteBatch.Draw(texture.TestBlock, new Vector2(0, 0), Color.White);
-        
+
             }
             if (sdebug != null)
             {
@@ -501,19 +566,19 @@ namespace Silent_Island
         #region Methoden
         //TODO: clearInv
 
-        public int hitArray(int[,] ID)
+        public int hitLayerBlock()
         {
             int x = (int)(MousePos.X / 64);
             int y = (int)(MousePos.Y / 64);
+            //TODO für mehrere Layer?
 
-
-            if (MousePos.X >= 0 && MousePos.X < 64 * 64 && MousePos.Y >= 0 && MousePos.Y < 64 * 64)
-                return ID[x, y];
+            if (MousePos.X >= 0 && MousePos.X < worldSizeX * 64 && MousePos.Y >= 0 && MousePos.Y < worldSizeY * 64)
+                return blockLayer.IDLayer[x, y];
 
 
             return 0;
         }
-        public bool Taste(Keys key)
+        public bool KeyDown(Keys key)
         {
             if (keyboardState.IsKeyDown(key))
             {
@@ -521,44 +586,28 @@ namespace Silent_Island
             }
             else { return false; }
         }
-        public bool MausTaste(int button)
+        public bool MouseKeyDown(int button)
         {
             if (button == 1)
             {
-                if (mouseState.LeftButton == ButtonState.Pressed)
-                {
-                    return true;
-                }
+                return currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released;
             }
             else if (button == 2)
             {
-                if (mouseState.RightButton == ButtonState.Pressed)
-                {
-                    return true;
-                }
+                return currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released;
             }
             return false;
         }
-        public int MausRad()
-        {
-            MouseState currentMouseState = Mouse.GetState();
 
-            
-
-            return 0;
-        }
-
-        //InReach
-        /*
         public bool InReach(float playerReichweiteX, float playerReichweiteY)
         {
-            float minX = Player.Koordinaten.X + (Player.Textur.Width / 2) - (playerReichweiteX * 64);
-            float maxX = Player.Koordinaten.X + (Player.Textur.Width / 2) + (playerReichweiteX * 64);
+            float minX = Player.coords.X + (Player.texture.Width / 2) - (playerReichweiteX * 64);
+            float maxX = Player.coords.X + (Player.texture.Width / 2) + (playerReichweiteX * 64);
 
             if (MousePos.X >= minX && MousePos.X <= maxX)
             {
-                float minY = Player.Koordinaten.Y + (Player.Textur.Height / 2) - (playerReichweiteY * 64);
-                float maxY = Player.Koordinaten.Y + (Player.Textur.Height / 2) + (playerReichweiteY * 64);
+                float minY = Player.coords.Y + (Player.texture.Height / 2) - (playerReichweiteY * 64);
+                float maxY = Player.coords.Y + (Player.texture.Height / 2) + (playerReichweiteY * 64);
 
                 if (MousePos.Y >= minY && MousePos.Y <= maxY)
                 {
@@ -567,8 +616,66 @@ namespace Silent_Island
             }
             return false;
         }
-        */
+        public bool InHand(Item item)
+        {
+            if (SlotObjekt[HotbarSlotNum].ID == item.ID)
+                return true;
+            return false;
+        }
 
+        #region item use
+        public void FishingUse()
+        {
+            if (fishing)
+            {
+                //red
+                if (Fishing_Bar_Pointer.coords.X < Fishing_Bar.coords.X + 52 || Fishing_Bar_Pointer.coords.X > Fishing_Bar.coords.X + 52 + 48 + 24 + 8 + 24 + 48)
+                {
+                    
+                }
+                //yellow
+                else if (Fishing_Bar_Pointer.coords.X < Fishing_Bar.coords.X + 52 + 48 || Fishing_Bar_Pointer.coords.X > Fishing_Bar.coords.X + 52 + 48 + 24 + 8 + 24)
+                {
+                    //33%
+                    if(random.Next(1, 3) == 1)
+                    Fish.Aufnehmen(SlotObjekt);
+                }
+                //green
+                else if (Fishing_Bar_Pointer.coords.X < Fishing_Bar.coords.X + 52 + 48 + 24 || Fishing_Bar_Pointer.coords.X > Fishing_Bar.coords.X + 52 + 48 + 24 + 8)
+                {
+                    // 80 %
+                    if (random.Next(1, 5) < 5)
+                        Fish.Aufnehmen(SlotObjekt);
+                }
+                //blue
+                else if (Fishing_Bar_Pointer.coords.X < Fishing_Bar.coords.X + 52 + 48 + 24 + 8)
+                {
+                    //100%
+                    Fish.Aufnehmen(SlotObjekt);
+                    // 20%
+                    if (random.Next(1, 5) == 1)
+                        Shark.Aufnehmen(SlotObjekt);
+                }
+                
+                Fishing_Line.texture = texture.Empty;
+                Fishing_Rod.texture = texture.FishingRod;
+                Fishing_Bar.texture = texture.Empty;
+                Fishing_Bar_Pointer.texture = texture.Empty;
+                fishing = false;
+            }
+            else if (InReach(3, 1) && hitLayerBlock() == 2)
+            {
+                //TODO line
+                Fishing_Line.texture = texture.FishingLine;
+                Fishing_Line.rotation = (float)Math.Atan2(Fishing_Rod.coords.Y - MousePos.Y, Fishing_Rod.coords.X - MousePos.X);
+                Fishing_Line.scale = new Vector2(Vector2.Distance(Fishing_Rod.coords, MousePos), 1);
+                Fishing_Rod.texture = texture.FishingRodOut;
+                Fishing_Bar.texture = texture.FishingBar;
+                Fishing_Bar_Pointer.texture = texture.FishingBarPointer;
+                fishing = true;
+            }
+        }
+        #endregion
         #endregion
     }
 }

@@ -40,7 +40,7 @@ namespace Silent_Island_PC
         }
 
         //TODO an Resolution anpassbar
-        public void UpdateUI(Main main, int x, int y)
+        public void UpdateUI(Main main, float x, float y)
         {
             this.coords = new Vector2(main.cameraPosition.X + x, main.cameraPosition.Y + y);
         }
