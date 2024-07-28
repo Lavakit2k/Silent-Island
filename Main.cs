@@ -198,8 +198,8 @@ namespace Silent_Island
 
             screenWidth = graphics.PreferredBackBufferWidth;
             screenHeight = graphics.PreferredBackBufferHeight;
-            worldSizeX = 32;
-            worldSizeY = 32;
+            worldSizeX = 64;
+            worldSizeY = 64;
 
             texture = new Textures(Content);
             structure = new Structure();
@@ -227,6 +227,7 @@ namespace Silent_Island
             #region UI
 
             Hotbar = new UI(new Vector2(0, 0), texture.Hotbar);
+            Hotbar.color = new Color(255,255,255, 0.5f);
             Hotbar_Marker = new UI(new Vector2(0, 0), texture.HotbarMarker);
             Inventory = new UI(new Vector2(0, 0), texture.Inventory);
             Top_UI = new UI(new Vector2(0, 0), texture.TopUI);
@@ -245,7 +246,7 @@ namespace Silent_Island
 
             #endregion
 
-            Player = new Entity(new Vector2(10, 10), texture.PlayerUp);
+            Player = new Entity(new Vector2(0, 0), texture.PlayerUp);
             Player.speed = 10;
             Fishing_Rod = new Item(Vector2.Zero, texture.FishingRod);
             Fishing_Rod.ID = 1;
@@ -366,8 +367,11 @@ namespace Silent_Island
                 #region Logic
                 if (moving)
                 {
+                    Fishing_Line.texture = texture.Empty;
                     Fishing_Rod.texture = texture.FishingRod;
-                    ausgeworfen = false;
+                    Fishing_Bar.texture = texture.Empty;
+                    Fishing_Bar_Pointer.texture = texture.Empty;
+                    fishing = false;
                 }
 
                 //TODO Speichern
@@ -482,7 +486,8 @@ namespace Silent_Island
 
 
                 #region Positioning
-                cameraPosition = new Vector2(Player.coords.X - (screenWidth / 2), Player.coords.Y - (screenHeight / 2));
+
+                CameraMove();
 
                 Hotbar.UpdateUI(this, screenWidth / 2, screenHeight - 50);
                 Hotbar_Marker.UpdateUI(this, screenWidth / 2 - 216 + HotbarSlotNum * 72, screenHeight - 50);
@@ -493,7 +498,7 @@ namespace Silent_Island
                 Fishing_Bar.UpdateUI(this, screenWidth / 2 - Fishing_Bar.texture.Width / 2 + 28, screenHeight - 120);
 
                 Fishing_Bar_Pointer.UpdateUI(this, screenWidth / 2 + 20 + 128f * (float)Math.Sin(timeCounter / 1000 * 2f), screenHeight - 132);
-                //start                //amplitude            //t                //frequenz
+                //                                 //start                //amplitude            //t                  //frequenz
 
                 for (int i = 0; i < 7; i++)
                 {
@@ -525,11 +530,16 @@ namespace Silent_Island
 
             #endregion
 
+            Player.Zeichne(spriteBatch);
+            Fishing_Line.Zeichne(spriteBatch);
+            HandObjekt.Zeichne(spriteBatch);
+
             #region UI
+
             Hotbar.Zeichne(spriteBatch);
             Hotbar_Marker.Zeichne(spriteBatch);
 
-            HandObjekt.Zeichne(spriteBatch);
+            
             for (int i = 0; i < 7; i++)
             {
                 SlotObjekt[i].Zeichne(spriteBatch);
@@ -537,13 +547,9 @@ namespace Silent_Island
             }
             #endregion
 
-            Player.Zeichne(spriteBatch);
-
-
             Fishing_Bar.Zeichne(spriteBatch);
             Fishing_Bar_Pointer.Zeichne(spriteBatch);
-            Fishing_Line.Zeichne(spriteBatch);
-
+            
 
             #region end
             if (debug)
@@ -565,6 +571,40 @@ namespace Silent_Island
 
         #region Methoden
         //TODO: clearInv
+
+        public void CameraMove()
+        {
+            float halfScreenWidth = screenWidth / 2;
+            float halfScreenHeight = screenHeight / 2;
+
+            // Berechne die Zielposition der Kamera basierend auf der Spielerposition
+            Vector2 targetCameraPosition = new Vector2(Player.coords.X - halfScreenWidth, Player.coords.Y - halfScreenHeight);
+
+            // Begrenze die Zielposition der Kamera innerhalb der Weltgrenzen
+            if (targetCameraPosition.X < -32)
+            {
+                targetCameraPosition.X = -32;
+            }
+            else if (targetCameraPosition.X > worldSizeX * 64 - screenWidth - 32)
+            {
+                targetCameraPosition.X = worldSizeX * 64 - screenWidth - 32;
+            }
+
+            if (targetCameraPosition.Y < -32)
+            {
+                targetCameraPosition.Y = -32;
+            }
+            else if (targetCameraPosition.Y > worldSizeY * 64 - screenHeight - 32)
+            {
+                targetCameraPosition.Y = worldSizeY * 64 - screenHeight - 32;
+            }
+
+            // Anpassbare Geschwindigkeit für die Kamera-Verzögerung
+            float cameraSpeed = 0.1f;
+
+            // Interpoliere die Kamera-Position schrittweise in Richtung der Zielposition
+            cameraPosition = Vector2.Lerp(cameraPosition, targetCameraPosition, cameraSpeed);
+        }
 
         public int hitLayerBlock()
         {
@@ -598,7 +638,6 @@ namespace Silent_Island
             }
             return false;
         }
-
         public bool InReach(float playerReichweiteX, float playerReichweiteY)
         {
             float minX = Player.coords.X + (Player.texture.Width / 2) - (playerReichweiteX * 64);
