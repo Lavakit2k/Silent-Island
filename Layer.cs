@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Silent_Island;
+using System;
 
 namespace Silent_Island_PC
 {
     public class Layer
     {
+        private Main main;
         public int x { get; set; }
         public int y { get; set; }
         public int[,] IDLayer { get; set; }
@@ -19,6 +21,7 @@ namespace Silent_Island_PC
             this.y = main.worldSizeY;
             this.objekt = layer;
             this.IDLayer = layerID;
+            this.main = main;
         }
         public void Zeichne(SpriteBatch spriteBatch)
         {
@@ -26,9 +29,16 @@ namespace Silent_Island_PC
             {
                 for (int j = 0; j < this.y; j++)
                 {
-                    this.objekt[i,j].Zeichne(spriteBatch);
+                    if (this.objekt[i, j].coords.X > main.cameraPosition.X - main.screenWidth - 64 &&
+                        this.objekt[i, j].coords.X < main.cameraPosition.X + main.screenWidth + 64 &&
+                        this.objekt[i, j].coords.Y > main.cameraPosition.Y - main.screenHeight - 64 &&
+                        this.objekt[i, j].coords.Y < main.cameraPosition.Y + main.screenHeight + 64)
+                    {
+                        this.objekt[i, j].Zeichne(spriteBatch);
+                    }
                 }
             }
         }
+
     }
 }

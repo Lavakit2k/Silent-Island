@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Silent_Island;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace Silent_Island_PC
@@ -12,12 +13,6 @@ namespace Silent_Island_PC
         public int health { get; set; }
         public int speed { get; set; }
 
-        public static Dictionary<int, string> Entitys { get; } = new Dictionary<int, string>()
-        {
-            { 0, "Empty" },
-            { 1, "Player" },
-            { 2, "Blob" },
-        };
         public Entity(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             texture = textur;
@@ -28,24 +23,57 @@ namespace Silent_Island_PC
             scale = new Vector2(1, 1);
             effekt = SpriteEffects.None;
             layer = 0;
-            hitbox = new Vector2(koordinaten.X + textur.Width, koordinaten.Y + textur.Height);
+            // Die Hitbox als Rechteck initialisieren
+            Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
             activ = true;
             ID = 0;
             name = "Entity";
             health = 0;
-            speed = 0;
+            speed = 5;
         }
 
-        #region Control
         public void MovePlayer(bool moving, Entity objekt, Texture2D newTexture, int x, int y)
         {
             moving = true;
             objekt.texture = newTexture;
             objekt.coords = new Vector2(objekt.coords.X + x, objekt.coords.Y + y);
+            objekt.Hitbox = new Rectangle((int)objekt.coords.X, (int)objekt.coords.Y + 32, objekt.texture.Width, objekt.texture.Height - 32);
         }
 
-        #endregion
+        public bool ColideLayer(Layer layer, Vector2 moveVector)
+        {
+            // Berechne die zukünftige Position der Spielfigur nach der Bewegung
+            Rectangle futureHitbox = new Rectangle(
+                (int)(this.coords.X + moveVector.X),
+                (int)(this.coords.Y + moveVector.Y),
+                this.Hitbox.Width,
+                this.Hitbox.Height
+            );
+
+            // Prüfe auf Kollision mit jeder relevanten Kachel
+            int minX = futureHitbox.Left / 64;
+            int maxX = futureHitbox.Right / 64;
+            int minY = futureHitbox.Top / 64;
+            int maxY = futureHitbox.Bottom / 64;
+
+            for (int x = minX; x <= maxX; x++)
+            {
+                for (int y = minY; y <= maxY; y++)
+                {
+                    if (x >= 0 && x < layer.objekt.GetLength(0) && y >= 0 && y < layer.objekt.GetLength(1))
+                    {
+                        if (layer.IDLayer[x, y] == 2 && futureHitbox.Intersects(layer.objekt[x, y].Hitbox))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
 
     }
+
 
 }

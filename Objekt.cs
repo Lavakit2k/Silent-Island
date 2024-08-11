@@ -14,7 +14,7 @@ namespace Silent_Island_PC
         public Vector2 scale { get; set; }
         public SpriteEffects effekt { get; set; }
         public float layer { get; set; }
-        public Vector2 hitbox { get; set; }
+        public Rectangle Hitbox { get; set; }
         public bool activ { get; set; }
         public int ID { get; set; }
         public string name { get; set; }
@@ -30,6 +30,7 @@ namespace Silent_Island_PC
             scale = Vector2.One;
             effekt = SpriteEffects.None;
             layer = 0;
+            Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
             activ = true;
             ID = 0;
             name = "Empty";
@@ -47,12 +48,13 @@ namespace Silent_Island_PC
         {
             spriteBatch.Draw(this.texture, this.coords, null, this.color, rotation, this.axis, skalierung, this.effekt, this.layer);
         }
+        //TODO funktioniert das mit der Hitbox (wurde abgeändert)
         public bool hit(Vector2 maus)
         {
             if (maus.X > this.coords.X
-                && maus.X < this.hitbox.X
+                && maus.X < this.Hitbox.X
                 && maus.Y > this.coords.Y
-                && maus.Y < this.hitbox.Y)
+                && maus.Y < this.Hitbox.Y)
             {
                 return true;
             }
@@ -64,9 +66,9 @@ namespace Silent_Island_PC
         public bool colideObjekt(Objekt objekt1, Objekt objekt2)
         {
             if (objekt1.coords.X > objekt2.coords.X
-            && objekt1.hitbox.X < objekt2.hitbox.X
+            && objekt1.Hitbox.X < objekt2.Hitbox.X
             && objekt1.coords.Y > objekt2.coords.Y
-                && objekt1.hitbox.Y < objekt2.hitbox.Y)
+                && objekt1.Hitbox.Y < objekt2.Hitbox.Y)
             {
                 return true;
             }

@@ -36,13 +36,15 @@ namespace Silent_Island_PC
             scale = new Vector2(1, 1);
             effekt = SpriteEffects.None;
             layer = 0;
-            hitbox = new Vector2(koordinaten.X + textur.Width, koordinaten.Y + textur.Height);
+            Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
             activ = true;
             placed = false;
             ID = 0;
             amount = 0;
             name = "Void";
         }
+        //TODO für Layer statt Objekt
+        /*
         public void Place(Objekt objekt, Objekt[,] item, Vector2 maus)
         {
             int i = (int)(maus.X / 64);
@@ -55,6 +57,7 @@ namespace Silent_Island_PC
                 objekt.hitbox = new Vector2(objekt.coords.X + objekt.texture.Width, objekt.coords.Y + objekt.texture.Height);
             }
         }
+        */
         public void Aufnehmen(Block item, Item[] HotbarSlot)
         {
             for (int i = 0; i < 7; i++)

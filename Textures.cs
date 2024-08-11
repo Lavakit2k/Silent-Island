@@ -54,6 +54,15 @@ public class Textures
     public Texture2D Wood { get; private set; }
     public Texture2D Rock { get; private set; }
     public Texture2D IronIngot { get; private set; }
+
+    public Texture2D Seashell1 { get; private set; }
+    public Texture2D SeeShell2 { get; private set; }
+    public Texture2D SeeShell3 { get; private set; }
+    public Texture2D SeeShell4 { get; private set; }
+
+    public Texture2D GoldCoin { get; private set; }
+    public Texture2D FishingShop { get; private set; }
+
     #endregion
 
     #region Entities
@@ -72,6 +81,10 @@ public class Textures
     public Texture2D HotbarMarker { get; private set; }
     public Texture2D FishingBar { get; private set; }
     public Texture2D FishingBarPointer { get; private set; }
+    public Texture2D Heart { get; private set; }
+    public Texture2D EmptyHeart { get; private set; }
+    public Texture2D EmptySeeShell { get; private set; }
+
     #endregion
 
     public Texture2D Empty { get; private set; }
@@ -129,6 +142,12 @@ public class Textures
         Wood = content.Load<Texture2D>("Texturen/Item_Wood");
         Rock = content.Load<Texture2D>("Texturen/Item_Stone");
         IronIngot = content.Load<Texture2D>("Texturen/Iron_Ingot");
+        Seashell1 = content.Load<Texture2D>("Texturen/Seashell_1");
+        SeeShell2 = content.Load<Texture2D>("Texturen/Seashell_2");
+        SeeShell3 = content.Load<Texture2D>("Texturen/Seashell_3");
+        SeeShell4 = content.Load<Texture2D>("Texturen/Seashell_4");
+        GoldCoin = content.Load<Texture2D>("Texturen/Gold_Coin");
+        FishingShop = content.Load<Texture2D>("Texturen/Fishing_Shop");
         #endregion
 
         #region Entities
@@ -147,6 +166,9 @@ public class Textures
         HotbarMarker = content.Load<Texture2D>("Texturen/UI_Hotbar_Marker");
         FishingBar = content.Load<Texture2D>("Texturen/Fishing_Bar");
         FishingBarPointer = content.Load<Texture2D>("Texturen/Fishing_Bar_Pointer");
+        Heart = content.Load<Texture2D>("Texturen/Heart");
+        EmptyHeart = content.Load<Texture2D>("Texturen/EmptyHeart");
+        EmptySeeShell = content.Load<Texture2D>("Texturen/Empty_Seashell");
         #endregion
 
         Empty = content.Load<Texture2D>("Texturen/Empty");

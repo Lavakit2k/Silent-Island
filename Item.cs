@@ -29,7 +29,7 @@ namespace Silent_Island_PC
             scale = new Vector2(1, 1);
             effekt = SpriteEffects.None;
             layer = 0;
-            hitbox = new Vector2(koordinaten.X + textur.Width, koordinaten.Y + textur.Height);
+            Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
             activ = true;
             ID = 0;
             name = "Empty";
