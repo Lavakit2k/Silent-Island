@@ -4,25 +4,11 @@ using Silent_Island;
 using System.Collections.Generic;
 
 
-namespace Silent_Island_PC
+namespace Silent_Island
 {
 
     public class UI : Objekt
     {
-        private Textures textures;
-        public static Dictionary<int, string> UIs { get; } = new Dictionary<int, string>()
-        {
-            { 0, "Empty" },
-            { 1, "Inventory" },
-            { 2, "Hotbar" },
-            { 3, "HotbarSlot" },
-        };
-
-        public UI(Textures textures, Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
-        {
-            this.textures = textures;
-        }
-
         public UI(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             texture = textur;
@@ -32,11 +18,14 @@ namespace Silent_Island_PC
             axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
             scale = new Vector2(1, 1);
             effekt = SpriteEffects.None;
-            layer = 0;
             Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
-            activ = true;
             ID = 0;
             name = "Empty";
+        }
+        public UI(Textures t, Main m) : base(t, m)
+        {
+            this.textures = t;
+            this.main = m;
         }
 
         //TODO an Resolution anpassbar
@@ -44,14 +33,38 @@ namespace Silent_Island_PC
         {
             this.coords = new Vector2(main.cameraPosition.X + x, main.cameraPosition.Y + y);
         }
-
-
         public void HotbarSwitch(int hotbarSlot)
         {
 
         }
 
+        public UI Hotbar;
+        public UI HotbarMarker;
+        public UI Inventory;
+        public UI TopUI;
+        public UI MapFrame;
+        public UI ExtraHotbar;
+        public UI ExtraHotbarMarker;
+        public UI FishingBar;
+        public UI FishingBarPointer;
+        public UI Heart;
+        public UI EmptyHeart;
 
+        public void LoadAllUIs()
+        {
+            Hotbar = new UI(Vector2.Zero, textures.Hotbar);
+            Hotbar.color = new Color(255, 255, 255, 0.5f);
+            HotbarMarker = new UI(Vector2.Zero, textures.HotbarMarker);
+            Inventory = new UI(Vector2.Zero, textures.Inventory);
+            TopUI = new UI(Vector2.Zero, textures.TopUI);
+            MapFrame = new UI(Vector2.Zero, textures.Map);
+            ExtraHotbar = new UI(Vector2.Zero, textures.ExtraHotbar);
+            ExtraHotbarMarker = new UI(Vector2.Zero, textures.HotbarMarker);
+            FishingBar = new UI(Vector2.Zero, textures.FishingBar);
+            FishingBarPointer = new UI(Vector2.Zero, textures.FishingBarPointer);
+            FishingBarPointer.activ = false;
+            FishingBar.activ = false;
+        }
     }
 } 
 

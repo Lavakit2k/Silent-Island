@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Silent_Island_PC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,11 +30,11 @@ namespace Silent_Island
         }
 
 
-        public WorldGeneration(Main main, Textures texture, Structure structure)
+        public WorldGeneration(Main main, Textures textures, Structure structure)
         {
-            this.main = main;
-            this.texture = texture;
+            this.texture = textures;
             this.structure = structure;
+            this.main = main;
             for (int i = 0; i < main.worldSizeX; ++i)
             {
                 for (int j = 0; j < main.worldSizeY; ++j)
@@ -56,9 +55,8 @@ namespace Silent_Island
             GenerateTerrain(blockLayer, blockID);
             AddExtraTerrain(blockLayer, blockID);
 
-            return new Layer(main, blockLayer, blockID, texture);
+            return new Layer(main, blockLayer, blockID);
         }
-
         private void GenerateTerrain(Block[,] blockLayer, int[,] blockID)
         {
             for (int i = 0; i < main.worldSizeX; ++i)
@@ -145,7 +143,7 @@ namespace Silent_Island
                     }
                 }
             }
-            return new Layer(main, structureLayer, structureID, texture);
+            return new Layer(main, structureLayer, structureID);
         }
         //starts in upper corner
         public void GenerateStructure(Block[,] structureLayer, int[,] structureID, int startX, int startY, int[,] pattern)
@@ -210,7 +208,7 @@ namespace Silent_Island
                     GenerateExtraDeko(dekoLayer, dekoID, i, j);
                 }
             }
-            return new Layer(main, dekoLayer, dekoID, texture);
+            return new Layer(main, dekoLayer, dekoID);
         }
 
         //Edges
@@ -353,7 +351,7 @@ namespace Silent_Island
         public Layer GenerateItemLayer(Block[,] structureLayer, int[,] structureID)
         {
 
-            return new Layer(main, structureLayer, structureID, texture);
+            return new Layer(main, structureLayer, structureID);
         }
 
         #endregion

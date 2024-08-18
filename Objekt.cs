@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Silent_Island;
 
-namespace Silent_Island_PC
+namespace Silent_Island
 {
-    public abstract class Objekt
+    public class Objekt
     {
+        public Main main { get; set; }
+        public Textures textures { get; set; }
         public Vector2 coords { get; set; }
         public Texture2D texture { get; set; }
         public Color color { get; set; }
@@ -13,42 +14,37 @@ namespace Silent_Island_PC
         public Vector2 axis { get; set; }
         public Vector2 scale { get; set; }
         public SpriteEffects effekt { get; set; }
-        public float layer { get; set; }
         public Rectangle Hitbox { get; set; }
-        public bool activ { get; set; }
         public int ID { get; set; }
+        public bool activ { get; set; }
         public string name { get; set; }
 
-        
+
         public Objekt(Vector2 koordinaten, Texture2D textur)
         {
-            texture = textur;
-            coords = koordinaten;
-            color = Color.White;
-            rotation = MathHelper.ToRadians(0);
-            axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
-            scale = Vector2.One;
-            effekt = SpriteEffects.None;
-            layer = 0;
-            Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
-            activ = true;
-            ID = 0;
-            name = "Empty";
+            this.texture = textur;
+            this.coords = koordinaten;
+            this.color = Color.White;
+            this.rotation = MathHelper.ToRadians(0);
+            this.axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
+            this.scale = Vector2.One;
+            this.effekt = SpriteEffects.None;
+            this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
+            this.ID = 0;
+            this.activ = true;
+            this.name = "Empty";
+        }
+        public Objekt(Textures texture, Main main)
+        {
+            this.textures = texture;
+            this.main = main;
         }
 
-        public void Zeichne(SpriteBatch spriteBatch)
+        public void Zeichne(SpriteBatch sprite)
         {
-            spriteBatch.Draw(this.texture, this.coords, null, this.color, this.rotation, this.axis, this.scale, this.effekt, this.layer);
+            if (activ)
+                sprite.Draw(this.texture, this.coords, null, this.color, this.rotation, this.axis, this.scale, this.effekt, 0);
         }
-        public void RZeichne(float rotation, Vector2 drehpunkt, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(this.texture, this.coords, null, this.color, MathHelper.ToRadians(rotation), drehpunkt, this.scale, this.effekt, this.layer);
-        }
-        public void LZeichne(float rotation, Vector2 skalierung, SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(this.texture, this.coords, null, this.color, rotation, this.axis, skalierung, this.effekt, this.layer);
-        }
-        //TODO funktioniert das mit der Hitbox (wurde abgeändert)
         public bool hit(Vector2 maus)
         {
             if (maus.X > this.coords.X
@@ -58,10 +54,7 @@ namespace Silent_Island_PC
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
         public bool colideObjekt(Objekt objekt1, Objekt objekt2)
         {
@@ -72,10 +65,7 @@ namespace Silent_Island_PC
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
     }

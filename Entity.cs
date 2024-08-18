@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using static System.Net.Mime.MediaTypeNames;
 
 
-namespace Silent_Island_PC
+namespace Silent_Island
 {
 
     public class Entity : Objekt
@@ -22,22 +22,20 @@ namespace Silent_Island_PC
             axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
             scale = new Vector2(1, 1);
             effekt = SpriteEffects.None;
-            layer = 0;
             // Die Hitbox als Rechteck initialisieren
             Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
-            activ = true;
             ID = 0;
             name = "Entity";
             health = 0;
             speed = 5;
         }
 
-        public void MovePlayer(bool moving, Entity objekt, Texture2D newTexture, int x, int y)
+            public void MovePlayer(bool moving, Texture2D newTexture, int x, int y)
         {
             moving = true;
-            objekt.texture = newTexture;
-            objekt.coords = new Vector2(objekt.coords.X + x, objekt.coords.Y + y);
-            objekt.Hitbox = new Rectangle((int)objekt.coords.X, (int)objekt.coords.Y + 32, objekt.texture.Width, objekt.texture.Height - 32);
+            this.texture = newTexture;
+            this.coords = new Vector2(this.coords.X + x, this.coords.Y + y);
+            this.Hitbox = new Rectangle((int)this.coords.X, (int)this.coords.Y + 32, this.texture.Width, this.texture.Height - 32);
         }
 
         public bool ColideLayer(Layer layer, Vector2 moveVector)

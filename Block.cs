@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Silent_Island;
 using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace Silent_Island_PC
+namespace Silent_Island
 {
     public class Block : Objekt
     {
@@ -25,7 +23,7 @@ namespace Silent_Island_PC
             { 9, "DekoStoneMoss" },
 
         };
-        
+
         public Block(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             texture = textur;
@@ -35,9 +33,7 @@ namespace Silent_Island_PC
             axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
             scale = new Vector2(1, 1);
             effekt = SpriteEffects.None;
-            layer = 0;
             Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
-            activ = true;
             placed = false;
             ID = 0;
             amount = 0;
