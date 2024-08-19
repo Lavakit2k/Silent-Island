@@ -7,7 +7,7 @@ namespace Silent_Island
     {
         public Main main { get; set; }
         public Textures textures { get; set; }
-        public Vector2 coords { get; set; }
+        public Vector2 pos { get; set; }
         public Texture2D texture { get; set; }
         public Color color { get; set; }
         public float rotation { get; set; }
@@ -23,7 +23,7 @@ namespace Silent_Island
         public Objekt(Vector2 koordinaten, Texture2D textur)
         {
             this.texture = textur;
-            this.coords = koordinaten;
+            this.pos = koordinaten;
             this.color = Color.White;
             this.rotation = MathHelper.ToRadians(0);
             this.axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
@@ -43,13 +43,13 @@ namespace Silent_Island
         public void Zeichne(SpriteBatch sprite)
         {
             if (activ)
-                sprite.Draw(this.texture, this.coords, null, this.color, this.rotation, this.axis, this.scale, this.effekt, 0);
+                sprite.Draw(this.texture, this.pos, null, this.color, this.rotation, this.axis, this.scale, this.effekt, 0);
         }
         public bool hit(Vector2 maus)
         {
-            if (maus.X > this.coords.X
+            if (maus.X > this.pos.X
                 && maus.X < this.Hitbox.X
-                && maus.Y > this.coords.Y
+                && maus.Y > this.pos.Y
                 && maus.Y < this.Hitbox.Y)
             {
                 return true;
@@ -58,9 +58,9 @@ namespace Silent_Island
         }
         public bool colideObjekt(Objekt objekt1, Objekt objekt2)
         {
-            if (objekt1.coords.X > objekt2.coords.X
+            if (objekt1.pos.X > objekt2.pos.X
             && objekt1.Hitbox.X < objekt2.Hitbox.X
-            && objekt1.coords.Y > objekt2.coords.Y
+            && objekt1.pos.Y > objekt2.pos.Y
                 && objekt1.Hitbox.Y < objekt2.Hitbox.Y)
             {
                 return true;

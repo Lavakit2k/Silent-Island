@@ -27,10 +27,10 @@ namespace Silent_Island
         public WorldGeneration generation { get; private set; }
         public Structure structure { get; private set; }
         public Objekt mainObjekt { get; private set; }
-        public Item mainItem { get; private set; }
-        public Block mainBlock { get; private set; }
-        public UI mainUI { get; private set; }
-        public Entity mainEntity { get; private set; }
+        public Item item { get; private set; }
+        public Block block { get; private set; }
+        public UI ui { get; private set; }
+        public Entity entity { get; private set; }
 
 
         private Random random = new Random();
@@ -74,37 +74,16 @@ namespace Silent_Island
 
         #endregion
 
-        #region Layers
-        //TODO Layer der nur visuel ist 
+ 
         public int worldSizeX { get; private set; }
         public int worldSizeY { get; private set; }
 
-        public Block[,] BlockLayer { get; set; }
-        public int[,] BlockID { get; set; }
-        public Block[,] DekoLayer { get; set; }
-        public int[,] DekoID { get; set; }
-        public Block[,] StructurLayer { get; set; }
-        public int[,] StructerID { get; set; }
-        public Block[,] ItemLayer { get; set; }
-        public int[,] ItemID { get; set; }
-
-        public Layer blockLayer { get; set; }
-        public Layer structureLayer { get; set; }
-        public Layer dekoLayer { get; set; }
-        public Layer itemLayer { get; set; }
-        #endregion
-
-        #region Objects
-
-        #region UI
- 
+        public Layer layer;
 
         public Entity HandObjekt;
         public Item[] SlotObjekt;
 
         public int HotbarSlotNum;
-
-        #endregion
 
 
         Entity Player;
@@ -112,9 +91,6 @@ namespace Silent_Island
         int fishingPointerOffset;
 
         Block Chair;
-
-
-        #endregion
 
         #region Action bools
         public bool fishing;
@@ -134,23 +110,15 @@ namespace Silent_Island
 
         #region Resources
 
-        #region Sound
-
         SoundEffect FishingRodOut;
 
-        #endregion
-
-        #region Rest
-
-        private SpriteFont font;
+        public SpriteFont font { get; private set; }
 
         #endregion
 
         #endregion
 
-        #endregion
-
-        
+        Button button;
 
         public Main()
         {
@@ -168,8 +136,6 @@ namespace Silent_Island
             // V-Sync aktiv
             IsFixedTimeStep = true;
             graphics.SynchronizeWithVerticalRetrace = true;
-
-
         }
         protected override void Initialize()
         {
@@ -193,20 +159,24 @@ namespace Silent_Island
             spriteBatch = texture.spriteBatch;
             texture.LoadAllTextures();
 
+            layer = new Layer(texture, this);
+            layer.LoadAllLayers();
             structure = new Structure();
+            generation = new WorldGeneration(this, texture, layer, structure);
 
             //objekts
             mainObjekt = new Objekt(texture, this);
             
-            mainItem = new Item(texture, this);
-            mainItem.LoadAllItems();
+            item = new Item(texture, this);
+            item.LoadAllItems();
             
-            mainEntity = new Entity(Vector2.Zero, texture.Empty);
+            entity = new Entity(Vector2.Zero, texture.Empty);
             
-            mainUI = new UI(texture, this);
-            mainUI.LoadAllUIs();
+            ui = new UI(texture, this);
+            ui.LoadAllUIs();
             
-            mainBlock = new Block(Vector2.Zero, texture.Empty);
+            block = new Block(Vector2.Zero, texture.Empty);
+            
 
             #region Sound
 
@@ -217,14 +187,16 @@ namespace Silent_Island
             #endregion
 
             InitUI();
-            InitLayers();
             InitEntitys();
+
+            button = new Button(texture, this);
+            button.LoadAllButton();
 
             //Shark.Aufnehmen(SlotObjekt);
             //mainItem.Fish.Aufnehmen(SlotObjekt);
-            mainItem.FishingRod.Aufnehmen(SlotObjekt);
+            item.FishingRod.Aufnehmen(SlotObjekt);
             
-            mainItem.Shovel.Aufnehmen(SlotObjekt);
+            item.Shovel.Aufnehmen(SlotObjekt);
             //mainItem.SeaShell1.Aufnehmen(SlotObjekt);
         }
 
@@ -256,23 +228,23 @@ namespace Silent_Island
 
                 bool isMoving = false;
 
-                if (KeyDown(Keys.W) && Player.coords.Y > 0 && !Player.ColideLayer(blockLayer, new Vector2(0, -Player.speed)))
+                if (KeyDown(Keys.W) && Player.pos.Y > 0 && !Player.ColideLayer(layer.blockLayer, new Vector2(0, -Player.speed)))
                 {
                     Player.MovePlayer(isMoving, texture.PlayerUp, 0, -Player.speed);
                 }
 
-                if (KeyDown(Keys.S) && Player.coords.Y < worldSizeY * 64 - 96 && !Player.ColideLayer(blockLayer, new Vector2(0, Player.speed)))
+                if (KeyDown(Keys.S) && Player.pos.Y < worldSizeY * 64 - 96 && !Player.ColideLayer(layer.blockLayer, new Vector2(0, Player.speed)))
                 {
                     Player.MovePlayer(isMoving, texture.PlayerDown, 0, Player.speed);
                 }
 
-                if (KeyDown(Keys.A) && Player.coords.X > 0 && !Player.ColideLayer(blockLayer, new Vector2(-Player.speed, 0)))
+                if (KeyDown(Keys.A) && Player.pos.X > 0 && !Player.ColideLayer(layer.blockLayer, new Vector2(-Player.speed, 0)))
                 {
                     Player.MovePlayer(isMoving, texture.PlayerLeft, -Player.speed, 0);
                     lookingRight = false;
                 }
 
-                if (KeyDown(Keys.D) && Player.coords.X < worldSizeX * 64 - 64 && !Player.ColideLayer(blockLayer, new Vector2(Player.speed, 0)))
+                if (KeyDown(Keys.D) && Player.pos.X < worldSizeX * 64 - 64 && !Player.ColideLayer(layer.blockLayer, new Vector2(Player.speed, 0)))
                 {
                     Player.MovePlayer(isMoving, texture.PlayerRight, Player.speed, 0);
                     lookingRight = true;
@@ -318,7 +290,7 @@ namespace Silent_Island
                 }
                 if (KeyDown(Keys.E))
                 {
-                    mainUI.Inventory.activ = !mainUI.Inventory.activ;
+                    ui.Inventory.activ = !ui.Inventory.activ;
                 }
 
                 update = false;
@@ -340,6 +312,10 @@ namespace Silent_Island
                                 break;
                             default:
                                 break;
+                        }
+                        if(button.myButton.hit(MousePos))
+                        {
+                            debug = true;
                         }
                     }
                     //rightclick
@@ -368,23 +344,27 @@ namespace Silent_Island
 
                 CameraMove();
 
-                mainUI.Hotbar.UpdateUI(this, screenWidth / 2, screenHeight - 50);
-                mainUI.HotbarMarker.UpdateUI(this, screenWidth / 2 - 216 + HotbarSlotNum * 72, screenHeight - 50);
+                ui.Hotbar.UpdateUI(this, screenWidth / 2, screenHeight - 50);
+                ui.HotbarMarker.UpdateUI(this, screenWidth / 2 - 216 + HotbarSlotNum * 72, screenHeight - 50);
 
-                HandObjekt.coords = new Vector2(Player.coords.X + 30, Player.coords.Y);
+                HandObjekt.pos = new Vector2(Player.pos.X + 30, Player.pos.Y);
                 HandObjekt.texture = SlotObjekt[HotbarSlotNum].texture;
 
                 //TODO wieder richtig
-                mainUI.FishingBar.UpdateUI(this, screenWidth / 2 - texture.FishingBar.Width / 2 + 146, screenHeight - 120);
-                if(mainUI.FishingBarPointer.activ)
-                mainUI.FishingBarPointer.UpdateUI(this, screenWidth / 2 + 20 + 128f * (float)Math.Sin((timeCounter + fishingPointerOffset) / 1000 * 2f), screenHeight - 132);
+                ui.FishingBar.UpdateUI(this, screenWidth / 2 - texture.FishingBar.Width / 2 + 146, screenHeight - 120);
+                if(ui.FishingBarPointer.activ)
+                ui.FishingBarPointer.UpdateUI(this, screenWidth / 2 + 20 + 128f * (float)Math.Sin((timeCounter + fishingPointerOffset) / 1000 * 2f), screenHeight - 132);
                 //                                 start                   amplitude               t             offset                         frequenz
 
                 for (int i = 0; i < 7; i++)
                 {
-                    SlotObjekt[i].coords = new Vector2(mainUI.Hotbar.coords.X - 216 + i * 72, mainUI.Hotbar.coords.Y);
+                    SlotObjekt[i].pos = new Vector2(ui.Hotbar.pos.X - 216 + i * 72, ui.Hotbar.pos.Y);
                 }
 
+
+
+
+                button.myButton.SetPosition(new Vector2(cameraPosition.X, cameraPosition.Y));
                 #endregion
 
                 elapsedTime = 0;
@@ -405,30 +385,32 @@ namespace Silent_Island
 
             #region Layer
 
-            blockLayer.Zeichne();
-            dekoLayer.Zeichne();
-            structureLayer.Zeichne();
+            layer.blockLayer.Zeichne();
+            layer.dekoLayer.Zeichne();
+            layer.structureLayer.Zeichne();
 
             #endregion
 
             Player.Zeichne(spriteBatch);
-            mainItem.FishingLine.Zeichne(spriteBatch);
+            item.FishingLine.Zeichne(spriteBatch);
             HandObjekt.Zeichne(spriteBatch);
 
             #region UI
 
-            mainUI.Hotbar.Zeichne(spriteBatch);
-            mainUI.HotbarMarker.Zeichne(spriteBatch);
+            ui.Hotbar.Zeichne(spriteBatch);
+            ui.HotbarMarker.Zeichne(spriteBatch);
+
+            button.myButton.Zeichne(spriteBatch);
 
 
             for (int i = 0; i < 7; i++)
             {
                 SlotObjekt[i].Zeichne(spriteBatch);
-                spriteBatch.DrawString(font, "" + SlotObjekt[i].amount, new Vector2(SlotObjekt[i].coords.X + 24, SlotObjekt[i].coords.Y + 20), new Color(0, 0, 0));
+                spriteBatch.DrawString(font, "" + SlotObjekt[i].amount, new Vector2(SlotObjekt[i].pos.X + 24, SlotObjekt[i].pos.Y + 20), new Color(0, 0, 0));
             }
 
-            mainUI.FishingBar.Zeichne(spriteBatch);
-            mainUI.FishingBarPointer.Zeichne(spriteBatch);
+            ui.FishingBar.Zeichne(spriteBatch);
+            ui.FishingBarPointer.Zeichne(spriteBatch);
 
             #endregion
 
@@ -455,15 +437,15 @@ namespace Silent_Island
         #region Init
         private void InitEntitys()
         {
-            for (int i = 0; i < blockLayer.IDLayer.GetLength(0); i++)
+            for (int i = 0; i < layer.blockLayer.IDLayer.GetLength(0); i++)
             {
-                for (int j = 0; j < blockLayer.IDLayer.GetLength(1); j++)
+                for (int j = 0; j < layer.blockLayer.IDLayer.GetLength(1); j++)
                 {
-                    if (blockLayer.IDLayer[i, j] == 1 &&
-                        i > 0 && blockLayer.IDLayer[i - 1, j] == 1 && // links
-                        i < blockLayer.IDLayer.GetLength(0) - 1 && blockLayer.IDLayer[i + 1, j] == 1 && // rechts
-                        j > 0 && blockLayer.IDLayer[i, j - 1] == 1 && // oben
-                        j < blockLayer.IDLayer.GetLength(1) - 1 && blockLayer.IDLayer[i, j + 1] == 1) // unten
+                    if (layer.blockLayer.IDLayer[i, j] == 1 &&
+                        i > 0 && layer.blockLayer.IDLayer[i - 1, j] == 1 && // links
+                        i < layer.blockLayer.IDLayer.GetLength(0) - 1 && layer.blockLayer.IDLayer[i + 1, j] == 1 && // rechts
+                        j > 0 && layer.blockLayer.IDLayer[i, j - 1] == 1 && // oben
+                        j < layer.blockLayer.IDLayer.GetLength(1) - 1 && layer.blockLayer.IDLayer[i, j + 1] == 1) // unten
                     {
                         Player = new Entity(new Vector2(i * 64, j * 64), texture.PlayerUp);
                         Player.speed = 8;
@@ -474,23 +456,7 @@ namespace Silent_Island
 
 
         }
-        private void InitLayers()
-        {
-            BlockLayer = new Block[worldSizeX, worldSizeY];
-            BlockID = new int[worldSizeX, worldSizeY];
-            DekoLayer = new Block[worldSizeX, worldSizeY];
-            DekoID = new int[worldSizeX, worldSizeY];
-            StructurLayer = new Block[worldSizeX, worldSizeY];
-            StructerID = new int[worldSizeX, worldSizeY];
-            ItemLayer = new Block[worldSizeX, worldSizeY];
-            ItemID = new int[worldSizeX, worldSizeY];
-
-            generation = new WorldGeneration(this, texture, structure);
-
-            blockLayer = generation.GenerateBase(BlockLayer, BlockID);
-            dekoLayer = generation.GenerateDeko(DekoLayer, DekoID);
-            structureLayer = generation.GenerateStructers(StructurLayer, StructerID);
-        }
+        
         private void InitUI()
         {
             HandObjekt = new Entity(new Vector2(0, 0), texture.HotbarMarker);
@@ -509,7 +475,7 @@ namespace Silent_Island
             float halfScreenHeight = screenHeight / 2;
 
             // Berechne die Zielposition der Kamera basierend auf der Spielerposition
-            Vector2 targetCameraPosition = new Vector2(Player.coords.X - halfScreenWidth, Player.coords.Y - halfScreenHeight);
+            Vector2 targetCameraPosition = new Vector2(Player.pos.X - halfScreenWidth, Player.pos.Y - halfScreenHeight);
 
             // Begrenze die Zielposition der Kamera innerhalb der Weltgrenzen
             if (targetCameraPosition.X < -32)
@@ -543,7 +509,7 @@ namespace Silent_Island
             //TODO für mehrere Layer?
 
             if (MousePos.X >= 0 && MousePos.X < worldSizeX * 64 && MousePos.Y >= 0 && MousePos.Y < worldSizeY * 64)
-                return blockLayer.IDLayer[x, y];
+                return layer.blockLayer.IDLayer[x, y];
 
 
             return 0;
@@ -571,13 +537,13 @@ namespace Silent_Island
         public bool InReach(float playerReichweiteX, float playerReichweiteY)
         {
             //TODO with rect?
-            float minX = Player.coords.X + (Player.texture.Width / 2) - (playerReichweiteX * 64);
-            float maxX = Player.coords.X + (Player.texture.Width / 2) + (playerReichweiteX * 64);
+            float minX = Player.pos.X + (Player.texture.Width / 2) - (playerReichweiteX * 64);
+            float maxX = Player.pos.X + (Player.texture.Width / 2) + (playerReichweiteX * 64);
 
             if (MousePos.X >= minX && MousePos.X <= maxX)
             {
-                float minY = Player.coords.Y + (Player.texture.Height / 2) - (playerReichweiteY * 64);
-                float maxY = Player.coords.Y + (Player.texture.Height / 2) + (playerReichweiteY * 64);
+                float minY = Player.pos.Y + (Player.texture.Height / 2) - (playerReichweiteY * 64);
+                float maxY = Player.pos.Y + (Player.texture.Height / 2) + (playerReichweiteY * 64);
 
                 if (MousePos.Y >= minY && MousePos.Y <= maxY)
                 {
@@ -609,29 +575,29 @@ namespace Silent_Island
             {
                 //TODO this right
                 //red
-                if (mainUI.FishingBarPointer.coords.X + 8 < mainUI.FishingBar.coords.X + 52 || mainUI.FishingBarPointer.coords.X + 8 > mainUI.FishingBar.coords.X + 52 + 48 + 24 + 8 + 24 + 48)
+                if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 || ui.FishingBarPointer.pos.X + 8 > ui.FishingBar.pos.X + 52 + 48 + 24 + 8 + 24 + 48)
                 {
 
                 }
                 //yellow
-                else if (mainUI.FishingBarPointer.coords.X + 8 < mainUI.FishingBar.coords.X + 52 + 48 || mainUI.FishingBarPointer.coords.X + 8 > mainUI.FishingBar.coords.X + 52 + 48 + 24 + 8 + 24)
+                else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 || ui.FishingBarPointer.pos.X + 8 > ui.FishingBar.pos.X + 52 + 48 + 24 + 8 + 24)
                 {
                     if (Chance(33))
-                        mainItem.Fish.Aufnehmen(SlotObjekt);
+                        item.Fish.Aufnehmen(SlotObjekt);
                 }
                 //green
-                else if (mainUI.FishingBarPointer.coords.X + 8 < mainUI.FishingBar.coords.X + 52 + 48 + 24 || mainUI.FishingBarPointer.coords.X + 8 > mainUI.FishingBar.coords.X + 52 + 48 + 24 + 8)
+                else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 + 24 || ui.FishingBarPointer.pos.X + 8 > ui.FishingBar.pos.X + 52 + 48 + 24 + 8)
                 {
                     if (Chance(76))
-                        mainItem.Fish.Aufnehmen(SlotObjekt);
+                        item.Fish.Aufnehmen(SlotObjekt);
                 }
                 //blue
-                else if (mainUI.FishingBarPointer.coords.X + 8 < mainUI.FishingBar.coords.X + 52 + 48 + 24 + 8)
+                else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 + 24 + 8)
                 {
-                    mainItem.Fish.Aufnehmen(SlotObjekt);
+                    item.Fish.Aufnehmen(SlotObjekt);
 
                     if (Chance(20))
-                        mainItem.Shark.Aufnehmen(SlotObjekt);
+                        item.Shark.Aufnehmen(SlotObjekt);
                 }
 
                 ResetFishing();
@@ -639,22 +605,22 @@ namespace Silent_Island
             else if (InReach(4, 2) && hitLayerBlock() == 2)
             {
                 //TODO line
-                mainItem.FishingLine.texture = texture.FishingLine;
-                mainItem.FishingLine.rotation = (float)Math.Atan2(mainItem.FishingRod.coords.Y - MousePos.Y, mainItem.FishingRod.coords.X - MousePos.X);
-                mainItem.FishingLine.scale = new Vector2(Vector2.Distance(mainItem.FishingRod.coords, MousePos), 1);
+                item.FishingLine.texture = texture.FishingLine;
+                item.FishingLine.rotation = (float)Math.Atan2(item.FishingRod.pos.Y - MousePos.Y, item.FishingRod.pos.X - MousePos.X);
+                item.FishingLine.scale = new Vector2(Vector2.Distance(item.FishingRod.pos, MousePos), 1);
                 HandObjekt.texture = texture.FishingRodOut;
-                mainUI.FishingBar.activ = true;
-                mainUI.FishingBarPointer.activ = true;
+                ui.FishingBar.activ = true;
+                ui.FishingBarPointer.activ = true;
 
                 fishing = true;
             }
         }
         public void ResetFishing()
         {
-            mainItem.FishingLine.activ = false;
-            mainItem.FishingRod.texture = texture.FishingRod;
-            mainUI.FishingBar.activ = false;
-            mainUI.FishingBarPointer.activ = false;
+            item.FishingLine.activ = false;
+            item.FishingRod.texture = texture.FishingRod;
+            ui.FishingBar.activ = false;
+            ui.FishingBarPointer.activ = false;
             fishing = false;
         }
         public void ShovelUse()
@@ -663,13 +629,13 @@ namespace Silent_Island
             {
                 //TODO schaufel nach unten bewegen
                 if (Chance(13))
-                    mainItem.SeaShell1.Aufnehmen(SlotObjekt);
+                    item.SeaShell1.Aufnehmen(SlotObjekt);
                 if (Chance(8))
-                    mainItem.SeaShell2.Aufnehmen(SlotObjekt);
+                    item.SeaShell2.Aufnehmen(SlotObjekt);
                 if (Chance(7))
-                    mainItem.SeaShell3.Aufnehmen(SlotObjekt);
+                    item.SeaShell3.Aufnehmen(SlotObjekt);
                 if (Chance(3))
-                    mainItem.SeaShell4.Aufnehmen(SlotObjekt);
+                    item.SeaShell4.Aufnehmen(SlotObjekt);
             }
         }
         #endregion

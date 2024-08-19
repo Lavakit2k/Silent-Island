@@ -16,7 +16,7 @@ namespace Silent_Island
         public Entity(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             texture = textur;
-            coords = koordinaten;
+            pos = koordinaten;
             color = Color.White;
             rotation = MathHelper.ToRadians(0);
             axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
@@ -34,16 +34,16 @@ namespace Silent_Island
         {
             moving = true;
             this.texture = newTexture;
-            this.coords = new Vector2(this.coords.X + x, this.coords.Y + y);
-            this.Hitbox = new Rectangle((int)this.coords.X, (int)this.coords.Y + 32, this.texture.Width, this.texture.Height - 32);
+            this.pos = new Vector2(this.pos.X + x, this.pos.Y + y);
+            this.Hitbox = new Rectangle((int)this.pos.X, (int)this.pos.Y + 32, this.texture.Width, this.texture.Height - 32);
         }
 
         public bool ColideLayer(Layer layer, Vector2 moveVector)
         {
             // Berechne die zukünftige Position der Spielfigur nach der Bewegung
             Rectangle futureHitbox = new Rectangle(
-                (int)(this.coords.X + moveVector.X),
-                (int)(this.coords.Y + moveVector.Y),
+                (int)(this.pos.X + moveVector.X),
+                (int)(this.pos.Y + moveVector.Y),
                 this.Hitbox.Width,
                 this.Hitbox.Height
             );

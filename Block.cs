@@ -27,7 +27,7 @@ namespace Silent_Island
         public Block(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             texture = textur;
-            coords = koordinaten;
+            pos = koordinaten;
             color = Color.White;
             rotation = MathHelper.ToRadians(0);
             axis = new Vector2(textur.Width / 2f, textur.Height / 2f);

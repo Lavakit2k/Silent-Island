@@ -12,7 +12,7 @@ namespace Silent_Island
         public UI(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             texture = textur;
-            coords = koordinaten;
+            pos = koordinaten;
             color = Color.White;
             rotation = MathHelper.ToRadians(0);
             axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
@@ -31,7 +31,7 @@ namespace Silent_Island
         //TODO an Resolution anpassbar
         public void UpdateUI(Main main, float x, float y)
         {
-            this.coords = new Vector2(main.cameraPosition.X + x, main.cameraPosition.Y + y);
+            this.pos = new Vector2(main.cameraPosition.X + x, main.cameraPosition.Y + y);
         }
         public void HotbarSwitch(int hotbarSlot)
         {

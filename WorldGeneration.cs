@@ -11,6 +11,7 @@ namespace Silent_Island
         private Random random = new Random();
         private Textures texture;
         private Main main;
+        private Layer layer;
         private Structure structure;
         public int PWater;
         public int PGrass;
@@ -30,23 +31,28 @@ namespace Silent_Island
         }
 
 
-        public WorldGeneration(Main main, Textures textures, Structure structure)
+        public WorldGeneration(Main main, Textures textures, Layer layer, Structure structure)
         {
             this.texture = textures;
             this.structure = structure;
             this.main = main;
+            this.layer = layer;
             for (int i = 0; i < main.worldSizeX; ++i)
             {
                 for (int j = 0; j < main.worldSizeY; ++j)
                 {
-                    main.BlockID[i, j] = random.Next(1, 3);
-                    main.StructerID[i, j] = 0;
-                    main.StructurLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty);
-                    main.DekoID[i, j] = random.Next(1, 3);
-                    main.DekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty);
-                    main.ItemID[i, j] = 0;
+                    layer.BlockID[i, j] = random.Next(1, 3);
+                    layer.StructerID[i, j] = 0;
+                    layer.StructurLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty);
+                    layer.DekoID[i, j] = random.Next(1, 3);
+                    layer.DekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty);
+                    layer.ItemID[i, j] = 0;
                 }
             }
+
+            layer.blockLayer = this.GenerateBase(layer.BlockLayer, layer.BlockID);
+            layer.dekoLayer = this.GenerateDeko(layer.DekoLayer, layer.DekoID);
+            layer.structureLayer = this.GenerateStructers(layer.StructurLayer, layer.StructerID);
         }
 
         #region Base
@@ -137,7 +143,7 @@ namespace Silent_Island
             {
                 for (int j = 0; j < main.worldSizeY; ++j)
                 {
-                    if (main.BlockID[i, j] == 4)
+                    if (layer.BlockID[i, j] == 4)
                     {
                         GenerateTree(structureLayer, structureID, i, j);
                     }
@@ -218,10 +224,10 @@ namespace Silent_Island
             //TODO für später mehrere blockIDs machbar z.B. Kies
             int currentBlockID = 1;
             
-            Directions touchingDirections = GetTouchingBlockDirections(main.BlockID, i, j, currentBlockID);
+            Directions touchingDirections = GetTouchingBlockDirections(layer.BlockID, i, j, currentBlockID);
 
             //Nur wenn Wasser/ Gravel
-            if (main.BlockID[i,j] == 2 || main.BlockID[i, j] == 3)
+            if (layer.BlockID[i,j] == 2 || layer.BlockID[i, j] == 3)
             switch (touchingDirections)
             {
                     //all
@@ -325,7 +331,7 @@ namespace Silent_Island
             int PSM = 200;
 
             //Grass
-            if (main.BlockID[i,j] == 1)
+            if (layer.BlockID[i,j] == 1)
             {
                 if(random.Next(1, PMoss) < 5)
                 {
