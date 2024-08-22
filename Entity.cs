@@ -1,9 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Silent_Island;
-using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
-
+using System;
 
 namespace Silent_Island
 {
@@ -29,8 +26,12 @@ namespace Silent_Island
             health = 0;
             speed = 5;
         }
-
-            public void MovePlayer(bool moving, Texture2D newTexture, int x, int y)
+        public Entity(Textures t, Main m) : base(t, m)
+        {
+            this.textures = t;
+            this.main = m;
+        }
+        public void MovePlayer(bool moving, Texture2D newTexture, int x, int y)
         {
             moving = true;
             this.texture = newTexture;
@@ -38,7 +39,7 @@ namespace Silent_Island
             this.Hitbox = new Rectangle((int)this.pos.X, (int)this.pos.Y + 32, this.texture.Width, this.texture.Height - 32);
         }
 
-        public bool ColideLayer(Layer layer, Vector2 moveVector)
+        public bool ColideLayer(Block[,] layer, Vector2 moveVector)
         {
             // Berechne die zukünftige Position der Spielfigur nach der Bewegung
             Rectangle futureHitbox = new Rectangle(
@@ -58,9 +59,9 @@ namespace Silent_Island
             {
                 for (int y = minY; y <= maxY; y++)
                 {
-                    if (x >= 0 && x < layer.objekt.GetLength(0) && y >= 0 && y < layer.objekt.GetLength(1))
+                    if (x >= 0 && x < layer.GetLength(0) && y >= 0 && y < layer.GetLength(1))
                     {
-                        if (layer.IDLayer[x, y] == 2 && futureHitbox.Intersects(layer.objekt[x, y].Hitbox))
+                        if (layer[x, y].ID == 2 && futureHitbox.Intersects(layer[x, y].Hitbox))
                         {
                             return true;
                         }
@@ -71,7 +72,28 @@ namespace Silent_Island
             return false;
         }
 
+        public Entity Player;
+
+        public void LoadAllEnitys(Main main)
+        {
+            //Player
+            for (int i = 0; i < main.worldSizeX; i++)
+            {
+                for (int j = 0; j < main.worldSizeY; j++)
+                {
+                    if (main.block.BaseLayer[i, j].ID == 1 &&
+                        i > 0 && main.block.BaseLayer[i - 1, j].ID == 1 && // links
+                        i < main.worldSizeX - 1 && main.block.BaseLayer[i + 1, j].ID == 1 && // rechts
+                        j > 0 && main.block.BaseLayer[i, j - 1].ID == 1 && // oben
+                        j < main.worldSizeY - 1 && main.block.BaseLayer[i, j + 1].ID == 1) // unten
+                    {
+                        Player = new Entity(new Vector2(i * 64, j * 64), textures.PlayerUp);
+                        Player.speed = 8;
+                        return;
+                    }
+                }
+            }
+            
+        }
     }
-
-
 }

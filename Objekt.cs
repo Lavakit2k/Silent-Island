@@ -47,15 +47,10 @@ namespace Silent_Island
         }
         public bool hit(Vector2 maus)
         {
-            if (maus.X > this.pos.X
-                && maus.X < this.Hitbox.X
-                && maus.Y > this.pos.Y
-                && maus.Y < this.Hitbox.Y)
-            {
-                return true;
-            }
-            return false;
+            return this.Hitbox.Contains(maus);
         }
+
+
         public bool colideObjekt(Objekt objekt1, Objekt objekt2)
         {
             if (objekt1.pos.X > objekt2.pos.X

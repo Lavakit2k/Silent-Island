@@ -86,6 +86,7 @@ namespace Silent_Island
         public Texture2D Heart { get; private set; }
         public Texture2D EmptyHeart { get; private set; }
         public Texture2D EmptySeeShell { get; private set; }
+        public Texture2D DebugMenu { get; private set; }
 
         #endregion
 
@@ -108,28 +109,81 @@ namespace Silent_Island
         {
             return name switch
             {
+                // Blocks
                 "Grass" => Grass,
                 "Water" => Water,
                 "Gravel" => Gravel,
-                "GrasRoots" => GrassRoot,
+                "Stone" => Stone,
+                "GrassRoot" => GrassRoot,
+                "GrassUp" => GrassUp,
+                "GrassUpCorner" => GrassUpCorner,
+                "IronOre" => IronOre,
                 "TreeLog" => TreeLog,
-                "TreeLeaves" => TreeLeave,
+                "TreeLeave" => TreeLeave,
+
+                // Decoration
+                "GrassEdgeI" => GrassEdgeI,
+                "GrassEdgeH" => GrassEdgeH,
+                "GrassEdgeL" => GrassEdgeL,
+                "GrassEdgeU" => GrassEdgeU,
+                "GrassEdgeO" => GrassEdgeO,
                 "DekoMoss" => DekoMoss,
                 "DekoStone" => DekoStone,
-                "DekoStoneMoss" => DekoMossStone,
-                // Weitere Texturen hier...
-                _ => Empty, // Rückgabe der Standard- oder "leeren" Textur
+                "DekoMossStone" => DekoMossStone,
+
+                // Items
+                "FishingRod" => FishingRod,
+                "FishingRodOut" => FishingRodOut,
+                "FishingLine" => FishingLine,
+                "Fish" => Fish,
+                "Shark" => Shark,
+                "Chair" => Chair,
+                "Barrel" => Barrel,
+                "Oven" => Oven,
+                "Pistol" => Pistol,
+                "PistolProjectile" => PistolProjectile,
+                "Wood" => Wood,
+                "Rock" => Rock,
+                "IronIngot" => IronIngot,
+                "SeaShell1" => SeaShell1,
+                "SeaShell2" => SeaShell2,
+                "SeaShell3" => SeaShell3,
+                "SeaShell4" => SeaShell4,
+                "GoldCoin" => GoldCoin,
+                "FishingShop" => FishingShop,
+                "Shovel" => Shovel,
+
+                // Entities
+                "PlayerUp" => PlayerUp,
+                "PlayerDown" => PlayerDown,
+                "PlayerLeft" => PlayerLeft,
+                "PlayerRight" => PlayerRight,
+
+                // UI
+                "Inventory" => Inventory,
+                "Slot" => Slot,
+                "Hotbar" => Hotbar,
+                "ExtraHotbar" => ExtraHotbar,
+                "Map" => Map,
+                "TopUI" => TopUI,
+                "HotbarMarker" => HotbarMarker,
+                "FishingBar" => FishingBar,
+                "FishingBarPointer" => FishingBarPointer,
+                "Heart" => Heart,
+                "EmptyHeart" => EmptyHeart,
+                "EmptySeeShell" => EmptySeeShell,
+                "DebugMenu" => DebugMenu,
+
+                // Rest
+                "Empty" => Empty,
+                "TestBlock" => TestBlock,
+                "TestEdge" => TestEdge,
+
+                // Default
+                _ => TestBlock,
             };
         }
-        public Texture2D GetTextureByBlockID(int blockID)
-        {
-            // Look Dictionary
-            if (Block.Blocks.TryGetValue(blockID, out string textureName))
-            {
-                return this.GetTextureByName(textureName);
-            }
-            return this.Empty;
-        }
+
         public void LoadAllTextures()
         {
             #region Blocks
@@ -199,7 +253,8 @@ namespace Silent_Island
             Heart = content.Load<Texture2D>("Texturen/Heart");
             EmptyHeart = content.Load<Texture2D>("Texturen/EmptyHeart");
             EmptySeeShell = content.Load<Texture2D>("Texturen/Empty_Seashell");
-            
+            DebugMenu = content.Load<Texture2D>("Texturen/Debug_Menu");
+
             #endregion
 
             #region Rest 

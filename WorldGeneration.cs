@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +10,15 @@ namespace Silent_Island
         private Random random = new Random();
         private Textures texture;
         private Main main;
-        private Layer layer;
         private Structure structure;
+        private Block block;
         public int PWater;
         public int PGrass;
         public int PGravel;
         public int smoothness = 10;
         public int heavy;
+        public int worldSizeX = 64;
+        public int worldSizeY = 64;
 
         //works with Bits
         [Flags]
@@ -31,67 +32,67 @@ namespace Silent_Island
         }
 
 
-        public WorldGeneration(Main main, Textures textures, Layer layer, Structure structure)
+        public WorldGeneration(Main main, Textures textures, Structure structure, Block block)
         {
             this.texture = textures;
             this.structure = structure;
             this.main = main;
-            this.layer = layer;
-            for (int i = 0; i < main.worldSizeX; ++i)
+            this.block = block;
+            for (int i = 0; i < worldSizeX; ++i)
             {
-                for (int j = 0; j < main.worldSizeY; ++j)
+                for (int j = 0; j < worldSizeY; ++j)
                 {
-                    layer.BlockID[i, j] = random.Next(1, 3);
-                    layer.StructerID[i, j] = 0;
-                    layer.StructurLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty);
-                    layer.DekoID[i, j] = random.Next(1, 3);
-                    layer.DekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty);
-                    layer.ItemID[i, j] = 0;
+                    block.BaseLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty, random.Next(1, 3), "");
+                    block.StructureLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty, 0, "");
+                    block.DekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty, random.Next(1, 3), "");
+                    block.ItemLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty, 0, "");
                 }
             }
-
-            layer.blockLayer = this.GenerateBase(layer.BlockLayer, layer.BlockID);
-            layer.dekoLayer = this.GenerateDeko(layer.DekoLayer, layer.DekoID);
-            layer.structureLayer = this.GenerateStructers(layer.StructurLayer, layer.StructerID);
+            
+            GenerateBase();
+            GenerateDeko();
+            GenerateStructers();
+            
         }
-
+        
         #region Base
-        public Layer GenerateBase(Block[,] blockLayer, int[,] blockID)
+        public void GenerateBase()
         {
-            GenerateTerrain(blockLayer, blockID);
-            AddExtraTerrain(blockLayer, blockID);
-
-            return new Layer(main, blockLayer, blockID);
+            GenerateTerrain();
+            AddExtraTerrain();
         }
-        private void GenerateTerrain(Block[,] blockLayer, int[,] blockID)
+        private void GenerateTerrain()
         {
-            for (int i = 0; i < main.worldSizeX; ++i)
+            for (int i = 0; i < worldSizeX; ++i)
             {
-                for (int j = 0; j < main.worldSizeY; ++j)
+                for (int j = 0; j < worldSizeY; ++j)
                 {
                     for (int t = 0; t < smoothness; ++t)
                     {
                         #region Grass/Water
-                        int PGrass = GetSurroundingBlockIDType(blockID, i, j, 1);
-                        int PWater = GetSurroundingBlockIDType(blockID, i, j, 2);
+                        int PGrass = GetSurroundingBlockIDType(block.BaseLayer, i, j, 1);
+                        int PWater = GetSurroundingBlockIDType(block.BaseLayer, i, j, 2);
 
-                        if (blockID[i, j] == 2 && PGrass > 4)
+                        if (block.BaseLayer[i, j].ID == 2 && PGrass > 4)
                         {
-                            SetBlock(blockLayer, blockID, i, j, 1, texture.Grass);
+                            //Grass
+                            SetBlock(block.BaseLayer, i, j, 1);
                         }
-                        else if (blockID[i, j] == 1 && PWater > 5)
+                        else if (block.BaseLayer[i, j].ID == 1 && PWater > 5)
                         {
-                            SetBlock(blockLayer, blockID, i, j, 2, texture.Water);
+                            //Water
+                            SetBlock(block.BaseLayer, i, j, 2);
                         }
                         else
                         {
-                            switch (blockID[i, j])
+                            //No Change
+                            switch (block.BaseLayer[i, j].ID)
                             {
                                 case 1:
-                                    blockLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Grass);
+                                    SetBlock(block.BaseLayer, i, j, 1);
                                     break;
                                 case 2:
-                                    blockLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Water);
+                                    SetBlock(block.BaseLayer, i, j, 2);
                                     break;
                             }
                         }
@@ -100,32 +101,32 @@ namespace Silent_Island
                 }
             }
         }
-        private void AddExtraTerrain(Block[,] blockLayer, int[,] blockID)
+        private void AddExtraTerrain()
         {
-            for (int i = 0; i < main.worldSizeX; ++i)
+            for (int i = 0; i < worldSizeX; ++i)
             {
-                for (int j = 0; j < main.worldSizeY; ++j)
+                for (int j = 0; j < worldSizeY; ++j)
                 {
                     for (int t = 0; t < 3; ++t)
                     {
                         #region Gravel//Roots
 
-                        if (blockID[i, j] == 2) break;
+                        if (block.BaseLayer[i, j].ID == 2) break;
 
-                        int PGravel = GetSurroundingBlockIDType(blockID, i, j, 3);
+                        int PGravel = GetSurroundingBlockIDType(block.BaseLayer, i, j, 3);
 
                         if (PGravel > 4 && random.Next(1, PGravel - PGravel / 2) == 1)
                         {
-                            SetBlock(blockLayer, blockID, i, j, 3, texture.Gravel);
+                            SetBlock(block.BaseLayer, i, j, 3);
                         }
                         else if (random.Next(1, 30) == 1)
                         {
-                            SetBlock(blockLayer, blockID, i, j, 3, texture.Gravel);
+                            SetBlock(block.BaseLayer, i, j, 3);
                         }
 
                         if (random.Next(1, 80) == 3)
                         {
-                            SetBlock(blockLayer, blockID, i, j, 4, texture.GrassRoot);
+                            SetBlock(block.BaseLayer, i, j, 4);
                         }
 
                         #endregion
@@ -137,26 +138,25 @@ namespace Silent_Island
         #endregion
 
         #region Structures
-        public Layer GenerateStructers(Block[,] structureLayer, int[,] structureID)
+        public void GenerateStructers()
         {
-            for (int i = 0; i < main.worldSizeX; ++i)
+            for (int i = 0; i < worldSizeX; ++i)
             {
-                for (int j = 0; j < main.worldSizeY; ++j)
+                for (int j = 0; j < worldSizeY; ++j)
                 {
-                    if (layer.BlockID[i, j] == 4)
+                    if (block.BaseLayer[i, j].ID == 4)
                     {
-                        GenerateTree(structureLayer, structureID, i, j);
+                        GenerateTree(block.StructureLayer, i, j);
                     }
                 }
             }
-            return new Layer(main, structureLayer, structureID);
         }
-        //starts in upper corner
-        public void GenerateStructure(Block[,] structureLayer, int[,] structureID, int startX, int startY, int[,] pattern)
+
+        // starts in upper corner
+        public void GenerateStructure(Block[,] structureLayer, int startX, int startY, int[,] pattern)
         {
             int patternWidth = pattern.GetLength(0);
             int patternHeight = pattern.GetLength(1);
-
 
             for (int i = 0; i < patternWidth; ++i)
             {
@@ -166,30 +166,13 @@ namespace Silent_Island
                     int x = startX + i;
                     int y = startY + j;
 
-
-                    if (x >= 0 && x < structureID.GetLength(0) && y >= 0 && y < structureID.GetLength(1))
+                    if (x >= 0 && x < structureLayer.GetLength(0) && y >= 0 && y < structureLayer.GetLength(1))
                     {
-                        if (structureID[x, y] == 0 || structureID[x, y] == 5) // Nur setzen, wenn noch kein Block existiert
+                        if (structureLayer[x, y].ID == 0 || structureLayer[x, y].ID == 5) // Only set if no block exists
                         {
                             if (blockType != 0)
                             {
-                                //Textur bestimmen
-                                Texture2D blockTexture = null;
-                                switch (blockType)
-                                {
-                                    case 5:
-                                        blockTexture = texture.TreeLog;
-                                        break;
-                                    case 6:
-                                        blockTexture = texture.TreeLeave;
-                                        break;
-                                }
-
-                                if (blockTexture != null)
-                                {
-                                    structureLayer[x, y] = new Block(new Vector2(x * 64, y * 64), blockTexture);
-                                    structureID[x, y] = blockType;
-                                }
+                                SetBlock(block.StructureLayer, x, y, pattern[j, i]);
                             }
                         }
                     }
@@ -197,156 +180,154 @@ namespace Silent_Island
             }
         }
 
-        public void GenerateTree(Block[,] structureLayer, int[,] structureID, int i, int j)
+        public void GenerateTree(Block[,] structureLayer, int i, int j)
         {
-            GenerateStructure(structureLayer, structureID, i - 2, j - 4, structure.treePattern);
+            GenerateStructure(structureLayer, i - 2, j - 4, structure.treePattern);
         }
+
         #endregion
 
         #region Deko
-        public Layer GenerateDeko(Block[,] dekoLayer, int[,] dekoID)
+        public void GenerateDeko()
         {
-            for (int i = 0; i < main.worldSizeX; ++i)
+            for (int i = 0; i < worldSizeX; ++i)
             {
-                for (int j = 0; j < main.worldSizeY; ++j)
+                for (int j = 0; j < worldSizeY; ++j)
                 {
-                    GenerateEdges(dekoLayer, dekoID, i, j);
-                    GenerateExtraDeko(dekoLayer, dekoID, i, j);
+                    GenerateEdges(i, j);
+                    GenerateExtraDeko(i, j);
                 }
             }
-            return new Layer(main, dekoLayer, dekoID);
         }
 
         //Edges
-        private void GenerateEdges(Block[,] dekoLayer, int[,] dekoID, int i, int j)
+        private void GenerateEdges(int i, int j)
         {
             //currentBlockID DER BLOCK WELCHEM DEM RAND ANGEPASST IST z.B. Gras
             //TODO für später mehrere blockIDs machbar z.B. Kies
             int currentBlockID = 1;
-            
-            Directions touchingDirections = GetTouchingBlockDirections(layer.BlockID, i, j, currentBlockID);
+
+            Directions touchingDirections = GetTouchingBlockDirections(block.BaseLayer, i, j, currentBlockID);
 
             //Nur wenn Wasser/ Gravel
-            if (layer.BlockID[i,j] == 2 || layer.BlockID[i, j] == 3)
-            switch (touchingDirections)
-            {
+            if (block.BaseLayer[i, j].ID == 2 || block.BaseLayer[i, j].ID == 3)
+                switch (touchingDirections)
+                {
                     //all
-                case Directions.Up | Directions.Down | Directions.Left | Directions.Right:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeO); 
-                    break;
+                    case Directions.Up | Directions.Down | Directions.Left | Directions.Right:
+                        SetBlock(block.DekoLayer, i, j, 10);
+                        break;
 
                     //U 
-                case Directions.Up | Directions.Down | Directions.Left:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeU); 
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(90);
-                    break;                    
-                case Directions.Up | Directions.Down | Directions.Right:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeU);
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
-                    break;
-                case Directions.Up | Directions.Left | Directions.Right:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeU);
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(180);
-                    break;
-                case Directions.Down | Directions.Left | Directions.Right:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeU);                     
-                    break;
+                    case Directions.Up | Directions.Down | Directions.Left:
+                        SetBlock(block.DekoLayer, i, j, 11);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
+                        break;
+                    case Directions.Up | Directions.Down | Directions.Right:
+                        SetBlock(block.DekoLayer, i, j, 11);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
+                        break;
+                    case Directions.Up | Directions.Left | Directions.Right:
+                        SetBlock(block.DekoLayer, i, j, 11);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(180);
+                        break;
+                    case Directions.Down | Directions.Left | Directions.Right:
+                        SetBlock(block.DekoLayer, i, j, 11);
+                        break;
 
                     //H
-                case Directions.Up | Directions.Down:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeH);
-                        dekoLayer[i, j].rotation = MathHelper.ToRadians(90);
-                    break;
-                case Directions.Left | Directions.Right:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeH);
-                    break;
+                    case Directions.Up | Directions.Down:
+                        SetBlock(block.DekoLayer, i, j, 12);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
+                        break;
+                    case Directions.Left | Directions.Right:
+                        SetBlock(block.DekoLayer, i, j, 12);
+                        break;
 
                     //L
-                case Directions.Up | Directions.Left:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeL);
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(-180);
-                    break;
-                case Directions.Up | Directions.Right:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeL);
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
-                    break;
-                case Directions.Down | Directions.Left:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeL);
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(90);
-                    break;
-                case Directions.Down | Directions.Right:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeL);                     
-                    break;
+                    case Directions.Up | Directions.Left:
+                        SetBlock(block.DekoLayer, i, j, 13);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-180);
+                        break;
+                    case Directions.Up | Directions.Right:
+                        SetBlock(block.DekoLayer, i, j, 13);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
+                        break;
+                    case Directions.Down | Directions.Left:
+                        SetBlock(block.DekoLayer, i, j, 13);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
+                        break;
+                    case Directions.Down | Directions.Right:
+                        SetBlock(block.DekoLayer, i, j, 13);
+                        break;
 
                     //I
-                case Directions.Up:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeI);
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
-                    break;
-                case Directions.Down:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeI);
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(90);
-                    break;
-                case Directions.Left:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeI);
-                    dekoLayer[i, j].rotation = MathHelper.ToRadians(180);
-                    break;
-                case Directions.Right:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.GrassEdgeI);                     
-                    break;
-                default:
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty);                     
-                    break;
-                
-            }
+                    case Directions.Up:
+                        SetBlock(block.DekoLayer, i, j, 14);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
+                        break;
+                    case Directions.Down:
+                        SetBlock(block.DekoLayer, i, j, 14);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
+                        break;
+                    case Directions.Left:
+                        SetBlock(block.DekoLayer, i, j, 14);
+                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(180);
+                        break;
+                    case Directions.Right:
+                        SetBlock(block.DekoLayer, i, j, 14);
+                        break;
+
+                    default:
+                        SetBlock(block.DekoLayer, i, j, 0);
+                        break;
+
+                }
 
         }
-        public Directions GetTouchingBlockDirections(int[,] blockID, int i, int j, int valueToCheck)
+        public Directions GetTouchingBlockDirections(Block[,] objektLayer, int i, int j, int valueToCheck)
         {
             Directions directions = Directions.None;
 
-            if (GetNeighborBlockID(blockID, i, j, 0, -1) == valueToCheck)
+            if (GetNeighborBlockID(objektLayer, i, j, 0, -1) == valueToCheck)
             {
                 directions |= Directions.Up;
             }
-            if (GetNeighborBlockID(blockID, i, j, 0, 1) == valueToCheck)
+            if (GetNeighborBlockID(objektLayer, i, j, 0, 1) == valueToCheck)
             {
                 directions |= Directions.Down;
             }
-            if (GetNeighborBlockID(blockID, i, j, -1, 0) == valueToCheck)
+            if (GetNeighborBlockID(objektLayer, i, j, -1, 0) == valueToCheck)
             {
                 directions |= Directions.Left;
             }
-            if (GetNeighborBlockID(blockID, i, j, 1, 0) == valueToCheck)
+            if (GetNeighborBlockID(objektLayer, i, j, 1, 0) == valueToCheck)
             {
                 directions |= Directions.Right;
             }
 
             return directions;
         }
-        public void  GenerateExtraDeko(Block[,] dekoLayer, int[,] dekoID, int i, int j)
+        public void GenerateExtraDeko(int i, int j)
         {
             int PMoss = 40;
             int PStone = 110;
             int PSM = 200;
 
             //Grass
-            if (layer.BlockID[i,j] == 1)
+            if (block.BaseLayer[i, j].ID == 1)
             {
-                if(random.Next(1, PMoss) < 5)
+                if (random.Next(1, PMoss) < 5)
                 {
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.DekoMoss);
-                    dekoID[i, j] = 7;
+                    SetBlock(block.DekoLayer, i, j, 7);
                 }
-                else if(random.Next(1, PStone) < 5)
+                else if (random.Next(1, PStone) < 5)
                 {
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.DekoStone);
-                    dekoID[i, j] = 8;
+                    SetBlock(block.DekoLayer, i, j, 8);
                 }
-                else if(random.Next(1, PSM) < 5)
+                else if (random.Next(1, PSM) < 5)
                 {
-                    dekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.DekoMossStone);
-                    dekoID[i, j] = 9;
+                    SetBlock(block.DekoLayer, i, j, 9);
                 }
             }
         }
@@ -354,63 +335,60 @@ namespace Silent_Island
         #endregion
 
         #region Item
-        public Layer GenerateItemLayer(Block[,] structureLayer, int[,] structureID)
-        {
-
-            return new Layer(main, structureLayer, structureID);
-        }
 
         #endregion
 
         #region Methoden
-        private void SetBlock(Block[,] objektLayer, int[,] objektID, int i, int j, int objektType, Texture2D texture)
+        private void SetBlock(Block[,] objektLayer, int i, int j, int id)
         {
-            objektID[i, j] = objektType;
-            objektLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture);
+            objektLayer[i, j] = block.Blocks[id].Clone();
+            objektLayer[i, j].pos = new Vector2(i * 64, j * 64);
+            //TODO wichtig?
+            objektLayer[i, j].Hitbox = new Rectangle((int)objektLayer[i, j].pos.X, (int)objektLayer[i, j].pos.Y, objektLayer[i, j].texture.Width, objektLayer[i, j].texture.Height);
         }
 
-        public int[] GetSurroundingBlockIDs(int[,] blockID, int i, int j)
+        public int[] GetSurroundingBlockIDs(Block[,] objektLayer, int i, int j)
         {
             return new int[]
             {
-                GetNeighborBlockID(blockID, i, j, 0, -1),   // up
-                GetNeighborBlockID(blockID, i, j, 0, 1),    // down
-                GetNeighborBlockID(blockID, i, j, -1, 0),   // left
-                GetNeighborBlockID(blockID, i, j, 1, 0),    // right
-                GetNeighborBlockID(blockID, i, j, -1, -1),  // UL
-                GetNeighborBlockID(blockID, i, j, 1, -1),   // UR
-                GetNeighborBlockID(blockID, i, j, -1, 1),   // DL
-                GetNeighborBlockID(blockID, i, j, 1, 1)     // DR
+                GetNeighborBlockID(objektLayer, i, j, 0, -1),   // up
+                GetNeighborBlockID(objektLayer, i, j, 0, 1),    // down
+                GetNeighborBlockID(objektLayer, i, j, -1, 0),   // left
+                GetNeighborBlockID(objektLayer, i, j, 1, 0),    // right
+                GetNeighborBlockID(objektLayer, i, j, -1, -1),  // UL
+                GetNeighborBlockID(objektLayer, i, j, 1, -1),   // UR
+                GetNeighborBlockID(objektLayer, i, j, -1, 1),   // DL
+                GetNeighborBlockID(objektLayer, i, j, 1, 1)     // DR
             };
         }
-        public int[] GetTouchingBlockIDs(int[,] blockID, int i, int j)
+        public int[] GetTouchingBlockIDs(Block[,] objektLayer, int i, int j)
         {
             return new int[]
             {
-                GetNeighborBlockID(blockID, i, j, 0, -1),   // up
-                GetNeighborBlockID(blockID, i, j, 0, 1),    // down
-                GetNeighborBlockID(blockID, i, j, -1, 0),   // left
-                GetNeighborBlockID(blockID, i, j, 1, 0)     // right
+                GetNeighborBlockID(objektLayer, i, j, 0, -1),   // up
+                GetNeighborBlockID(objektLayer, i, j, 0, 1),    // down
+                GetNeighborBlockID(objektLayer, i, j, -1, 0),   // left
+                GetNeighborBlockID(objektLayer, i, j, 1, 0)     // right
             };
         }
-        
-        public int GetNeighborBlockID(int[,] blockID, int i, int j, int xOffset, int yOffset)
+        public int GetNeighborBlockID(Block[,] objektLayer, int i, int j, int xOffset, int yOffset)
         {
             int newRow = i + xOffset;
             int newCol = j + yOffset;
 
-            if (newRow >= 0 && newRow < blockID.GetLength(0) && newCol >= 0 && newCol < blockID.GetLength(1))
+            if (newRow >= 0 && newRow < objektLayer.GetLength(0) && newCol >= 0 && newCol < objektLayer.GetLength(1))
             {
-                return blockID[newRow, newCol];
+                return objektLayer[newRow, newCol].ID;
             }
             else
             {
                 return 0;
             }
         }
-        public int GetMostCommonSurroundingNeighbor(int[,] blockID, int i, int j)
+
+        public int GetMostCommonSurroundingNeighbor(Block[,] objektLayer, int i, int j)
         {
-            int[] neighbors = GetSurroundingBlockIDs(blockID, i, j);
+            int[] neighbors = GetSurroundingBlockIDs(objektLayer, i, j);
             Dictionary<int, int> frequency = new Dictionary<int, int>();
 
 
@@ -429,9 +407,9 @@ namespace Silent_Island
             //Sort by frequency
             return frequency.OrderByDescending(pair => pair.Value).FirstOrDefault().Key;
         }
-        public int GetSumOfNeighborsIDs(int[,] blockID, int i, int j)
+        public int GetSumOfNeighborsIDs(Block[,] objektLayer, int i, int j)
         {
-            int[] neighbors = GetTouchingBlockIDs(blockID, i, j);
+            int[] neighbors = GetTouchingBlockIDs(objektLayer, i, j);
             int sum = 0;
             foreach (int value in neighbors)
             {
@@ -439,13 +417,13 @@ namespace Silent_Island
             }
             return sum;
         }
-        private int GetSurroundingBlockIDType(int[,] blockID, int i, int j, int blockType)
+        private int GetSurroundingBlockIDType(Block[,] objektLayer, int i, int j, int id)
         {
             int count = 0;
-            int[] surroundingBlockIDs = GetSurroundingBlockIDs(blockID, i, j);
+            int[] surroundingBlockIDs = GetSurroundingBlockIDs(objektLayer, i, j);
             for (int k = 0; k < surroundingBlockIDs.Length; ++k)
             {
-                if (surroundingBlockIDs[k] == blockType)
+                if (surroundingBlockIDs[k] == id)
                 {
                     ++count;
                 }
@@ -454,5 +432,6 @@ namespace Silent_Island
         }
 
         #endregion
+        
     }
 }

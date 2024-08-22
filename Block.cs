@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Silent_Island
 {
@@ -8,100 +9,217 @@ namespace Silent_Island
     {
         public bool placed { get; set; }
         public int amount { get; set; }
-        public static Dictionary<int, string> Blocks { get; } = new Dictionary<int, string>()
+        public Dictionary<int, Block> Blocks { get; } = new Dictionary<int, Block>();
+
+        public Block(Textures t, Main m) : base(t, m)
         {
-            { 0, "Void" },
-            { 1, "Grass" },
-            { 2, "Water"},
-            { 3, "Gravel" },
-            { 4, "GrasRoots" },
-            { 5, "TreeLog" },
-            { 6, "TreeLeaves" },
-
-            { 7, "DekoMoss" },
-            { 8, "DekoStone" },
-            { 9, "DekoStoneMoss" },
-
-        };
-
-        public Block(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
-        {
-            texture = textur;
-            pos = koordinaten;
-            color = Color.White;
-            rotation = MathHelper.ToRadians(0);
-            axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
-            scale = new Vector2(1, 1);
-            effekt = SpriteEffects.None;
-            Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
-            placed = false;
-            ID = 0;
-            amount = 0;
-            name = "Void";
+            this.textures = t;
+            this.main = m;
         }
-        //TODO für Layer statt Objekt
-        /*
-        public void Place(Objekt objekt, Objekt[,] item, Vector2 maus)
-        {
-            int i = (int)(maus.X / 64);
-            int j = (int)(maus.Y / 64);
 
-            // Überprüfen, ob die Indizes innerhalb der Grenzen des block-Arrays liegen
-            if (i >= 0 && i < item.GetLength(0) && j >= 0 && j < item.GetLength(1))
-            {
-                objekt.coords = item[i, j].coords;
-                objekt.hitbox = new Vector2(objekt.coords.X + objekt.texture.Width, objekt.coords.Y + objekt.texture.Height);
-            }
-        }
-        */
-        public void Aufnehmen(Block item, Item[] HotbarSlot)
+        public Block(Vector2 koordinaten, Texture2D textur, int id, string name) : base(koordinaten, textur)
         {
-            for (int i = 0; i < 7; i++)
-            {
-                if (HotbarSlot[i].ID == item.ID && item.amount < 100)
-                {
-                    ++HotbarSlot[i].amount;
-                    break;
-                }
-                else if (HotbarSlot[i].ID != item.ID && HotbarSlot[i].ID == 0)
-                {
-                    ++HotbarSlot[i].amount;
-                    HotbarSlot[i].ID = item.ID;
-                    HotbarSlot[i].texture = item.texture;
-                    break;
-                }
-            }
-            /* oben UI InventorySlot hinzufügen
-             * 
-             * for(int i = 0; i < 63; i++)
-            {
-                if (InventorySlot.ID == item.ID && item.amount < 100)
-                {
-                    ++item.amount;
-                }
-                else if (InventorySlot.ID != item.ID || InventorySlot.ID == 0)
-                {
-                    HotbarSlot.ID = item.ID;
-                }
-            }*/
+            this.texture = textur;
+            this.pos = koordinaten;
+            this.color = Color.White;
+            this.rotation = MathHelper.ToRadians(0);
+            this.axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
+            this.scale = new Vector2(1, 1);
+            this.effekt = SpriteEffects.None;
+            this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
+            this.placed = false;
+            this.activ = true;
+            this.ID = id;
+            this.amount = 0;
+            this.name = name;
         }
-        public void Abnehmen(Block item, Item[] HotbarSlot, Textures t)
+
+        public void ZeichneLayer(SpriteBatch spriteBatch, Block[,] layer)
         {
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < main.worldSizeX; i++)
             {
-                if (HotbarSlot[i].ID == item.ID && item.amount > 2)
+                for (int j = 0; j < main.worldSizeY; j++)
                 {
-                    --HotbarSlot[i].amount;
-                    break;
-                }
-                else if (HotbarSlot[i].ID == item.ID && item.amount == 1)
-                {
-                    --HotbarSlot[i].amount;
-                    HotbarSlot[i].ID = 0;
-                    HotbarSlot[i].texture = t.Empty;
-                    break;
+                    if (layer[i, j].pos.X > main.cameraPosition.X - main.screenWidth - 64 &&
+                        layer[i, j].pos.X < main.cameraPosition.X + main.screenWidth + 64 &&
+                        layer[i, j].pos.Y > main.cameraPosition.Y - main.screenHeight - 64 &&
+                        layer[i, j].pos.Y < main.cameraPosition.Y + main.screenHeight + 64)
+                    {
+                        layer[i, j].Zeichne(main.spriteBatch);
+                    }
                 }
             }
         }
+        public void ZeichneAll(SpriteBatch spriteBatch)
+        {
+            this.ZeichneLayer(spriteBatch, BaseLayer);
+            this.ZeichneLayer(spriteBatch, DekoLayer);
+            this.ZeichneLayer(spriteBatch, StructureLayer);
+            this.ZeichneLayer(spriteBatch, ItemLayer);
+        }
+
+        private void UpdateHitbox()
+        {
+            Hitbox = new Rectangle(
+                (int)pos.X,
+                (int)pos.Y,
+                (int)(texture.Width * scale.X),
+                (int)(texture.Height * scale.Y)
+            );
+        }
+
+        public void EditorModeUpdate(Vector2 cam)
+        {
+            for (int i = 0; i < takeBlock.Length; i++)
+            {
+                takeBlock[i].pos = new Vector2(cam.X + main.screenWidth - 128 - 32 + (i % 2) * 64, cam.Y + 32 + (i / 2) * 64);
+                takeBlock[i].UpdateHitbox();
+            }
+        }
+        public void EditorModeGetBlock(Vector2 mouse)
+        {
+            for (int i = 0; i < takeBlock.Length; i++)
+            {
+                if (takeBlock[i].hit(mouse))
+                {
+                    tokenBlock = takeBlock[i].Clone();
+                }
+            }
+        }
+        public void EditorModeSetBlock(Vector2 mouse)
+        {
+            // Berechne die Blockkoordinaten basierend auf der Mausposition
+            int x = (int)(mouse.X / 64);
+            int y = (int)(mouse.Y / 64);
+
+            // Stelle sicher, dass die berechneten Indizes innerhalb der Array-Grenzen liegen
+            if (x >= 0 && x < BaseLayer.GetLength(0) && y >= 0 && y < BaseLayer.GetLength(1))
+            {
+                if (tokenBlock != null)
+                {
+                    // Klone den tokenBlock
+                    Block clonedBlock = tokenBlock.Clone();
+
+                    // Setze die Position des geklonten Blocks
+                    // Berechne die exakte Position des Blocks im Raster
+                    clonedBlock.pos = new Vector2(x * 64, y * 64);
+                    clonedBlock.UpdateHitbox(); // Falls du die Hitbox aktualisieren musst
+
+                    // Weise den geklonten Block dem Array zu
+                    BaseLayer[x, y] = clonedBlock;
+
+                    main.debug = true; // Debugging aktivieren
+                }
+            }
+        }
+
+
+        public void EditorModeDraw(SpriteBatch sprite)
+        {
+            foreach (var KeyValuePair in Blocks)
+            {
+                takeBlock[KeyValuePair.Key].Zeichne(sprite);
+            }
+        }
+
+        public Block Clone()
+        {
+            return new Block(this.pos, this.texture, this.ID, this.name);
+        }
+
+        public Block Void;
+        public Block Grass;
+        public Block Water;
+        public Block Gravel;
+        public Block GrassRoot;
+        public Block TreeLog;
+        public Block TreeLeave;
+        public Block DekoMoss;
+        public Block DekoStone;
+        public Block DekoMossStone;
+
+        public Block GrassEdgeO;
+        public Block GrassEdgeU;
+        public Block GrassEdgeH;
+        public Block GrassEdgeL;
+        public Block GrassEdgeI;
+
+        public Block Chair;
+
+        public Block[,] BaseLayer;
+        public Block[,] DekoLayer;
+        public Block[,] StructureLayer;
+        public Block[,] ItemLayer;
+
+        public Block[] takeBlock;
+        public Block tokenBlock;
+
+        //TODO recalc Hitbox 
+        public void LoadAllBlocks()
+        {
+            Void = new Block(Vector2.Zero, textures.Empty, 0, "Void");
+            Blocks.Add(0, Void);
+
+            Grass = new Block(Vector2.Zero, textures.Grass, 1, "Grass");
+            Blocks.Add(1, Grass);
+
+            Water = new Block(Vector2.Zero, textures.Water, 2, "Water");
+            Blocks.Add(2, Water);
+
+            Gravel = new Block(Vector2.Zero, textures.Gravel, 3, "Gravel");
+            Blocks.Add(3, Gravel);
+
+            GrassRoot = new Block(Vector2.Zero, textures.GrassRoot, 4, "GrassRoot");
+            Blocks.Add(4, GrassRoot);
+
+            TreeLog = new Block(Vector2.Zero, textures.TreeLog, 5, "TreeLog");
+            Blocks.Add(5, TreeLog);
+
+            TreeLeave = new Block(Vector2.Zero, textures.TreeLeave, 6, "TreeLeave");
+            Blocks.Add(6, TreeLeave);
+
+            DekoMoss = new Block(Vector2.Zero, textures.DekoMoss, 7, "DekoMoss");
+            Blocks.Add(7, DekoMoss);
+
+            DekoStone = new Block(Vector2.Zero, textures.DekoStone, 8, "DekoStone");
+            Blocks.Add(8, DekoStone);
+
+            DekoMossStone = new Block(Vector2.Zero, textures.DekoMossStone, 9, "DekoMossStone");
+            Blocks.Add(9, DekoMossStone);
+
+            GrassEdgeO = new Block(Vector2.Zero, textures.GrassEdgeO, 10, "GrassEdgeO");
+            Blocks.Add(10, GrassEdgeO);
+
+            GrassEdgeU = new Block(Vector2.Zero, textures.GrassEdgeU, 11, "GrassEdgeU");
+            Blocks.Add(11, GrassEdgeU);
+
+            GrassEdgeH = new Block(Vector2.Zero, textures.GrassEdgeH, 12, "GrassEdgeH");
+            Blocks.Add(12, GrassEdgeH);
+
+            GrassEdgeL = new Block(Vector2.Zero, textures.GrassEdgeL, 13, "GrassEdgeL");
+            Blocks.Add(13, GrassEdgeL);
+
+            GrassEdgeI = new Block(Vector2.Zero, textures.GrassEdgeI, 14, "GrassEdgeI");
+            Blocks.Add(14, GrassEdgeI);
+
+            Chair = new Block(Vector2.Zero, textures.Chair, 14, "Chair");
+            Blocks.Add(15, Chair);
+
+
+            // 1 Layer = 2 MB + 1 MB Draw
+            BaseLayer = new Block[main.worldSizeX, main.worldSizeY];
+            DekoLayer = new Block[main.worldSizeX, main.worldSizeY];
+            StructureLayer = new Block[main.worldSizeX, main.worldSizeY];
+            ItemLayer = new Block[main.worldSizeX, main.worldSizeY];
+
+            takeBlock = new Block[Blocks.Count];
+            //vec(var * 64 % 128)
+            foreach (var KeyValuePair in Blocks)
+            {
+                takeBlock[KeyValuePair.Key] = KeyValuePair.Value.Clone();
+            }
+        }
+
+
     }
 }

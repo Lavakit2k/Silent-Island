@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-
 
 namespace Silent_Island
 {
@@ -24,7 +22,7 @@ namespace Silent_Island
             name = "Empty";
             amount = 0;
             slotAmount = new string("" + amount);
-            
+
         }
         public Item(Textures t, Main m) : base(t, m)
         {
@@ -82,7 +80,7 @@ namespace Silent_Island
             }
         }
 
-        
+
         public Item Empty;
         public Item FishingRod;
         public Item Fish;
