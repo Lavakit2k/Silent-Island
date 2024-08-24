@@ -94,6 +94,7 @@ namespace Silent_Island
         public Texture2D Empty { get; private set; }
         public Texture2D TestBlock { get; private set; }
         public Texture2D TestEdge { get; private set; }
+        public Texture2D Pixel { get; private set; }
         #endregion
 
 
@@ -261,6 +262,7 @@ namespace Silent_Island
             Empty = content.Load<Texture2D>("Texturen/Empty");
             TestBlock = content.Load<Texture2D>("Texturen/Test_Block");
             TestEdge = content.Load<Texture2D>("Texturen/Test_Edge");
+            Pixel = content.Load<Texture2D>("Texturen/Pixel");
             #endregion
         }
     }

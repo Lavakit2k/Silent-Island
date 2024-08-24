@@ -214,72 +214,74 @@ namespace Silent_Island
                 switch (touchingDirections)
                 {
                     //all
+                    // Up, Down, Left, Right
                     case Directions.Up | Directions.Down | Directions.Left | Directions.Right:
-                        SetBlock(block.DekoLayer, i, j, 10);
+                        SetBlockDeko(block.DekoLayer, i, j, 10);
+
                         break;
 
                     //U 
                     case Directions.Up | Directions.Down | Directions.Left:
-                        SetBlock(block.DekoLayer, i, j, 11);
+                        SetBlockDeko(block.DekoLayer, i, j, 11);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
                         break;
                     case Directions.Up | Directions.Down | Directions.Right:
-                        SetBlock(block.DekoLayer, i, j, 11);
+                        SetBlockDeko(block.DekoLayer, i, j, 11);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
                         break;
                     case Directions.Up | Directions.Left | Directions.Right:
-                        SetBlock(block.DekoLayer, i, j, 11);
+                        SetBlockDeko(block.DekoLayer, i, j, 11);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(180);
                         break;
                     case Directions.Down | Directions.Left | Directions.Right:
-                        SetBlock(block.DekoLayer, i, j, 11);
+                        SetBlockDeko(block.DekoLayer, i, j, 11);
                         break;
 
                     //H
                     case Directions.Up | Directions.Down:
-                        SetBlock(block.DekoLayer, i, j, 12);
+                        SetBlockDeko(block.DekoLayer, i, j, 12);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
                         break;
                     case Directions.Left | Directions.Right:
-                        SetBlock(block.DekoLayer, i, j, 12);
+                        SetBlockDeko(block.DekoLayer, i, j, 12);
                         break;
 
                     //L
                     case Directions.Up | Directions.Left:
-                        SetBlock(block.DekoLayer, i, j, 13);
+                        SetBlockDeko(block.DekoLayer, i, j, 13);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-180);
                         break;
                     case Directions.Up | Directions.Right:
-                        SetBlock(block.DekoLayer, i, j, 13);
+                        SetBlockDeko(block.DekoLayer, i, j, 13);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
                         break;
                     case Directions.Down | Directions.Left:
-                        SetBlock(block.DekoLayer, i, j, 13);
+                        SetBlockDeko(block.DekoLayer, i, j, 13);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
                         break;
                     case Directions.Down | Directions.Right:
-                        SetBlock(block.DekoLayer, i, j, 13);
+                        SetBlockDeko(block.DekoLayer, i, j, 13);
                         break;
 
                     //I
                     case Directions.Up:
-                        SetBlock(block.DekoLayer, i, j, 14);
+                        SetBlockDeko(block.DekoLayer, i, j, 14);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
                         break;
                     case Directions.Down:
-                        SetBlock(block.DekoLayer, i, j, 14);
+                        SetBlockDeko(block.DekoLayer, i, j, 14);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
                         break;
                     case Directions.Left:
-                        SetBlock(block.DekoLayer, i, j, 14);
+                        SetBlockDeko(block.DekoLayer, i, j, 14);
                         block.DekoLayer[i, j].rotation = MathHelper.ToRadians(180);
                         break;
                     case Directions.Right:
-                        SetBlock(block.DekoLayer, i, j, 14);
+                        SetBlockDeko(block.DekoLayer, i, j, 14);
                         break;
 
                     default:
-                        SetBlock(block.DekoLayer, i, j, 0);
+                        SetBlockDeko(block.DekoLayer, i, j, 0);
                         break;
 
                 }
@@ -345,6 +347,17 @@ namespace Silent_Island
             objektLayer[i, j].pos = new Vector2(i * 64, j * 64);
             //TODO wichtig?
             objektLayer[i, j].Hitbox = new Rectangle((int)objektLayer[i, j].pos.X, (int)objektLayer[i, j].pos.Y, objektLayer[i, j].texture.Width, objektLayer[i, j].texture.Height);
+            
+
+        }
+        private void SetBlockDeko(Block[,] objektLayer, int i, int j, int id)
+        {
+            objektLayer[i, j] = block.Blocks[id].Clone();
+            block.DekoLayer[i, j].axis = new Vector2(32, 32);
+            objektLayer[i, j].pos = new Vector2(i * 64 + 32, j * 64 + 32);
+            //TODO wichtig?
+            objektLayer[i, j].Hitbox = new Rectangle((int)objektLayer[i, j].pos.X, (int)objektLayer[i, j].pos.Y, objektLayer[i, j].texture.Width, objektLayer[i, j].texture.Height);
+            
         }
 
         public int[] GetSurroundingBlockIDs(Block[,] objektLayer, int i, int j)

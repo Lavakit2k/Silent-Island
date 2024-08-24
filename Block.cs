@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Silent_Island
 {
@@ -23,7 +22,7 @@ namespace Silent_Island
             this.pos = koordinaten;
             this.color = Color.White;
             this.rotation = MathHelper.ToRadians(0);
-            this.axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
+            this.axis = Vector2.Zero;
             this.scale = new Vector2(1, 1);
             this.effekt = SpriteEffects.None;
             this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
@@ -32,6 +31,7 @@ namespace Silent_Island
             this.ID = id;
             this.amount = 0;
             this.name = name;
+
         }
 
         public void ZeichneLayer(SpriteBatch spriteBatch, Block[,] layer)
@@ -67,12 +67,45 @@ namespace Silent_Island
                 (int)(texture.Height * scale.Y)
             );
         }
+        public void DrawHitboxOutline(SpriteBatch spriteBatch, Texture2D p)
+        {
+            // Hitbox-Ränder (Positionen der Linien)
+            int x = Hitbox.X;
+            int y = Hitbox.Y;
+            int width = Hitbox.Width;
+            int height = Hitbox.Height;
+
+            // Linienbreite (z.B. 2 Pixel)
+            int lineWidth = 1;
+
+            // Obere Linie
+            spriteBatch.Draw(p, new Rectangle(x, y, width, lineWidth), Color.White);
+
+            // Untere Linie
+            spriteBatch.Draw(p, new Rectangle(x, y + height - lineWidth, width, lineWidth), Color.White);
+
+            // Linke Linie
+            spriteBatch.Draw(p, new Rectangle(x, y, lineWidth, height), Color.White);
+
+            // Rechte Linie
+            spriteBatch.Draw(p, new Rectangle(x + width - lineWidth, y, lineWidth, height), Color.White);
+        }
+        public void HitboxAllDraw(SpriteBatch spriteBatch, Texture2D p)
+        {
+            for (int i = 0; i < main.worldSizeX; i++)
+            {
+                for (int j = 0; j < main.worldSizeY; j++)
+                {
+                    BaseLayer[i,j].DrawHitboxOutline(spriteBatch, p);
+                }
+            }
+        }
 
         public void EditorModeUpdate(Vector2 cam)
         {
             for (int i = 0; i < takeBlock.Length; i++)
             {
-                takeBlock[i].pos = new Vector2(cam.X + main.screenWidth - 128 - 32 + (i % 2) * 64, cam.Y + 32 + (i / 2) * 64);
+                takeBlock[i].pos = new Vector2(cam.X + main.screenWidth - 128  + (i % 2) * 64, cam.Y + (i / 2) * 64);
                 takeBlock[i].UpdateHitbox();
             }
         }
@@ -97,23 +130,16 @@ namespace Silent_Island
             {
                 if (tokenBlock != null)
                 {
-                    // Klone den tokenBlock
                     Block clonedBlock = tokenBlock.Clone();
-
-                    // Setze die Position des geklonten Blocks
-                    // Berechne die exakte Position des Blocks im Raster
+                    clonedBlock.axis = new Vector2(0, 0);
                     clonedBlock.pos = new Vector2(x * 64, y * 64);
-                    clonedBlock.UpdateHitbox(); // Falls du die Hitbox aktualisieren musst
+                    clonedBlock.UpdateHitbox();
 
-                    // Weise den geklonten Block dem Array zu
                     BaseLayer[x, y] = clonedBlock;
-
-                    main.debug = true; // Debugging aktivieren
+                   
                 }
             }
         }
-
-
         public void EditorModeDraw(SpriteBatch sprite)
         {
             foreach (var KeyValuePair in Blocks)
@@ -202,7 +228,7 @@ namespace Silent_Island
             GrassEdgeI = new Block(Vector2.Zero, textures.GrassEdgeI, 14, "GrassEdgeI");
             Blocks.Add(14, GrassEdgeI);
 
-            Chair = new Block(Vector2.Zero, textures.Chair, 14, "Chair");
+            Chair = new Block(Vector2.Zero, textures.Chair, 15, "Chair");
             Blocks.Add(15, Chair);
 
 
@@ -213,7 +239,6 @@ namespace Silent_Island
             ItemLayer = new Block[main.worldSizeX, main.worldSizeY];
 
             takeBlock = new Block[Blocks.Count];
-            //vec(var * 64 % 128)
             foreach (var KeyValuePair in Blocks)
             {
                 takeBlock[KeyValuePair.Key] = KeyValuePair.Value.Clone();

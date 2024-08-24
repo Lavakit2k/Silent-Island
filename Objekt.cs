@@ -18,7 +18,7 @@ namespace Silent_Island
         public int ID { get; set; }
         public bool activ { get; set; }
         public string name { get; set; }
-
+       
 
         public Objekt(Vector2 koordinaten, Texture2D textur)
         {
@@ -38,6 +38,7 @@ namespace Silent_Island
         {
             this.textures = texture;
             this.main = main;
+
         }
 
         public void Zeichne(SpriteBatch sprite)

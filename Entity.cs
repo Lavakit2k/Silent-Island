@@ -16,6 +16,7 @@ namespace Silent_Island
             pos = koordinaten;
             color = Color.White;
             rotation = MathHelper.ToRadians(0);
+            //TODO änderns
             axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
             scale = new Vector2(1, 1);
             effekt = SpriteEffects.None;

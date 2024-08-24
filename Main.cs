@@ -4,9 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Silent_Island
 {
@@ -100,7 +97,7 @@ namespace Silent_Island
         public int angelSchnurRotation = 20;
         public int fishingPointerOffset;
 
-        
+
 
         #endregion
 
@@ -119,6 +116,7 @@ namespace Silent_Island
         public bool layerPlaced;
 
         private bool debugMenu = false;
+        private bool hitboxOn = false;
 
         #endregion
 
@@ -148,7 +146,7 @@ namespace Silent_Island
             base.Initialize();
         }
 
-       
+
         protected override void LoadContent()
         {
             #region General
@@ -247,7 +245,7 @@ namespace Silent_Island
             {
 
                 #region Key
-                
+
 
                 bool isMoving = false;
 
@@ -273,7 +271,7 @@ namespace Silent_Island
                     lookingRight = true;
                 }
 
-                
+
 
                 moving = isMoving;
                 #endregion
@@ -326,7 +324,7 @@ namespace Silent_Island
                 if (timeCounter > 400)
                 {
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.F3))
+                    if (KeyDown(Keys.F3) && !KeyDown(Keys.B))
                     {
                         debugMenu = !debugMenu;
                         ui.DebugMenu.activ = !ui.DebugMenu.activ;
@@ -338,8 +336,10 @@ namespace Silent_Island
                     {
                         Exit();
                     }
-                        
-
+                    if (KeyDown(Keys.F3) && KeyDown(Keys.B))
+                    {
+                        hitboxOn = !hitboxOn;
+                    }
                     //leftclick
                     if (MouseKeyDown(1))
                     {
@@ -364,7 +364,7 @@ namespace Silent_Island
                         {
                             block.EditorModeGetBlock(MousePos);
                         }
-                        if(KeyDown(Keys.LeftShift))
+                        if (KeyDown(Keys.LeftShift))
                         {
                             block.EditorModeSetBlock(MousePos);
                         }
@@ -373,7 +373,7 @@ namespace Silent_Island
                     else if (MouseKeyDown(2))
                     {
                         timeCounter = 0;
-                        
+
                         switch (SlotObjekt[HotbarSlotNum].ID)
                         {
                             case 1:
@@ -386,7 +386,7 @@ namespace Silent_Island
                             default:
                                 break;
                         }
-                        
+
                     }
                 }
 
@@ -407,13 +407,13 @@ namespace Silent_Island
                 if (debugMenu)
                 {
                     block.EditorModeUpdate(cameraPosition);
-                    sdebug = block.takeBlock[3].Hitbox.X.ToString();
+                    sdebug = block.BaseLayer[5,0].axis.ToString();
                 }
-                    
+
 
 
                 #endregion
-                
+
 
                 elapsedTime = 0;
             }
@@ -441,16 +441,17 @@ namespace Silent_Island
             ui.ZeichneAll(spriteBatch);
             button.ZeichneAll(spriteBatch);
 
-            if(debugMenu)
+            if (debugMenu)
                 block.EditorModeDraw(spriteBatch);
-
+            if (hitboxOn)
+                block.HitboxAllDraw(spriteBatch, texture.Pixel);
             //Slot
             for (int i = 0; i < 7; i++)
             {
                 SlotObjekt[i].Zeichne(spriteBatch);
                 spriteBatch.DrawString(font, "" + SlotObjekt[i].amount, new Vector2(SlotObjekt[i].pos.X + 24, SlotObjekt[i].pos.Y + 20), new Color(0, 0, 0));
             }
-            
+
             #endregion
 
             #region end
@@ -474,11 +475,11 @@ namespace Silent_Island
             #endregion
         }
 
-        
 
- 
+
+
         private void InitUI()
-        {           
+        {
             SlotObjekt = new Item[7];
             for (int i = 0; i < 7; i++)
             {
@@ -495,22 +496,22 @@ namespace Silent_Island
             Vector2 targetCameraPosition = new Vector2(entity.Player.pos.X - halfScreenWidth, entity.Player.pos.Y - halfScreenHeight);
 
             // Begrenze die Zielposition der Kamera innerhalb der Weltgrenzen
-            if (targetCameraPosition.X < -32)
+            if (targetCameraPosition.X < 0)
             {
-                targetCameraPosition.X = -32;
+                targetCameraPosition.X = 0;
             }
-            else if (targetCameraPosition.X > worldSizeX * 64 - screenWidth - 32)
+            else if (targetCameraPosition.X > worldSizeX * 64 - screenWidth)
             {
-                targetCameraPosition.X = worldSizeX * 64 - screenWidth - 32;
+                targetCameraPosition.X = worldSizeX * 64 - screenWidth;
             }
 
-            if (targetCameraPosition.Y < -32)
+            if (targetCameraPosition.Y < 0)
             {
-                targetCameraPosition.Y = -32;
+                targetCameraPosition.Y = 0;
             }
-            else if (targetCameraPosition.Y > worldSizeY * 64 - screenHeight - 32)
+            else if (targetCameraPosition.Y > worldSizeY * 64 - screenHeight)
             {
-                targetCameraPosition.Y = worldSizeY * 64 - screenHeight - 32;
+                targetCameraPosition.Y = worldSizeY * 64 - screenHeight;
             }
 
             // Anpassbare Geschwindigkeit für die Kamera-Verzögerung
@@ -657,6 +658,6 @@ namespace Silent_Island
         }
         #endregion
 
-        
+
     }
 }
