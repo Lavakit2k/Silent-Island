@@ -14,7 +14,7 @@ namespace Silent_Island
             pos = koordinaten;
             color = Color.White;
             rotation = MathHelper.ToRadians(0);
-            axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
+            axis = Vector2.Zero;
             scale = new Vector2(1, 1);
             effekt = SpriteEffects.None;
             Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);

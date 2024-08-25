@@ -26,7 +26,7 @@ namespace Silent_Island
             this.pos = koordinaten;
             this.color = Color.White;
             this.rotation = MathHelper.ToRadians(0);
-            this.axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
+            this.axis = Vector2.Zero;
             this.scale = Vector2.One;
             this.effekt = SpriteEffects.None;
             this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);

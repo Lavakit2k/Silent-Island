@@ -20,6 +20,16 @@ namespace Silent_Island
         public int worldSizeX { get; private set; }
         public int worldSizeY { get; private set; }
 
+        public Random random = new Random();
+
+        // Debugging
+        public bool debug;
+        public string sdebug;
+
+        // File Management
+        public string fileSave;
+        public List<string> SaveDirectory;
+
         #endregion
 
         #region Class Instances
@@ -33,20 +43,6 @@ namespace Silent_Island
         public UI ui { get; private set; }
         public Entity entity { get; private set; }
         public Button button { get; private set; }
-
-        #endregion
-
-        #region General Variables
-
-        public Random random = new Random();
-
-        // Debugging
-        public bool debug;
-        public string sdebug;
-
-        // File Management
-        public string fileSave;
-        public List<string> SaveDirectory;
 
         #endregion
 
@@ -94,7 +90,6 @@ namespace Silent_Island
         public Item[] SlotObjekt;
         public int HotbarSlotNum;
 
-        public int angelSchnurRotation = 20;
         public int fishingPointerOffset;
 
 
@@ -339,6 +334,7 @@ namespace Silent_Island
                     if (KeyDown(Keys.F3) && KeyDown(Keys.B))
                     {
                         hitboxOn = !hitboxOn;
+                        timeCounter = 0;
                     }
                     //leftclick
                     if (MouseKeyDown(1))
@@ -401,13 +397,13 @@ namespace Silent_Island
 
                 for (int i = 0; i < 7; i++)
                 {
-                    SlotObjekt[i].pos = new Vector2(ui.Hotbar.pos.X - 216 + i * 72, ui.Hotbar.pos.Y);
+                    SlotObjekt[i].pos = new Vector2(ui.Hotbar.pos.X + 8 + i * 72, ui.Hotbar.pos.Y + 8);
                 }
 
                 if (debugMenu)
                 {
                     block.EditorModeUpdate(cameraPosition);
-                    sdebug = block.BaseLayer[5,0].axis.ToString();
+                    //sdebug = block.BaseLayer[5,0].axis.ToString();
                 }
 
 
@@ -431,28 +427,26 @@ namespace Silent_Island
 
             #endregion
 
-
+            //Layer
             block.ZeichneAll(spriteBatch);
+            //Player
             entity.Player.Zeichne(spriteBatch);
-            item.FishingLine.Zeichne(spriteBatch);
-
-            #region UI
-
+            //UI
             ui.ZeichneAll(spriteBatch);
+            //Button
             button.ZeichneAll(spriteBatch);
-
-            if (debugMenu)
-                block.EditorModeDraw(spriteBatch);
-            if (hitboxOn)
-                block.HitboxAllDraw(spriteBatch, texture.Pixel);
             //Slot
             for (int i = 0; i < 7; i++)
             {
                 SlotObjekt[i].Zeichne(spriteBatch);
-                spriteBatch.DrawString(font, "" + SlotObjekt[i].amount, new Vector2(SlotObjekt[i].pos.X + 24, SlotObjekt[i].pos.Y + 20), new Color(0, 0, 0));
+                spriteBatch.DrawString(font, "" + SlotObjekt[i].amount, new Vector2(SlotObjekt[i].pos.X + 58, SlotObjekt[i].pos.Y + 50), new Color(0, 0, 0));
             }
 
-            #endregion
+            //CreativMode
+            if (hitboxOn)
+                block.HitboxAllDraw(spriteBatch, texture.Pixel);
+            if (debugMenu)
+                block.EditorModeDraw(spriteBatch);
 
             #region end
             if (debug)
@@ -622,10 +616,6 @@ namespace Silent_Island
             }
             else if (InReach(4, 2) && hitLayerBlock() == 2)
             {
-                //TODO line
-                item.FishingLine.texture = texture.FishingLine;
-                item.FishingLine.rotation = (float)Math.Atan2(item.FishingRod.pos.Y - MousePos.Y, item.FishingRod.pos.X - MousePos.X);
-                item.FishingLine.scale = new Vector2(Vector2.Distance(item.FishingRod.pos, MousePos), 1);
                 ui.HandObjekt.texture = texture.FishingRodOut;
                 ui.FishingBar.activ = true;
                 ui.FishingBarPointer.activ = true;
@@ -635,8 +625,6 @@ namespace Silent_Island
         }
         public void ResetFishing()
         {
-            item.FishingLine.activ = false;
-            item.FishingRod.texture = texture.FishingRod;
             ui.FishingBar.activ = false;
             ui.FishingBarPointer.activ = false;
             fishing = false;

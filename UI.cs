@@ -16,8 +16,8 @@ namespace Silent_Island
             pos = koordinaten;
             color = Color.White;
             rotation = MathHelper.ToRadians(0);
-            axis = new Vector2(textur.Width / 2f, textur.Height / 2f);
-            scale = new Vector2(1, 1);
+            axis = Vector2.Zero;
+            scale = Vector2.One;
             effekt = SpriteEffects.None;
             Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
             ID = 0;
@@ -39,6 +39,27 @@ namespace Silent_Island
         public void HotbarSwitch(int hotbarSlot)
         {
 
+        }
+
+        public void ZeichneAll(SpriteBatch s)
+        {
+            foreach (var KeyValuePair in LoadedUIs)
+            {
+                KeyValuePair.Value.Zeichne(s);
+            }
+        }
+        public void UpdateAll(Vector2 cam)
+        {
+            //TODO screenWidth hier zwischenspeichern
+            HandObjekt.UpdateUI(main.entity.Player.pos, 38, 16);
+            HandObjekt.texture = main.SlotObjekt[main.HotbarSlotNum].texture;
+            Hotbar.UpdateUI(cam, screenWidth / 2 - Hotbar.texture.Width / 2, screenHeight - 82);
+            HotbarMarker.UpdateUI(cam, screenWidth / 2 - 248 + main.HotbarSlotNum * 72, screenHeight - 74);
+            FishingBar.UpdateUI(cam, screenWidth / 2 - textures.FishingBar.Width / 2 , screenHeight - 132);
+            if (FishingBarPointer.activ)
+                FishingBarPointer.UpdateUI(cam, screenWidth / 2 - 8 + 128f * (float)Math.Sin((main.timeCounter + main.fishingPointerOffset) / 1000 * 2f), screenHeight - 132);
+            //                                 start                   amplitude               t             offset                         frequenz
+            DebugMenu.UpdateUI(new Vector2(cam.X, cam.Y), 122, 149);
         }
 
         public UI Hotbar;
@@ -100,26 +121,7 @@ namespace Silent_Island
             LoadedUIs.Add(10, HandObjekt);
             
         }
-        public void ZeichneAll(SpriteBatch s)
-        {
-            foreach(var KeyValuePair in LoadedUIs)
-            {
-                KeyValuePair.Value.Zeichne(s);
-            }
-        }
-        public void UpdateAll(Vector2 cam)
-        {
-            //TODO screenWidth hier zwischenspeichern
-            HandObjekt.UpdateUI(main.entity.Player.pos, 30, 0);
-            HandObjekt.texture = main.SlotObjekt[main.HotbarSlotNum].texture;
-            Hotbar.UpdateUI(cam, screenWidth / 2, screenHeight - 50);
-            HotbarMarker.UpdateUI(cam, screenWidth / 2 - 216 + main.HotbarSlotNum * 72, screenHeight - 50);
-            FishingBar.UpdateUI(cam,screenWidth / 2 - textures.FishingBar.Width / 2 + 146, screenHeight - 120);
-            if (FishingBarPointer.activ)
-                FishingBarPointer.UpdateUI(cam,screenWidth / 2 + 20 + 128f * (float)Math.Sin((main.timeCounter + main.fishingPointerOffset) / 1000 * 2f), screenHeight - 132);
-            //                                 start                   amplitude               t             offset                         frequenz
-            DebugMenu.UpdateUI(new Vector2(cam.X, cam.Y), 122, 149);
-        }
+        
     }
 }
 
