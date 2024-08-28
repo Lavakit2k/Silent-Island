@@ -10,30 +10,27 @@ namespace Silent_Island
         public int amount { get; set; }
         public Dictionary<int, Block> Blocks { get; } = new Dictionary<int, Block>();
 
+        //Main Init
         public Block(Textures t, Main m) : base(t, m)
         {
             this.textures = t;
             this.main = m;
         }
 
+        //Constructure
         public Block(Vector2 koordinaten, Texture2D textur, int id, string name) : base(koordinaten, textur)
         {
             this.texture = textur;
             this.pos = koordinaten;
-            this.color = Color.White;
-            this.rotation = MathHelper.ToRadians(0);
-            this.axis = Vector2.Zero;
-            this.scale = new Vector2(1, 1);
-            this.effekt = SpriteEffects.None;
             this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
             this.placed = false;
-            this.activ = true;
             this.ID = id;
             this.amount = 0;
             this.name = name;
 
         }
 
+        //Draw Method
         public void ZeichneLayer(SpriteBatch spriteBatch, Block[,] layer)
         {
             for (int i = 0; i < main.worldSizeX; i++)
@@ -45,7 +42,7 @@ namespace Silent_Island
                         layer[i, j].pos.Y > main.cameraPosition.Y - main.screenHeight - 64 &&
                         layer[i, j].pos.Y < main.cameraPosition.Y + main.screenHeight + 64)
                     {
-                        layer[i, j].Zeichne(main.spriteBatch);
+                        layer[i, j].Zeichne(spriteBatch);
                     }
                 }
             }
@@ -57,50 +54,23 @@ namespace Silent_Island
             this.ZeichneLayer(spriteBatch, StructureLayer);
             this.ZeichneLayer(spriteBatch, ItemLayer);
         }
-
-        private void UpdateHitbox()
-        {
-            Hitbox = new Rectangle(
-                (int)pos.X,
-                (int)pos.Y,
-                (int)(texture.Width * scale.X),
-                (int)(texture.Height * scale.Y)
-            );
-        }
-        public void DrawHitboxOutline(SpriteBatch spriteBatch, Texture2D p)
-        {
-            // Hitbox-Ränder (Positionen der Linien)
-            int x = Hitbox.X;
-            int y = Hitbox.Y;
-            int width = Hitbox.Width;
-            int height = Hitbox.Height;
-
-            // Linienbreite (z.B. 2 Pixel)
-            int lineWidth = 1;
-
-            // Obere Linie
-            spriteBatch.Draw(p, new Rectangle(x, y, width, lineWidth), Color.White);
-
-            // Untere Linie
-            spriteBatch.Draw(p, new Rectangle(x, y + height - lineWidth, width, lineWidth), Color.White);
-
-            // Linke Linie
-            spriteBatch.Draw(p, new Rectangle(x, y, lineWidth, height), Color.White);
-
-            // Rechte Linie
-            spriteBatch.Draw(p, new Rectangle(x + width - lineWidth, y, lineWidth, height), Color.White);
-        }
         public void HitboxAllDraw(SpriteBatch spriteBatch, Texture2D p)
         {
             for (int i = 0; i < main.worldSizeX; i++)
             {
                 for (int j = 0; j < main.worldSizeY; j++)
                 {
-                    BaseLayer[i,j].DrawHitboxOutline(spriteBatch, p);
+                    if (BaseLayer[i, j].pos.X > main.cameraPosition.X - main.screenWidth - 64 &&
+                        BaseLayer[i, j].pos.X < main.cameraPosition.X + main.screenWidth + 64 &&
+                        BaseLayer[i, j].pos.Y > main.cameraPosition.Y - main.screenHeight - 64 &&
+                        BaseLayer[i, j].pos.Y < main.cameraPosition.Y + main.screenHeight + 64)
+
+                        BaseLayer[i,j].DrawHitboxOutline(spriteBatch, p, Color.Red);
                 }
             }
         }
 
+        //Editor Mode
         public void EditorModeUpdate(Vector2 cam)
         {
             for (int i = 0; i < takeBlock.Length; i++)
@@ -121,11 +91,9 @@ namespace Silent_Island
         }
         public void EditorModeSetBlock(Vector2 mouse)
         {
-            // Berechne die Blockkoordinaten basierend auf der Mausposition
             int x = (int)(mouse.X / 64);
             int y = (int)(mouse.Y / 64);
 
-            // Stelle sicher, dass die berechneten Indizes innerhalb der Array-Grenzen liegen
             if (x >= 0 && x < BaseLayer.GetLength(0) && y >= 0 && y < BaseLayer.GetLength(1))
             {
                 if (tokenBlock != null)
@@ -180,7 +148,6 @@ namespace Silent_Island
         public Block[] takeBlock;
         public Block tokenBlock;
 
-        //TODO recalc Hitbox 
         public void LoadAllBlocks()
         {
             Void = new Block(Vector2.Zero, textures.Empty, 0, "Void");

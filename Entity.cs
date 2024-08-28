@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Silent_Island
 {
@@ -10,17 +11,14 @@ namespace Silent_Island
         public int health { get; set; }
         public int speed { get; set; }
 
+        public Dictionary<int, Entity> LoadedEntitys = new Dictionary<int, Entity>();
+
         public Entity(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
         {
             texture = textur;
             pos = koordinaten;
-            color = Color.White;
-            rotation = MathHelper.ToRadians(0);
-            axis = Vector2.Zero;
-            scale = new Vector2(1, 1);
-            effekt = SpriteEffects.None;
             // Die Hitbox als Rechteck initialisieren
-            Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
+            Hitbox = new Rectangle((int)koordinaten.X + 16, (int)koordinaten.Y - 16, textur.Width -32, textur.Height - 32);
             ID = 0;
             name = "Entity";
             health = 0;

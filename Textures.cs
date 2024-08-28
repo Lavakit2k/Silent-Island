@@ -76,7 +76,7 @@ namespace Silent_Island
         #region UI
         public Texture2D Inventory { get; private set; }
         public Texture2D Slot { get; private set; }
-        public Texture2D Hotbar { get; private set; }
+        public Texture2D ToolHotbar { get; private set; }
         public Texture2D ExtraHotbar { get; private set; }
         public Texture2D Map { get; private set; }
         public Texture2D TopUI { get; private set; }
@@ -163,7 +163,7 @@ namespace Silent_Island
                 // UI
                 "Inventory" => Inventory,
                 "Slot" => Slot,
-                "Hotbar" => Hotbar,
+                "ToolHotbar" => ToolHotbar,
                 "ExtraHotbar" => ExtraHotbar,
                 "Map" => Map,
                 "TopUI" => TopUI,
@@ -244,7 +244,7 @@ namespace Silent_Island
             #region UI
             Inventory = content.Load<Texture2D>("Texturen/UI_Inventory");
             Slot = content.Load<Texture2D>("Texturen/UI_Single_Slot");
-            Hotbar = content.Load<Texture2D>("Texturen/UI_Hotbar");
+            ToolHotbar = content.Load<Texture2D>("Texturen/Tool_Hotbar");
             ExtraHotbar = content.Load<Texture2D>("Texturen/UI_Extra_Hotbar");
             Map = content.Load<Texture2D>("Texturen/UI_Map");
             TopUI = content.Load<Texture2D>("Texturen/UI_Top");

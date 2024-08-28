@@ -34,7 +34,7 @@ namespace Silent_Island
 
         #region Class Instances
 
-        public Textures texture { get; private set; }
+        public Textures textures { get; private set; }
         public WorldGeneration generation { get; private set; }
         public Structure structure { get; private set; }
         public Objekt mainObjekt { get; private set; }
@@ -53,6 +53,7 @@ namespace Silent_Island
         private MouseState mouseState;
         private MouseState previousMouseState;
         private MouseState currentMouseState;
+        Keys[] keys;
 
         public double elapsedTime { get; private set; }
         public double UpdateInterval { get; private set; }
@@ -86,13 +87,10 @@ namespace Silent_Island
         #endregion
 
         #region Gameplay Variables
-
-        public Item[] SlotObjekt;
-        public int HotbarSlotNum;
-
+ 
+        public int ToolHotbarSlotNum;
+        public int ExtraHotbarSlotNum;
         public int fishingPointerOffset;
-
-
 
         #endregion
 
@@ -138,18 +136,18 @@ namespace Silent_Island
 
         protected override void Initialize()
         {
+            screenWidth = graphics.PreferredBackBufferWidth;
+            screenHeight = graphics.PreferredBackBufferHeight;
+            worldSizeX = 64;
+            worldSizeY = 64;
+
             base.Initialize();
         }
 
 
         protected override void LoadContent()
         {
-            #region General
-
-            screenWidth = graphics.PreferredBackBufferWidth;
-            screenHeight = graphics.PreferredBackBufferHeight;
-            worldSizeX = 64;
-            worldSizeY = 64;
+            #region General            
 
             font = Content.Load<SpriteFont>("font");
             fileSave = "C:\\Users\\simon\\source\\repos\\Silent Island PC\\Silent Island PC\\Content\\Speicher.txt";
@@ -161,10 +159,10 @@ namespace Silent_Island
 
             #region Texture
 
-            texture = new Textures(Content);
-            texture.Initialize(GraphicsDevice);
-            spriteBatch = texture.spriteBatch;
-            texture.LoadAllTextures();
+            textures = new Textures(Content);
+            textures.Initialize(GraphicsDevice);
+            spriteBatch = textures.spriteBatch;
+            textures.LoadAllTextures();
 
             #endregion
 
@@ -172,37 +170,24 @@ namespace Silent_Island
 
             structure = new Structure();
 
-            mainObjekt = new Objekt(texture, this);
+            mainObjekt = new Objekt(textures, this);
 
-            block = new Block(texture, this);
+            block = new Block(textures, this);
             block.LoadAllBlocks();
 
-            item = new Item(texture, this);
+            item = new Item(textures, this);
             item.LoadAllItems();
 
-            ui = new UI(texture, this);
+            ui = new UI(textures, this);
             ui.LoadAllUIs();
 
-            generation = new WorldGeneration(this, texture, structure, block);
+            generation = new WorldGeneration(this, textures, structure, block);
 
-            entity = new Entity(texture, this);
+            entity = new Entity(textures, this);
             entity.LoadAllEnitys(this);
 
-            InitUI();
-
-            button = new Button(texture, this);
+            button = new Button(textures, this);
             button.LoadAllButton();
-
-            #endregion
-
-            #region Tests
-
-            // Shark.Aufnehmen(SlotObjekt);
-            // mainItem.Fish.Aufnehmen(SlotObjekt);
-            item.FishingRod.Aufnehmen(SlotObjekt);
-
-            item.Shovel.Aufnehmen(SlotObjekt);
-            // mainItem.SeaShell1.Aufnehmen(SlotObjekt);
 
             #endregion
         }
@@ -216,7 +201,7 @@ namespace Silent_Island
             keyboardState = Keyboard.GetState();
             previousMouseState = currentMouseState;
             currentMouseState = Mouse.GetState();
-            Keys[] keys = keyboardState.GetPressedKeys();
+            keys = keyboardState.GetPressedKeys();
             MousePos = new Vector2(currentMouseState.X + cameraPosition.X, currentMouseState.Y + cameraPosition.Y);
             //Time
             elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -246,23 +231,23 @@ namespace Silent_Island
 
                 if (KeyDown(Keys.W) && entity.Player.pos.Y > 0 && !entity.Player.ColideLayer(block.BaseLayer, new Vector2(0, -entity.Player.speed)))
                 {
-                    entity.Player.MovePlayer(isMoving, texture.PlayerUp, 0, -entity.Player.speed);
+                    entity.Player.MovePlayer(isMoving, textures.PlayerUp, 0, -entity.Player.speed);
                 }
 
                 if (KeyDown(Keys.S) && entity.Player.pos.Y < worldSizeY * 64 - 96 && !entity.Player.ColideLayer(block.BaseLayer, new Vector2(0, entity.Player.speed)))
                 {
-                    entity.Player.MovePlayer(isMoving, texture.PlayerDown, 0, entity.Player.speed);
+                    entity.Player.MovePlayer(isMoving, textures.PlayerDown, 0, entity.Player.speed);
                 }
 
                 if (KeyDown(Keys.A) && entity.Player.pos.X > 0 && !entity.Player.ColideLayer(block.BaseLayer, new Vector2(-entity.Player.speed, 0)))
                 {
-                    entity.Player.MovePlayer(isMoving, texture.PlayerLeft, -entity.Player.speed, 0);
+                    entity.Player.MovePlayer(isMoving, textures.PlayerLeft, -entity.Player.speed, 0);
                     lookingRight = false;
                 }
 
                 if (KeyDown(Keys.D) && entity.Player.pos.X < worldSizeX * 64 - 64 && !entity.Player.ColideLayer(block.BaseLayer, new Vector2(entity.Player.speed, 0)))
                 {
-                    entity.Player.MovePlayer(isMoving, texture.PlayerRight, entity.Player.speed, 0);
+                    entity.Player.MovePlayer(isMoving, textures.PlayerRight, entity.Player.speed, 0);
                     lookingRight = true;
                 }
 
@@ -275,12 +260,12 @@ namespace Silent_Island
                 // UP
                 if (currentMouseState.ScrollWheelValue > previousMouseState.ScrollWheelValue)
                 {
-                    HotbarSlotNum = (HotbarSlotNum + 1) % 7;
+                    ToolHotbarSlotNum = (ToolHotbarSlotNum - 1 + 4) % 4;                  
                 }
                 // DOWN
                 else if (currentMouseState.ScrollWheelValue < previousMouseState.ScrollWheelValue)
                 {
-                    HotbarSlotNum = (HotbarSlotNum - 1 + 7) % 7;
+                    ToolHotbarSlotNum = (ToolHotbarSlotNum + 1) % 4;
                 }
 
                 // Aktualisiere `previousMouseState` nur, wenn das Mausrad tatsächlich gescrollt wurde
@@ -340,7 +325,7 @@ namespace Silent_Island
                     if (MouseKeyDown(1))
                     {
                         timeCounter = 0;
-                        switch (SlotObjekt[HotbarSlotNum].ID)
+                        switch (ui.HandObjekt.ID)
                         {
                             //mainItem.FishingRod
                             case 1:
@@ -359,10 +344,12 @@ namespace Silent_Island
                         if (KeyDown(Keys.LeftAlt))
                         {
                             block.EditorModeGetBlock(MousePos);
+                            timeCounter = 200;
                         }
                         if (KeyDown(Keys.LeftShift))
                         {
                             block.EditorModeSetBlock(MousePos);
+                            timeCounter = 300;
                         }
                     }
                     //rightclick
@@ -370,14 +357,16 @@ namespace Silent_Island
                     {
                         timeCounter = 0;
 
-                        switch (SlotObjekt[HotbarSlotNum].ID)
+                        switch (ui.HandObjekt.ID)
                         {
                             case 1:
                                 fishingPointerOffset = random.Next(-400, 400);
                                 FishingUse();
+                                timeCounter = 200;
                                 break;
                             case 5:
                                 ShovelUse();
+                                timeCounter = 200;
                                 break;
                             default:
                                 break;
@@ -392,18 +381,15 @@ namespace Silent_Island
 
                 CameraMove();
 
-                ui.UpdateAll(cameraPosition);
+                ui.UpdateAll(cameraPosition, item);
+                item.UpdateAll(cameraPosition, ui);
                 button.UpdateAll();
-
-                for (int i = 0; i < 7; i++)
-                {
-                    SlotObjekt[i].pos = new Vector2(ui.Hotbar.pos.X + 8 + i * 72, ui.Hotbar.pos.Y + 8);
-                }
 
                 if (debugMenu)
                 {
                     block.EditorModeUpdate(cameraPosition);
-                    //sdebug = block.BaseLayer[5,0].axis.ToString();
+                    sdebug = item.ToolHotbarItem[3].pos.ToString();
+                    
                 }
 
 
@@ -431,27 +417,26 @@ namespace Silent_Island
             block.ZeichneAll(spriteBatch);
             //Player
             entity.Player.Zeichne(spriteBatch);
-            //UI
-            ui.ZeichneAll(spriteBatch);
-            //Button
-            button.ZeichneAll(spriteBatch);
-            //Slot
-            for (int i = 0; i < 7; i++)
-            {
-                SlotObjekt[i].Zeichne(spriteBatch);
-                spriteBatch.DrawString(font, "" + SlotObjekt[i].amount, new Vector2(SlotObjekt[i].pos.X + 58, SlotObjekt[i].pos.Y + 50), new Color(0, 0, 0));
-            }
-
             //CreativMode
-            if (hitboxOn)
-                block.HitboxAllDraw(spriteBatch, texture.Pixel);
+            if (hitboxOn)   
+                block.HitboxAllDraw(spriteBatch, textures.Pixel);               
             if (debugMenu)
                 block.EditorModeDraw(spriteBatch);
+
+            //UI
+            ui.ZeichneAll(spriteBatch);
+            if (hitboxOn)
+                ui.HitboxAllDraw(spriteBatch, textures.Pixel);
+            //Slot
+            item.DrawItems(spriteBatch, font);
+            //Button
+            button.ZeichneAll(spriteBatch);
+            
 
             #region end
             if (debug)
             {
-                spriteBatch.Draw(texture.TestBlock, new Vector2(0, 0), Color.White);
+                spriteBatch.Draw(textures.TestBlock, new Vector2(0, 0), Color.White);
 
             }
             if (sdebug != null)
@@ -469,17 +454,6 @@ namespace Silent_Island
             #endregion
         }
 
-
-
-
-        private void InitUI()
-        {
-            SlotObjekt = new Item[7];
-            for (int i = 0; i < 7; i++)
-            {
-                SlotObjekt[i] = new Item(new Vector2(0, 0), texture.Empty, 0);
-            }
-        }
         #region Methoden
         public void CameraMove()
         {
@@ -566,7 +540,7 @@ namespace Silent_Island
         }
         public bool InHand(Item item)
         {
-            if (SlotObjekt[HotbarSlotNum].ID == item.ID)
+            if (ui.HandObjekt.ID == item.ID)
                 return true;
             return false;
         }
@@ -595,31 +569,31 @@ namespace Silent_Island
                 else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 || ui.FishingBarPointer.pos.X + 8 > ui.FishingBar.pos.X + 52 + 48 + 24 + 8 + 24)
                 {
                     if (Chance(33))
-                        item.Fish.Aufnehmen(SlotObjekt);
+                        item.Aufnehmen(item.Fish);
                 }
                 //green
                 else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 + 24 || ui.FishingBarPointer.pos.X + 8 > ui.FishingBar.pos.X + 52 + 48 + 24 + 8)
                 {
                     if (Chance(76))
-                        item.Fish.Aufnehmen(SlotObjekt);
+                        item.Aufnehmen(item.Fish);
                 }
                 //blue
                 else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 + 24 + 8)
                 {
-                    item.Fish.Aufnehmen(SlotObjekt);
+                    item.Aufnehmen(item.Fish);
 
                     if (Chance(20))
-                        item.Shark.Aufnehmen(SlotObjekt);
+                        item.Aufnehmen(item.Shark);
                 }
 
                 ResetFishing();
             }
             else if (InReach(4, 2) && hitLayerBlock() == 2)
             {
-                ui.HandObjekt.texture = texture.FishingRodOut;
+                ui.HandObjekt.texture = textures.FishingRodOut;
                 ui.FishingBar.activ = true;
                 ui.FishingBarPointer.activ = true;
-
+                FishingRodOut.Play();
                 fishing = true;
             }
         }
@@ -635,13 +609,13 @@ namespace Silent_Island
             {
                 //TODO schaufel nach unten bewegen
                 if (Chance(13))
-                    item.SeaShell1.Aufnehmen(SlotObjekt);
+                    item.Aufnehmen(item.SeaShell1);
                 if (Chance(8))
-                    item.SeaShell2.Aufnehmen(SlotObjekt);
+                    item.Aufnehmen(item.SeaShell2);
                 if (Chance(7))
-                    item.SeaShell3.Aufnehmen(SlotObjekt);
+                    item.Aufnehmen(item.SeaShell3);
                 if (Chance(3))
-                    item.SeaShell4.Aufnehmen(SlotObjekt);
+                    item.Aufnehmen(item.SeaShell4);
             }
         }
         #endregion

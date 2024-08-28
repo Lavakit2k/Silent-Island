@@ -50,8 +50,6 @@ namespace Silent_Island
         {
             return this.Hitbox.Contains(maus);
         }
-
-
         public bool colideObjekt(Objekt objekt1, Objekt objekt2)
         {
             if (objekt1.pos.X > objekt2.pos.X
@@ -63,6 +61,41 @@ namespace Silent_Island
             }
             return false;
         }
+        public void DrawHitboxOutline(SpriteBatch spriteBatch, Texture2D p, Color c)
+        {
+            // Hitbox-Ränder (Positionen der Linien)
+            int x = Hitbox.X;
+            int y = Hitbox.Y;
+            int width = Hitbox.Width;
+            int height = Hitbox.Height;
 
+            int lineWidth = 1;
+
+            // Obere Linie
+            spriteBatch.Draw(p, new Rectangle(x, y, width, lineWidth), c);
+
+            // Untere Linie
+            spriteBatch.Draw(p, new Rectangle(x, y + height - lineWidth, width, lineWidth), c);
+
+            // Linke Linie
+            spriteBatch.Draw(p, new Rectangle(x, y, lineWidth, height), c);
+
+            // Rechte Linie
+            spriteBatch.Draw(p, new Rectangle(x + width - lineWidth, y, lineWidth, height), c);
+        }
+        protected void UpdateHitbox()
+        {
+            Hitbox = new Rectangle(
+                (int)pos.X,
+                (int)pos.Y,
+                (int)(texture.Width * scale.X),
+                (int)(texture.Height * scale.Y)
+            );
+        }
+        public void Update(Vector2 cam, float x, float y)
+        {
+            this.pos = new Vector2(cam.X + x, cam.Y + y);
+            this.UpdateHitbox();
+        }
     }
 }
