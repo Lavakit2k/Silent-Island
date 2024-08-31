@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Silent_Island
 {
@@ -20,25 +21,30 @@ namespace Silent_Island
         public string name { get; set; }
        
 
-        public Objekt(Vector2 koordinaten, Texture2D textur)
+        public Objekt(Vector2 koordinaten, Texture2D texture, int id, string name)
         {
-            this.texture = textur;
+            this.texture = texture;
             this.pos = koordinaten;
             this.color = Color.White;
             this.rotation = MathHelper.ToRadians(0);
             this.axis = Vector2.Zero;
             this.scale = Vector2.One;
             this.effekt = SpriteEffects.None;
-            this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
-            this.ID = 0;
+            this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, texture.Width, texture.Height);
+            this.ID = id;
             this.activ = true;
-            this.name = "Empty";
+            this.name = name;
         }
         public Objekt(Textures texture, Main main)
         {
             this.textures = texture;
             this.main = main;
 
+        }
+        //virtual -> override in sub class to "override" the methode 
+        public virtual Objekt Clone()
+        {
+            return new Objekt(this.pos, this.texture, this.ID, this.name);
         }
 
         public void Zeichne(SpriteBatch sprite)

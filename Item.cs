@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 
 namespace Silent_Island
@@ -11,13 +10,13 @@ namespace Silent_Island
         public string slotAmount { get; set; }
         public Dictionary<int, Item> LoadedItems = new Dictionary<int, Item>();
 
-        public Item(Vector2 koordinaten, Texture2D textur, int id) : base(koordinaten, textur)
+        public Item(Vector2 koordinaten, Texture2D texture, int id, string name) : base(koordinaten, texture, id, name)
         {
-            texture = textur;
+            this.texture = texture;
             pos = koordinaten;
             ID = id;
-            name = "Empty";
-            amount = 0;
+            this.name = name;
+            amount = 1;
             slotAmount = new string("" + amount);
 
         }
@@ -27,7 +26,7 @@ namespace Silent_Island
             this.main = m;
         }
 
-        public void Aufnehmen(Item item)
+        public void ToolAufnehmen(Item item)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -63,9 +62,9 @@ namespace Silent_Island
             }
         }
 
-        public Item Clone()
+        public override Item Clone()
         {
-            return new Item(this.pos, this.texture, this.ID);
+            return new Item(this.pos, this.texture, this.ID, this.name);
         }
 
         public Item Empty;
@@ -87,64 +86,63 @@ namespace Silent_Island
 
         public void LoadAllItems()
         {
-            
-            Empty = new Item(Vector2.Zero, textures.Empty, 0);
+
+            Empty = new Item(Vector2.Zero, textures.Empty, 0, "Empty");
             LoadedItems.Add(0, Empty);
 
-            FishingRod = new Item(Vector2.Zero, textures.FishingRod, 1);
+            FishingRod = new Item(Vector2.Zero, textures.FishingRod, 1, "FishingRod");
             LoadedItems.Add(1, FishingRod);
 
-            Fish = new Item(Vector2.Zero, textures.Fish, 2);
+            Fish = new Item(Vector2.Zero, textures.Fish, 2, "Fish");
             LoadedItems.Add(2, Fish);
 
-            Shark = new Item(Vector2.Zero, textures.Shark, 3);
+            Shark = new Item(Vector2.Zero, textures.Shark, 3, "Shark");
             LoadedItems.Add(3, Shark);
 
-            FishingLine = new Item(Vector2.Zero, textures.FishingLine, 4);
+            FishingLine = new Item(Vector2.Zero, textures.FishingLine, 4, "FishingLine");
             FishingLine.activ = false;
             LoadedItems.Add(4, FishingLine);
 
-            Shovel = new Item(Vector2.Zero, textures.Shovel, 5);
+            Shovel = new Item(Vector2.Zero, textures.Shovel, 5, "Shovel");
             LoadedItems.Add(5, Shovel);
 
-            SeaShell1 = new Item(Vector2.Zero, textures.SeaShell1, 6);
+            SeaShell1 = new Item(Vector2.Zero, textures.SeaShell1, 6, "SeaShell1");
             LoadedItems.Add(6, SeaShell1);
 
-            SeaShell2 = new Item(Vector2.Zero, textures.SeaShell2, 7);
+            SeaShell2 = new Item(Vector2.Zero, textures.SeaShell2, 7, "SeaShell2");
             LoadedItems.Add(7, SeaShell2);
 
-            SeaShell3 = new Item(Vector2.Zero, textures.SeaShell3, 8);
+            SeaShell3 = new Item(Vector2.Zero, textures.SeaShell3, 8, "SeaShell3");
             LoadedItems.Add(8, SeaShell3);
 
-            SeaShell4 = new Item(Vector2.Zero, textures.SeaShell4, 9);
+            SeaShell4 = new Item(Vector2.Zero, textures.SeaShell4, 9, "SeaShell4");
             LoadedItems.Add(9, SeaShell4);
 
-            Pistol = new Item(Vector2.Zero, textures.Pistol, 10);
+            Pistol = new Item(Vector2.Zero, textures.Pistol, 10, "Pistol");
             LoadedItems.Add(10, Pistol);
 
-            Rock = new Item(Vector2.Zero, textures.Rock, 11);
+            Rock = new Item(Vector2.Zero, textures.Rock, 11, "Rock");
             LoadedItems.Add(11, Rock);
 
-            IronIngot = new Item(Vector2.Zero, textures.IronIngot, 12);
+            IronIngot = new Item(Vector2.Zero, textures.IronIngot, 12, "IronIngot");
             LoadedItems.Add(12, IronIngot);
 
-            Wood = new Item(Vector2.Zero, textures.Wood, 13);
+            Wood = new Item(Vector2.Zero, textures.Wood, 13, "Wood");
             LoadedItems.Add(13, Wood);
 
             ToolHotbarItem = new Item[4];
-            for(int i = 0; i < ToolHotbarItem.Length; i++)
+            for (int i = 0; i < ToolHotbarItem.Length; i++)
             {
-                if(i == 0 || i == 1)
+                if (i == 0 || i == 1)
                 {
                     ToolHotbarItem[0] = FishingRod.Clone();
                     ToolHotbarItem[1] = Shovel.Clone();
                 }
                 else
                 {
-                    ToolHotbarItem[i] = new Item(Vector2.Zero, textures.Empty, 0);
+                    ToolHotbarItem[i] = new Item(Vector2.Zero, textures.Empty, 0, "Empty");
                     LoadedItems.Add(14 + i, ToolHotbarItem[i]);
                 }
-                
             }
         }
     }

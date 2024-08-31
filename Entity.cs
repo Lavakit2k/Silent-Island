@@ -13,14 +13,13 @@ namespace Silent_Island
 
         public Dictionary<int, Entity> LoadedEntitys = new Dictionary<int, Entity>();
 
-        public Entity(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
+        public Entity(Vector2 koordinaten, Texture2D texture, int id, string name) : base(koordinaten, texture, id, name)
         {
-            texture = textur;
+            this.texture = texture;
             pos = koordinaten;
-            // Die Hitbox als Rechteck initialisieren
-            Hitbox = new Rectangle((int)koordinaten.X + 16, (int)koordinaten.Y - 16, textur.Width -32, textur.Height - 32);
-            ID = 0;
-            name = "Entity";
+            Hitbox = new Rectangle((int)koordinaten.X + 16, (int)koordinaten.Y - 16, texture.Width -32, texture.Height - 32);
+            ID = id;
+            this.name = name;
             health = 0;
             speed = 5;
         }
@@ -85,7 +84,7 @@ namespace Silent_Island
                         j > 0 && main.block.BaseLayer[i, j - 1].ID == 1 && // oben
                         j < main.worldSizeY - 1 && main.block.BaseLayer[i, j + 1].ID == 1) // unten
                     {
-                        Player = new Entity(new Vector2(i * 64, j * 64), textures.PlayerUp);
+                        Player = new Entity(new Vector2(i * 64, j * 64), textures.PlayerUp, 1, "Player");
                         Player.speed = 8;
                         return;
                     }

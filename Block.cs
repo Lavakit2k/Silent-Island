@@ -18,11 +18,11 @@ namespace Silent_Island
         }
 
         //Constructure
-        public Block(Vector2 koordinaten, Texture2D textur, int id, string name) : base(koordinaten, textur)
+        public Block(Vector2 koordinaten, Texture2D texture, int id, string name) : base(koordinaten, texture, id, name)
         {
-            this.texture = textur;
+            this.texture = texture;
             this.pos = koordinaten;
-            this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, textur.Width, textur.Height);
+            this.Hitbox = new Rectangle((int)koordinaten.X, (int)koordinaten.Y, texture.Width, texture.Height);
             this.placed = false;
             this.ID = id;
             this.amount = 0;
@@ -116,7 +116,7 @@ namespace Silent_Island
             }
         }
 
-        public Block Clone()
+        public override Block Clone()
         {
             return new Block(this.pos, this.texture, this.ID, this.name);
         }

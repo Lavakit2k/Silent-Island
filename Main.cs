@@ -43,6 +43,7 @@ namespace Silent_Island
         public UI ui { get; private set; }
         public Entity entity { get; private set; }
         public Button button { get; private set; }
+        public InventorySystem inventory { get; private set; }
 
         #endregion
 
@@ -87,10 +88,11 @@ namespace Silent_Island
         #endregion
 
         #region Gameplay Variables
- 
+
         public int ToolHotbarSlotNum;
         public int ExtraHotbarSlotNum;
         public int fishingPointerOffset;
+        int scrollDelta;
 
         #endregion
 
@@ -98,15 +100,10 @@ namespace Silent_Island
 
         public bool fishing;
         public bool moving;
-        public bool action;
-        public bool update;
-        public bool inventoryOpen;
-        public bool chestOpen;
 
-        public bool ausgeworfen;
+        public bool inventoryOpen;
+
         public bool lookingRight;
-        public bool change;
-        public bool layerPlaced;
 
         private bool debugMenu = false;
         private bool hitboxOn = false;
@@ -189,6 +186,12 @@ namespace Silent_Island
             button = new Button(textures, this);
             button.LoadAllButton();
 
+            inventory = new InventorySystem(GraphicsDevice);
+
+            inventory.AddItem(item.Fish, 100);
+            inventory.AddItem(item.Shark);
+            inventory.AddItem(item.FishingRod);
+            inventory.AddItem(item.IronIngot);
             #endregion
         }
 
@@ -224,7 +227,7 @@ namespace Silent_Island
             if (elapsedTime >= UpdateInterval)
             {
 
-                #region Key
+                #region Instant Actions
 
 
                 bool isMoving = false;
@@ -250,22 +253,22 @@ namespace Silent_Island
                     entity.Player.MovePlayer(isMoving, textures.PlayerRight, entity.Player.speed, 0);
                     lookingRight = true;
                 }
-
-
-
                 moving = isMoving;
-                #endregion
 
-                #region Scrolling
+                scrollDelta = 0;
                 // UP
                 if (currentMouseState.ScrollWheelValue > previousMouseState.ScrollWheelValue)
                 {
-                    ToolHotbarSlotNum = (ToolHotbarSlotNum - 1 + 4) % 4;                  
+                    ToolHotbarSlotNum = (ToolHotbarSlotNum - 1 + 4) % 4;
+                    if (inventoryOpen)
+                        scrollDelta = -1;  // nach oben scrollen
                 }
                 // DOWN
                 else if (currentMouseState.ScrollWheelValue < previousMouseState.ScrollWheelValue)
                 {
                     ToolHotbarSlotNum = (ToolHotbarSlotNum + 1) % 4;
+                    if (inventoryOpen)
+                        scrollDelta = 1;  // nach unten scrollen
                 }
 
                 // Aktualisiere `previousMouseState` nur, wenn das Mausrad tatsächlich gescrollt wurde
@@ -273,6 +276,7 @@ namespace Silent_Island
                 {
                     previousMouseState = currentMouseState;
                 }
+              
                 #endregion
 
                 #region Logic
@@ -290,15 +294,10 @@ namespace Silent_Island
                 {
 
                 }
-                if (KeyDown(Keys.E))
-                {
-                    ui.Inventory.activ = !ui.Inventory.activ;
-                }
 
-                update = false;
                 #endregion
 
-                #region Mouse/Delayed Keys
+                #region Delayed Actions
 
                 //waiting
                 if (timeCounter > 400)
@@ -321,6 +320,13 @@ namespace Silent_Island
                         hitboxOn = !hitboxOn;
                         timeCounter = 0;
                     }
+                    if (KeyDown(Keys.E))
+                    {
+                        inventoryOpen = !inventoryOpen;
+                        timeCounter = 200;
+                        inventory.scrollOffset = 0;
+                    }
+
                     //leftclick
                     if (MouseKeyDown(1))
                     {
@@ -384,19 +390,16 @@ namespace Silent_Island
                 ui.UpdateAll(cameraPosition, item);
                 item.UpdateAll(cameraPosition, ui);
                 button.UpdateAll();
+                inventory.UpdateInventoryInterface(cameraPosition, scrollDelta);
 
                 if (debugMenu)
                 {
                     block.EditorModeUpdate(cameraPosition);
-                    sdebug = item.ToolHotbarItem[3].pos.ToString();
-                    
+                    //sdebug = inventory.Inventory[0].amount.ToString();
+
                 }
 
-
-
                 #endregion
-
-
                 elapsedTime = 0;
             }
 
@@ -409,6 +412,7 @@ namespace Silent_Island
             #region start
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            //TODO samplerState in optionen veränderbar
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Matrix.CreateTranslation(new Vector3(-cameraPosition, 0)));
 
             #endregion
@@ -418,21 +422,29 @@ namespace Silent_Island
             //Player
             entity.Player.Zeichne(spriteBatch);
             //CreativMode
-            if (hitboxOn)   
-                block.HitboxAllDraw(spriteBatch, textures.Pixel);               
+            if (hitboxOn)
+                block.HitboxAllDraw(spriteBatch, textures.Pixel);
             if (debugMenu)
                 block.EditorModeDraw(spriteBatch);
 
             //UI
             ui.ZeichneAll(spriteBatch);
+
+            //Hitbox
             if (hitboxOn)
+            {
                 ui.HitboxAllDraw(spriteBatch, textures.Pixel);
+            }
+
             //Slot
             item.DrawItems(spriteBatch, font);
+
             //Button
             button.ZeichneAll(spriteBatch);
-            
 
+            //Inventory
+            if (inventoryOpen)
+                inventory.DrawInventoryInterface(spriteBatch, font);
             #region end
             if (debug)
             {
@@ -569,21 +581,21 @@ namespace Silent_Island
                 else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 || ui.FishingBarPointer.pos.X + 8 > ui.FishingBar.pos.X + 52 + 48 + 24 + 8 + 24)
                 {
                     if (Chance(33))
-                        item.Aufnehmen(item.Fish);
+                        inventory.AddItem(item.Fish);
                 }
                 //green
                 else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 + 24 || ui.FishingBarPointer.pos.X + 8 > ui.FishingBar.pos.X + 52 + 48 + 24 + 8)
                 {
                     if (Chance(76))
-                        item.Aufnehmen(item.Fish);
+                        inventory.AddItem(item.Fish);
                 }
                 //blue
                 else if (ui.FishingBarPointer.pos.X + 8 < ui.FishingBar.pos.X + 52 + 48 + 24 + 8)
                 {
-                    item.Aufnehmen(item.Fish);
+                    inventory.AddItem(item.Fish);
 
                     if (Chance(20))
-                        item.Aufnehmen(item.Shark);
+                        inventory.AddItem(item.Shark);
                 }
 
                 ResetFishing();
@@ -609,13 +621,13 @@ namespace Silent_Island
             {
                 //TODO schaufel nach unten bewegen
                 if (Chance(13))
-                    item.Aufnehmen(item.SeaShell1);
+                    inventory.AddItem(item.SeaShell1);
                 if (Chance(8))
-                    item.Aufnehmen(item.SeaShell2);
+                    inventory.AddItem(item.SeaShell2);
                 if (Chance(7))
-                    item.Aufnehmen(item.SeaShell3);
+                    inventory.AddItem(item.SeaShell3);
                 if (Chance(3))
-                    item.Aufnehmen(item.SeaShell4);
+                    inventory.AddItem(item.SeaShell4);
             }
         }
         #endregion

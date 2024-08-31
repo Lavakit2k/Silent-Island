@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="Silent_Island.exe" version="1.0.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="Silent_Island.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description asmv2:iconFile="Icon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
@@ -453,7 +453,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>kFZNWEzqUEx/xE02Bq3awLxqL1rQ3yQZ3vgLJdmTUJ8=</dsig:DigestValue>
+      <dsig:DigestValue>ykebfAzvwJCNkVcXnSa+IcnlJyu3TeX8On+75X2TBME=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content/Texturen\Player_Down.xnb" size="24661">
@@ -573,13 +573,13 @@
       <dsig:DigestValue>UGIqJe28kPM+b9k4afxUnX0KQ+4S9y+jiaYVQ8+BGK0=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Content/Texturen\Shovel.xnb" size="4181">
+  <file name="Content/Texturen\Shovel.xnb" size="16469">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>d7QtJmiLkvdPjC5M0g0XbwAvM/JbAAlu3xkLu1vBnrQ=</dsig:DigestValue>
+      <dsig:DigestValue>yBRy7djRmtktLFBvVAgqAiF+Hr8yuuahZIhKUbFDk1Q=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content/Texturen\Stone.xnb" size="16469">
@@ -607,6 +607,15 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>6A/ndHaS+WTy96gViIEL5lg3+vO0AmQXgENkEWSZkis=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content/Texturen\Tool_Hotbar.xnb" size="92501">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>mSLBQ73UNZE+q17jvpxQgGLFCX04RDz/ZEB4/eHvS2I=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content/Texturen\Tree_Leave.xnb" size="16469">
@@ -825,13 +834,13 @@
       <dsig:DigestValue>uuO6YlgYQ2I5LTZHhHmAyH4//LuuTZ7GTYzWNTTY8VM=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Silent_Island.dll" size="613376">
+  <file name="Silent_Island.dll" size="615936">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>zxiyTEY3SywzSinhyiRizRXWUL7SO+y70nX578cbp34=</dsig:DigestValue>
+      <dsig:DigestValue>nGsAZ+L9WN4PODz6Rb9rGNzGM8yY6icr6g2Q/uEZw5E=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Silent_Island.exe" size="299008">
@@ -840,7 +849,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>XhomTSAdpAwWJW9VUeX2MlPEyDYsKYuNRq7mzkefB/g=</dsig:DigestValue>
+      <dsig:DigestValue>LmVSNBQ4jMejaSx/RAOLUqU2nvtI/bIV62NgLSAC2Pg=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Silent_Island.runtimeconfig.json" size="332">

@@ -11,12 +11,12 @@ namespace Silent_Island
 
         private int screenWidth;
         private int screenHeight;
-        public UI(Vector2 koordinaten, Texture2D textur) : base(koordinaten, textur)
+        public UI(Vector2 koordinaten, Texture2D texture, int id, string name) : base(koordinaten, texture, id, name)
         {
-            texture = textur;
+            this.texture = texture;
             pos = koordinaten;
-            ID = 0;
-            name = "Empty";
+            ID = id;
+            this.name = name;
         }
         public UI(Textures t, Main m) : base(t, m)
         {
@@ -68,7 +68,7 @@ namespace Silent_Island
 
         public UI ToolHotbar;
         public UI HotbarMarker;
-        public UI Inventory;
+        //public UI Inventory;
         public UI TopUI;
         public UI MapFrame;
         public UI ExtraHotbar;
@@ -82,49 +82,49 @@ namespace Silent_Island
 
         public void LoadAllUIs()
         {
-            ToolHotbar = new UI(Vector2.Zero, textures.ToolHotbar);
+            ToolHotbar = new UI(Vector2.Zero, textures.ToolHotbar, 1, "ToolHotbar");
             ToolHotbar.color = new Color(255, 255, 255, 0.5f);
             LoadedUIs.Add(0, ToolHotbar);
 
-            HotbarMarker = new UI(Vector2.Zero, textures.HotbarMarker);
+            HotbarMarker = new UI(Vector2.Zero, textures.HotbarMarker, 2, "HotbarMarker");
             LoadedUIs.Add(1, HotbarMarker);
 
-            Inventory = new UI(Vector2.Zero, textures.Inventory);
-            LoadedUIs.Add(2, Inventory);
-            Inventory.activ = false;
+            //Inventory = new UI(Vector2.Zero, textures.Inventory);
+            //LoadedUIs.Add(2, Inventory);
+            //Inventory.activ = false;
 
-            TopUI = new UI(Vector2.Zero, textures.TopUI);
+            TopUI = new UI(Vector2.Zero, textures.TopUI, 3, "TopUI");
             LoadedUIs.Add(3, TopUI);
             TopUI.activ = false;
 
-            MapFrame = new UI(Vector2.Zero, textures.Map);
+            MapFrame = new UI(Vector2.Zero, textures.Map, 4, "MapFrame");
             LoadedUIs.Add(4, MapFrame);
             MapFrame.activ = false;
 
-            ExtraHotbar = new UI(Vector2.Zero, textures.ExtraHotbar);
+            ExtraHotbar = new UI(Vector2.Zero, textures.ExtraHotbar, 5, "ExtraHotbar");
             ExtraHotbar.color = new Color(255, 255, 255, 0.5f);
             LoadedUIs.Add(5, ExtraHotbar);
-            
-            ExtraHotbarMarker = new UI(Vector2.Zero, textures.HotbarMarker);
+
+            ExtraHotbarMarker = new UI(Vector2.Zero, textures.HotbarMarker, 6, "ExtraHotbarMarker");
             LoadedUIs.Add(6, ExtraHotbarMarker);
 
-            FishingBar = new UI(Vector2.Zero, textures.FishingBar);
+            FishingBar = new UI(Vector2.Zero, textures.FishingBar, 7, "FishingBar");
             FishingBar.activ = false;
             LoadedUIs.Add(7, FishingBar);
 
-            FishingBarPointer = new UI(Vector2.Zero, textures.FishingBarPointer);
+            FishingBarPointer = new UI(Vector2.Zero, textures.FishingBarPointer, 8, "FishingBarPointer");
             FishingBarPointer.activ = false;
             LoadedUIs.Add(8, FishingBarPointer);
 
-            DebugMenu = new UI(Vector2.Zero, textures.DebugMenu);
+            DebugMenu = new UI(Vector2.Zero, textures.DebugMenu, 9, "DebugMenu");
             LoadedUIs.Add(9, DebugMenu);
             DebugMenu.activ = false;
 
-            HandObjekt = new UI(Vector2.Zero, textures.Empty);
+            HandObjekt = new UI(Vector2.Zero, textures.Empty, 10, "HandObjekt");
             LoadedUIs.Add(10, HandObjekt);
-            
+
         }
-        
+
     }
 }
 
