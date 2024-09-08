@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="Silent_Island.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="Silent_Island.exe" version="1.0.0.3" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description asmv2:iconFile="Icon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
@@ -114,13 +114,13 @@
       <dsig:DigestValue>rapVWp7fBzAYtdKQlnniJdf864K2zq4/nSML0/zlY/E=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Content/Texturen\Debug_Menu.xnb" size="290933">
+  <file name="Content/Texturen\Debug_Menu.xnb" size="36685">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>rapVWp7fBzAYtdKQlnniJdf864K2zq4/nSML0/zlY/E=</dsig:DigestValue>
+      <dsig:DigestValue>/lGFl2iRk3MCOEG2EIgzX4ALZH2vmmSE5Ky4mTpU5/I=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content/Texturen\Deko_Moss.xnb" size="16469">
@@ -366,6 +366,15 @@
       <dsig:DigestValue>7sog5F3XwmVTxQwRAlNHTvnE/e1mb3Zo5x6L8dQZuN0=</dsig:DigestValue>
     </hash>
   </file>
+  <file name="Content/Texturen\Gravel_Path.xnb" size="4181">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>msBIVDV9oFbUzJ97QBu7QjhZSEOCPvfp/LmxB7AGk0Y=</dsig:DigestValue>
+    </hash>
+  </file>
   <file name="Content/Texturen\Heart.xnb" size="1109">
     <hash>
       <dsig:Transforms>
@@ -418,6 +427,24 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>wihWf99pgUcJ81LXJD+NjlLJ6QeXktA4QjhZSIVmhHI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content/Texturen\Kalzit.xnb" size="4181">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>0nVTCoBKrMeMO9l79Dsy/C67QvpWT4b9Ct7RHCe3iWM=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content/Texturen\Menu_Background.xnb" size="8294485">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>QEnmhjhWsnfoJIFQwtCkmR9B25o3qHnnFkUIA9w649o=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content/Texturen\Oven.xnb" size="4181">
@@ -609,13 +636,13 @@
       <dsig:DigestValue>6A/ndHaS+WTy96gViIEL5lg3+vO0AmQXgENkEWSZkis=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Content/Texturen\Tool_Hotbar.xnb" size="92501">
+  <file name="Content/Texturen\Tool_Hotbar.xnb" size="11637">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>mSLBQ73UNZE+q17jvpxQgGLFCX04RDz/ZEB4/eHvS2I=</dsig:DigestValue>
+      <dsig:DigestValue>9BZRlzvd1q6P+mX4uac099xxncKJE8fUVQ9iUGlyEsM=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content/Texturen\Tree_Leave.xnb" size="16469">
@@ -661,15 +688,6 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>xNI54lB8+HbhWGjF5fb9r0NRKmKSmvv7csjvq+cxCyk=</dsig:DigestValue>
-    </hash>
-  </file>
-  <file name="Content/Texturen\UI_Inventory.xnb" size="704597">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>HYDUkDRLl42R+UxJDQqOMqK25wmQTvBDqoy991oUXlw=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Content/Texturen\UI_Map.xnb" size="291685">
@@ -724,6 +742,15 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
       <dsig:DigestValue>wihWf99pgUcJ81LXJD+NjlLJ6QeXktA4QjhZSIVmhHI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Content/Texturen\Wood_Floor.xnb" size="4181">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>kWAF3y7stHL7onlxqpI9IVcOtFudb8rZC7wjx+vm3cI=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Icon.ico" size="147541">
@@ -834,13 +861,13 @@
       <dsig:DigestValue>uuO6YlgYQ2I5LTZHhHmAyH4//LuuTZ7GTYzWNTTY8VM=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Silent_Island.dll" size="615936">
+  <file name="Silent_Island.dll" size="614400">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>nGsAZ+L9WN4PODz6Rb9rGNzGM8yY6icr6g2Q/uEZw5E=</dsig:DigestValue>
+      <dsig:DigestValue>StVjWw7P+9mFAowfKVoqu9Do/NlsorGdYbkD6J7lkyo=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Silent_Island.exe" size="299008">
@@ -849,7 +876,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>LmVSNBQ4jMejaSx/RAOLUqU2nvtI/bIV62NgLSAC2Pg=</dsig:DigestValue>
+      <dsig:DigestValue>AaQVL58xWKjMdcZ5wceA7739UCkaLmLpZgrbYTA8C6Y=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Silent_Island.runtimeconfig.json" size="332">
