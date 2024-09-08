@@ -6,19 +6,35 @@ namespace Silent_Island
 {
     public class Block : Objekt
     {
-        public bool placed { get; set; }
-        public int amount { get; set; }
-        public Dictionary<int, Block> Blocks { get; } = new Dictionary<int, Block>();
+        public bool placed;
+        public int amount;
+        public Typ typ;
+        public static Dictionary<int, Block> Blocks { get; } = new Dictionary<int, Block>();
 
-        //Main Init
-        public Block(Textures t, Main m) : base(t, m)
+        private int screenWidth;
+        private int screenHeight;
+        private int worldSizeX;
+        private int worldSizeY;
+
+        public enum Typ
         {
-            this.textures = t;
+            ground,
+            furniture,
+            plant,
+            building
+        }
+        //Main Init
+        public Block(Main m) : base(m)
+        {
             this.main = m;
+            screenWidth = Main.screenWidth;
+            screenHeight = Main.screenHeight;
+            worldSizeX = Main.worldSizeX;
+            worldSizeY = Main.worldSizeY;
         }
 
         //Constructure
-        public Block(Vector2 koordinaten, Texture2D texture, int id, string name) : base(koordinaten, texture, id, name)
+        public Block(Vector2 koordinaten, Texture2D texture, int id, string name, Typ typ) : base(koordinaten, texture, id, name)
         {
             this.texture = texture;
             this.pos = koordinaten;
@@ -27,45 +43,47 @@ namespace Silent_Island
             this.ID = id;
             this.amount = 0;
             this.name = name;
-
+            this.typ = typ;
+            if (this.texture.Width == 32)
+                this.scale = new Vector2(2, 2);
         }
 
         //Draw Method
-        public void ZeichneLayer(SpriteBatch spriteBatch, Block[,] layer)
+        public void ZeichneLayer(Block[,] layer)
         {
-            for (int i = 0; i < main.worldSizeX; i++)
+            for (int i = 0; i < worldSizeX; i++)
             {
-                for (int j = 0; j < main.worldSizeY; j++)
+                for (int j = 0; j < worldSizeY; j++)
                 {
-                    if (layer[i, j].pos.X > main.cameraPosition.X - main.screenWidth - 64 &&
-                        layer[i, j].pos.X < main.cameraPosition.X + main.screenWidth + 64 &&
-                        layer[i, j].pos.Y > main.cameraPosition.Y - main.screenHeight - 64 &&
-                        layer[i, j].pos.Y < main.cameraPosition.Y + main.screenHeight + 64)
+                    if (layer[i, j].pos.X > Main.cameraPosition.X - screenWidth - 64 &&
+                        layer[i, j].pos.X < Main.cameraPosition.X + screenWidth + 64 &&
+                        layer[i, j].pos.Y > Main.cameraPosition.Y - screenHeight - 64 &&
+                        layer[i, j].pos.Y < Main.cameraPosition.Y + screenHeight + 64)
                     {
-                        layer[i, j].Zeichne(spriteBatch);
+                        layer[i, j].Zeichne();
                     }
                 }
             }
         }
-        public void ZeichneAll(SpriteBatch spriteBatch)
+        public void ZeichneAll()
         {
-            this.ZeichneLayer(spriteBatch, BaseLayer);
-            this.ZeichneLayer(spriteBatch, DekoLayer);
-            this.ZeichneLayer(spriteBatch, StructureLayer);
-            this.ZeichneLayer(spriteBatch, ItemLayer);
+            this.ZeichneLayer(BaseLayer);
+            this.ZeichneLayer(DekoLayer);
+            this.ZeichneLayer(StructureLayer);
+            this.ZeichneLayer(ItemLayer);
         }
         public void HitboxAllDraw(SpriteBatch spriteBatch, Texture2D p)
         {
-            for (int i = 0; i < main.worldSizeX; i++)
+            for (int i = 0; i < worldSizeX; i++)
             {
-                for (int j = 0; j < main.worldSizeY; j++)
+                for (int j = 0; j < worldSizeY; j++)
                 {
-                    if (BaseLayer[i, j].pos.X > main.cameraPosition.X - main.screenWidth - 64 &&
-                        BaseLayer[i, j].pos.X < main.cameraPosition.X + main.screenWidth + 64 &&
-                        BaseLayer[i, j].pos.Y > main.cameraPosition.Y - main.screenHeight - 64 &&
-                        BaseLayer[i, j].pos.Y < main.cameraPosition.Y + main.screenHeight + 64)
+                    if (BaseLayer[i, j].pos.X > Main.cameraPosition.X - screenWidth - 64 &&
+                        BaseLayer[i, j].pos.X < Main.cameraPosition.X + screenWidth + 64 &&
+                        BaseLayer[i, j].pos.Y > Main.cameraPosition.Y - screenHeight - 64 &&
+                        BaseLayer[i, j].pos.Y < Main.cameraPosition.Y + screenHeight + 64)
 
-                        BaseLayer[i,j].DrawHitboxOutline(spriteBatch, p, Color.Red);
+                        BaseLayer[i, j].DrawHitboxOutline(Color.Red);
                 }
             }
         }
@@ -75,7 +93,7 @@ namespace Silent_Island
         {
             for (int i = 0; i < takeBlock.Length; i++)
             {
-                takeBlock[i].pos = new Vector2(cam.X + main.screenWidth - 128  + (i % 2) * 64, cam.Y + (i / 2) * 64);
+                takeBlock[i].pos = new Vector2(cam.X + screenWidth - 128 + (i % 2) * 64, cam.Y + (i / 2) * 64);
                 takeBlock[i].UpdateHitbox();
             }
         }
@@ -83,7 +101,7 @@ namespace Silent_Island
         {
             for (int i = 0; i < takeBlock.Length; i++)
             {
-                if (takeBlock[i].hit(mouse))
+                if (takeBlock[i].hit())
                 {
                     tokenBlock = takeBlock[i].Clone();
                 }
@@ -99,12 +117,25 @@ namespace Silent_Island
                 if (tokenBlock != null)
                 {
                     Block clonedBlock = tokenBlock.Clone();
-                    clonedBlock.axis = new Vector2(0, 0);
                     clonedBlock.pos = new Vector2(x * 64, y * 64);
                     clonedBlock.UpdateHitbox();
 
-                    BaseLayer[x, y] = clonedBlock;
-                   
+                    switch (clonedBlock.typ)
+                    {
+                        case Typ.furniture:
+                            StructureLayer[x, y] = clonedBlock;
+                            DekoLayer[x, y] = Void;
+                            break;
+                        case Typ.plant:
+                            DekoLayer[x, y] = clonedBlock;
+                            break;
+                        default:
+                            BaseLayer[x, y] = clonedBlock;
+                            DekoLayer[x, y] = Void;
+                            break;
+                    }
+
+
                 }
             }
         }
@@ -112,13 +143,17 @@ namespace Silent_Island
         {
             foreach (var KeyValuePair in Blocks)
             {
-                takeBlock[KeyValuePair.Key].Zeichne(sprite);
+                takeBlock[KeyValuePair.Key].Zeichne();
             }
         }
 
         public override Block Clone()
         {
-            return new Block(this.pos, this.texture, this.ID, this.name);
+            return new Block(this.pos, this.texture, this.ID, this.name, this.typ);
+        }
+        public static Block CloneFromList(int id)
+        {
+            return new Block(Blocks[id].pos, Blocks[id].texture, Blocks[id].ID, Blocks[id].name, Blocks[id].typ);
         }
 
         public Block Void;
@@ -139,71 +174,81 @@ namespace Silent_Island
         public Block GrassEdgeI;
 
         public Block Chair;
+        public Block Barrel;
+        public Block WoodFloor;
+        public Block GravelPath;
 
-        public Block[,] BaseLayer;
-        public Block[,] DekoLayer;
-        public Block[,] StructureLayer;
-        public Block[,] ItemLayer;
+        public static Block[,] BaseLayer;
+        public static Block[,] DekoLayer;
+        public static Block[,] StructureLayer;
+        public static Block[,] ItemLayer;
 
         public Block[] takeBlock;
         public Block tokenBlock;
 
         public void LoadAllBlocks()
         {
-            Void = new Block(Vector2.Zero, textures.Empty, 0, "Void");
+            Void = new Block(Vector2.Zero, Textures.Empty, 0, "Void", Typ.ground);
             Blocks.Add(0, Void);
 
-            Grass = new Block(Vector2.Zero, textures.Grass, 1, "Grass");
+            Grass = new Block(Vector2.Zero, Textures.Grass, 1, "Grass", Typ.ground);
             Blocks.Add(1, Grass);
 
-            Water = new Block(Vector2.Zero, textures.Water, 2, "Water");
+            Water = new Block(Vector2.Zero, Textures.Water, 2, "Water", Typ.ground);
             Blocks.Add(2, Water);
 
-            Gravel = new Block(Vector2.Zero, textures.Gravel, 3, "Gravel");
+            Gravel = new Block(Vector2.Zero, Textures.Gravel, 3, "Gravel", Typ.ground);
             Blocks.Add(3, Gravel);
 
-            GrassRoot = new Block(Vector2.Zero, textures.GrassRoot, 4, "GrassRoot");
+            GrassRoot = new Block(Vector2.Zero, Textures.GrassRoot, 4, "GrassRoot", Typ.ground);
             Blocks.Add(4, GrassRoot);
 
-            TreeLog = new Block(Vector2.Zero, textures.TreeLog, 5, "TreeLog");
+            TreeLog = new Block(Vector2.Zero, Textures.TreeLog, 5, "TreeLog", Typ.plant);
             Blocks.Add(5, TreeLog);
 
-            TreeLeave = new Block(Vector2.Zero, textures.TreeLeave, 6, "TreeLeave");
+            TreeLeave = new Block(Vector2.Zero, Textures.TreeLeave, 6, "TreeLeave", Typ.plant);
             Blocks.Add(6, TreeLeave);
 
-            DekoMoss = new Block(Vector2.Zero, textures.DekoMoss, 7, "DekoMoss");
+            DekoMoss = new Block(Vector2.Zero, Textures.DekoMoss, 7, "DekoMoss", Typ.plant);
             Blocks.Add(7, DekoMoss);
 
-            DekoStone = new Block(Vector2.Zero, textures.DekoStone, 8, "DekoStone");
+            DekoStone = new Block(Vector2.Zero, Textures.DekoStone, 8, "DekoStone", Typ.plant);
             Blocks.Add(8, DekoStone);
 
-            DekoMossStone = new Block(Vector2.Zero, textures.DekoMossStone, 9, "DekoMossStone");
+            DekoMossStone = new Block(Vector2.Zero, Textures.DekoMossStone, 9, "DekoMossStone", Typ.plant);
             Blocks.Add(9, DekoMossStone);
 
-            GrassEdgeO = new Block(Vector2.Zero, textures.GrassEdgeO, 10, "GrassEdgeO");
+            GrassEdgeO = new Block(Vector2.Zero, Textures.GrassEdgeO, 10, "GrassEdgeO", Typ.plant);
             Blocks.Add(10, GrassEdgeO);
 
-            GrassEdgeU = new Block(Vector2.Zero, textures.GrassEdgeU, 11, "GrassEdgeU");
+            GrassEdgeU = new Block(Vector2.Zero, Textures.GrassEdgeU, 11, "GrassEdgeU", Typ.plant);
             Blocks.Add(11, GrassEdgeU);
 
-            GrassEdgeH = new Block(Vector2.Zero, textures.GrassEdgeH, 12, "GrassEdgeH");
+            GrassEdgeH = new Block(Vector2.Zero, Textures.GrassEdgeH, 12, "GrassEdgeH", Typ.plant);
             Blocks.Add(12, GrassEdgeH);
 
-            GrassEdgeL = new Block(Vector2.Zero, textures.GrassEdgeL, 13, "GrassEdgeL");
+            GrassEdgeL = new Block(Vector2.Zero, Textures.GrassEdgeL, 13, "GrassEdgeL", Typ.plant);
             Blocks.Add(13, GrassEdgeL);
 
-            GrassEdgeI = new Block(Vector2.Zero, textures.GrassEdgeI, 14, "GrassEdgeI");
+            GrassEdgeI = new Block(Vector2.Zero, Textures.GrassEdgeI, 14, "GrassEdgeI", Typ.plant);
             Blocks.Add(14, GrassEdgeI);
 
-            Chair = new Block(Vector2.Zero, textures.Chair, 15, "Chair");
+            Chair = new Block(Vector2.Zero, Textures.Chair, 15, "Chair", Typ.furniture);
             Blocks.Add(15, Chair);
 
+            Barrel = new Block(Vector2.Zero, Textures.Barrel, 16, "Barrel", Typ.furniture);
+            Blocks.Add(16, Barrel);
 
-            // 1 Layer = 2 MB + 1 MB Draw
-            BaseLayer = new Block[main.worldSizeX, main.worldSizeY];
-            DekoLayer = new Block[main.worldSizeX, main.worldSizeY];
-            StructureLayer = new Block[main.worldSizeX, main.worldSizeY];
-            ItemLayer = new Block[main.worldSizeX, main.worldSizeY];
+            WoodFloor = new Block(Vector2.Zero, Textures.WoodFloor, 17, "WoodFloor", Typ.ground);
+            Blocks.Add(17, WoodFloor);
+
+            GravelPath = new Block(Vector2.Zero, Textures.GravelPath, 18, "GravelPath", Typ.ground);
+            Blocks.Add(18, GravelPath);
+
+            BaseLayer = new Block[worldSizeX, worldSizeY];
+            DekoLayer = new Block[worldSizeX, worldSizeY];
+            StructureLayer = new Block[worldSizeX, worldSizeY];
+            ItemLayer = new Block[worldSizeX, worldSizeY];
 
             takeBlock = new Block[Blocks.Count];
             foreach (var KeyValuePair in Blocks)

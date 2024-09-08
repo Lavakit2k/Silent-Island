@@ -7,7 +7,6 @@ namespace Silent_Island
     public class Objekt
     {
         public Main main { get; set; }
-        public Textures textures { get; set; }
         public Vector2 pos { get; set; }
         public Texture2D texture { get; set; }
         public Color color { get; set; }
@@ -35,28 +34,25 @@ namespace Silent_Island
             this.activ = true;
             this.name = name;
         }
-        public Objekt(Textures texture, Main main)
+        public Objekt(Main main)
         {
-            this.textures = texture;
             this.main = main;
-
         }
         //virtual -> override in sub class to "override" the methode 
         public virtual Objekt Clone()
         {
             return new Objekt(this.pos, this.texture, this.ID, this.name);
         }
-
-        public void Zeichne(SpriteBatch sprite)
+        public void Zeichne()
         {
             if (activ)
-                sprite.Draw(this.texture, this.pos, null, this.color, this.rotation, this.axis, this.scale, this.effekt, 0);
+                Main.spriteBatch.Draw(this.texture, this.pos, null, this.color, this.rotation, this.axis, this.scale, this.effekt, 0);
         }
-        public bool hit(Vector2 maus)
+        public bool hit()
         {
-            return this.Hitbox.Contains(maus);
+            return this.Hitbox.Contains(Main.MousePos);
         }
-        public bool colideObjekt(Objekt objekt1, Objekt objekt2)
+        public static bool colideObjekt(Objekt objekt1, Objekt objekt2)
         {
             if (objekt1.pos.X > objekt2.pos.X
             && objekt1.Hitbox.X < objekt2.Hitbox.X
@@ -67,7 +63,7 @@ namespace Silent_Island
             }
             return false;
         }
-        public void DrawHitboxOutline(SpriteBatch spriteBatch, Texture2D p, Color c)
+        public void DrawHitboxOutline(Color c)
         {
             // Hitbox-Ränder (Positionen der Linien)
             int x = Hitbox.X;
@@ -78,16 +74,16 @@ namespace Silent_Island
             int lineWidth = 1;
 
             // Obere Linie
-            spriteBatch.Draw(p, new Rectangle(x, y, width, lineWidth), c);
+            Main.spriteBatch.Draw(Textures.Pixel, new Rectangle(x, y, width, lineWidth), c);
 
             // Untere Linie
-            spriteBatch.Draw(p, new Rectangle(x, y + height - lineWidth, width, lineWidth), c);
+            Main.spriteBatch.Draw(Textures.Pixel, new Rectangle(x, y + height - lineWidth, width, lineWidth), c);
 
             // Linke Linie
-            spriteBatch.Draw(p, new Rectangle(x, y, lineWidth, height), c);
+            Main.spriteBatch.Draw(Textures.Pixel, new Rectangle(x, y, lineWidth, height), c);
 
             // Rechte Linie
-            spriteBatch.Draw(p, new Rectangle(x + width - lineWidth, y, lineWidth, height), c);
+            Main.spriteBatch.Draw(Textures.Pixel, new Rectangle(x + width - lineWidth, y, lineWidth, height), c);
         }
         protected void UpdateHitbox()
         {
@@ -98,9 +94,9 @@ namespace Silent_Island
                 (int)(texture.Height * scale.Y)
             );
         }
-        public void Update(Vector2 cam, float x, float y)
+        public void Update(Vector2 baseVector, float x, float y)
         {
-            this.pos = new Vector2(cam.X + x, cam.Y + y);
+            this.pos = new Vector2(baseVector.X + x, baseVector.Y + y);
             this.UpdateHitbox();
         }
     }

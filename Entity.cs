@@ -23,9 +23,8 @@ namespace Silent_Island
             health = 0;
             speed = 5;
         }
-        public Entity(Textures t, Main m) : base(t, m)
+        public Entity(Main m) : base(m)
         {
-            this.textures = t;
             this.main = m;
         }
         public void MovePlayer(bool moving, Texture2D newTexture, int x, int y)
@@ -69,22 +68,22 @@ namespace Silent_Island
             return false;
         }
 
-        public Entity Player;
+        public static Entity Player;
 
-        public void LoadAllEnitys(Main main)
+        public void LoadAllEnitys()
         {
             //Player
-            for (int i = 0; i < main.worldSizeX; i++)
+            for (int i = 0; i < Main.worldSizeX; i++)
             {
-                for (int j = 0; j < main.worldSizeY; j++)
+                for (int j = 0; j < Main.worldSizeY; j++)
                 {
-                    if (main.block.BaseLayer[i, j].ID == 1 &&
-                        i > 0 && main.block.BaseLayer[i - 1, j].ID == 1 && // links
-                        i < main.worldSizeX - 1 && main.block.BaseLayer[i + 1, j].ID == 1 && // rechts
-                        j > 0 && main.block.BaseLayer[i, j - 1].ID == 1 && // oben
-                        j < main.worldSizeY - 1 && main.block.BaseLayer[i, j + 1].ID == 1) // unten
+                    if (Block.BaseLayer[i, j].ID == 1 &&
+                        i > 0 && Block.BaseLayer[i - 1, j].ID == 1 && // links
+                        i < Main.worldSizeX - 1 && Block.BaseLayer[i + 1, j].ID == 1 && // rechts
+                        j > 0 && Block.BaseLayer[i, j - 1].ID == 1 && // oben
+                        j < Main.worldSizeY - 1 && Block.BaseLayer[i, j + 1].ID == 1) // unten
                     {
-                        Player = new Entity(new Vector2(i * 64, j * 64), textures.PlayerUp, 1, "Player");
+                        Player = new Entity(new Vector2(i * 64, j * 64), Textures.PlayerUp, 1, "Player");
                         Player.speed = 8;
                         return;
                     }

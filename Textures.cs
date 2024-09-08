@@ -6,95 +6,97 @@ namespace Silent_Island
     public class Textures
     {
         private ContentManager content;
-        public SpriteBatch spriteBatch { get; private set; }
 
         #region Blocks
-        public Texture2D Grass { get; private set; }
-        public Texture2D Water { get; private set; }
-        public Texture2D Gravel { get; private set; }
-        public Texture2D Stone { get; private set; }
-        public Texture2D GrassRoot { get; private set; }
+        public static Texture2D Grass { get; private set; }
+        public static Texture2D Water { get; private set; }
+        public static Texture2D Gravel { get; private set; }
+        public static Texture2D Stone { get; private set; }
+        public static Texture2D GrassRoot { get; private set; }
 
-        public Texture2D GrassUp { get; private set; }
-        public Texture2D GrassUpCorner { get; private set; }
+        public static Texture2D GrassUp { get; private set; }
+        public static Texture2D GrassUpCorner { get; private set; }
 
-        public Texture2D IronOre { get; private set; }
+        public static Texture2D IronOre { get; private set; }
 
-        public Texture2D TreeLog { get; private set; }
-        public Texture2D TreeLeave { get; private set; }
+        public static Texture2D TreeLog { get; private set; }
+        public static Texture2D TreeLeave { get; private set; }
+
+        public static Texture2D WoodFloor { get; private set; }
+        public static Texture2D GravelPath { get; private set; }
         #endregion
 
         #region Decoration
-        public Texture2D GrassEdgeI { get; private set; }
-        public Texture2D GrassEdgeH { get; private set; }
-        public Texture2D GrassEdgeL { get; private set; }
-        public Texture2D GrassEdgeU { get; private set; }
-        public Texture2D GrassEdgeO { get; private set; }
+        public static Texture2D GrassEdgeI { get; private set; }
+        public static Texture2D GrassEdgeH { get; private set; }
+        public static Texture2D GrassEdgeL { get; private set; }
+        public static Texture2D GrassEdgeU { get; private set; }
+        public static Texture2D GrassEdgeO { get; private set; }
 
-        public Texture2D DekoMoss { get; private set; }
-        public Texture2D DekoStone { get; private set; }
-        public Texture2D DekoMossStone { get; private set; }
+        public static Texture2D DekoMoss { get; private set; }
+        public static Texture2D DekoStone { get; private set; }
+        public static Texture2D DekoMossStone { get; private set; }
         #endregion
 
         #region Items
-        public Texture2D FishingRod { get; private set; }
-        public Texture2D FishingRodOut { get; private set; }
-        public Texture2D FishingLine { get; private set; }
-        public Texture2D Fish { get; private set; }
-        public Texture2D Shark { get; private set; }
+        public static Texture2D FishingRod { get; private set; }
+        public static Texture2D FishingRodOut { get; private set; }
+        public static Texture2D FishingLine { get; private set; }
+        public static Texture2D Fish { get; private set; }
+        public static Texture2D Shark { get; private set; }
 
-        public Texture2D Chair { get; private set; }
-        public Texture2D Barrel { get; private set; }
-        public Texture2D Oven { get; private set; }
+        public static Texture2D Chair { get; private set; }
+        public static Texture2D Barrel { get; private set; }
+        public static Texture2D Oven { get; private set; }
 
-        public Texture2D Pistol { get; private set; }
-        public Texture2D PistolProjectile { get; private set; }
+        public static Texture2D Pistol { get; private set; }
+        public static Texture2D PistolProjectile { get; private set; }
 
-        public Texture2D Wood { get; private set; }
-        public Texture2D Rock { get; private set; }
-        public Texture2D IronIngot { get; private set; }
+        public static Texture2D Wood { get; private set; }
+        public static Texture2D Rock { get; private set; }
+        public static Texture2D IronIngot { get; private set; }
 
-        public Texture2D SeaShell1 { get; private set; }
-        public Texture2D SeaShell2 { get; private set; }
-        public Texture2D SeaShell3 { get; private set; }
-        public Texture2D SeaShell4 { get; private set; }
+        public static Texture2D SeaShell1 { get; private set; }
+        public static Texture2D SeaShell2 { get; private set; }
+        public static Texture2D SeaShell3 { get; private set; }
+        public static Texture2D SeaShell4 { get; private set; }
 
-        public Texture2D GoldCoin { get; private set; }
-        public Texture2D FishingShop { get; private set; }
+        public static Texture2D GoldCoin { get; private set; }
+        public static Texture2D FishingShop { get; private set; }
 
-        public Texture2D Shovel { get; private set; }
+        public static Texture2D Shovel { get; private set; }
 
         #endregion
 
         #region Entities
-        public Texture2D PlayerUp { get; private set; }
-        public Texture2D PlayerDown { get; private set; }
-        public Texture2D PlayerLeft { get; private set; }
-        public Texture2D PlayerRight { get; private set; }
+        public static Texture2D PlayerUp { get; private set; }
+        public static Texture2D PlayerDown { get; private set; }
+        public static Texture2D PlayerLeft { get; private set; }
+        public static Texture2D PlayerRight { get; private set; }
         #endregion
 
         #region UI
-        public Texture2D Inventory { get; private set; }
-        public Texture2D Slot { get; private set; }
-        public Texture2D ToolHotbar { get; private set; }
-        public Texture2D ExtraHotbar { get; private set; }
-        public Texture2D Map { get; private set; }
-        public Texture2D TopUI { get; private set; }
-        public Texture2D HotbarMarker { get; private set; }
-        public Texture2D FishingBar { get; private set; }
-        public Texture2D FishingBarPointer { get; private set; }
-        public Texture2D Heart { get; private set; }
-        public Texture2D EmptyHeart { get; private set; }
-        public Texture2D EmptySeeShell { get; private set; }
-        public Texture2D DebugMenu { get; private set; }
+        public static Texture2D MenuBackground { get; private set; }
+        public static Texture2D Slot { get; private set; }
+        public static Texture2D ToolHotbar { get; private set; }
+        public static Texture2D ExtraHotbar { get; private set; }
+        public static Texture2D Map { get; private set; }
+        public static Texture2D TopUI { get; private set; }
+        public static Texture2D HotbarMarker { get; private set; }
+        public static Texture2D FishingBar { get; private set; }
+        public static Texture2D FishingBarPointer { get; private set; }
+        public static Texture2D Heart { get; private set; }
+        public static Texture2D EmptyHeart { get; private set; }
+        public static Texture2D EmptySeeShell { get; private set; }
+        public static Texture2D DebugMenu { get; private set; }
 
         #endregion
 
         #region Rest 
-        public Texture2D Empty { get; private set; }
-        public Texture2D TestBlock { get; private set; }
-        public Texture2D TestEdge { get; private set; }
-        public Texture2D Pixel { get; private set; }
+        public static Texture2D Empty { get; private set; }
+        public static Texture2D TestBlock { get; private set; }
+        public static Texture2D TestEdge { get; private set; }
+        public static Texture2D Pixel { get; private set; }
         #endregion
 
 
@@ -104,7 +106,7 @@ namespace Silent_Island
         }
         public void Initialize(GraphicsDevice graphicsDevice)
         {
-            spriteBatch = new SpriteBatch(graphicsDevice);
+            Main.spriteBatch = new SpriteBatch(graphicsDevice);
         }
         public Texture2D GetTextureByName(string name)
         {
@@ -121,6 +123,8 @@ namespace Silent_Island
                 "IronOre" => IronOre,
                 "TreeLog" => TreeLog,
                 "TreeLeave" => TreeLeave,
+                "WoodFloor" => WoodFloor,
+                "GravelPath" => GravelPath,
 
                 // Decoration
                 "GrassEdgeI" => GrassEdgeI,
@@ -161,7 +165,7 @@ namespace Silent_Island
                 "PlayerRight" => PlayerRight,
 
                 // UI
-                "Inventory" => Inventory,
+                "MenuBackground" => MenuBackground,
                 "Slot" => Slot,
                 "ToolHotbar" => ToolHotbar,
                 "ExtraHotbar" => ExtraHotbar,
@@ -198,6 +202,8 @@ namespace Silent_Island
             IronOre = content.Load<Texture2D>("Texturen/Iron_Ore");
             TreeLog = content.Load<Texture2D>("Texturen/Tree_Log");
             TreeLeave = content.Load<Texture2D>("Texturen/Tree_Leave");
+            WoodFloor = content.Load<Texture2D>("Texturen/Wood_Floor");
+            GravelPath = content.Load<Texture2D>("Texturen/Gravel_Path");
             #endregion
 
             #region Decoration
@@ -242,7 +248,7 @@ namespace Silent_Island
             #endregion
 
             #region UI
-            Inventory = content.Load<Texture2D>("Texturen/UI_Inventory");
+            MenuBackground = content.Load<Texture2D>("Texturen/Menu_Background");
             Slot = content.Load<Texture2D>("Texturen/UI_Single_Slot");
             ToolHotbar = content.Load<Texture2D>("Texturen/Tool_Hotbar");
             ExtraHotbar = content.Load<Texture2D>("Texturen/UI_Extra_Hotbar");

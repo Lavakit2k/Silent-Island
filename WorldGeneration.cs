@@ -8,17 +8,14 @@ namespace Silent_Island
     public class WorldGeneration
     {
         private Random random = new Random();
-        private Textures texture;
         private Main main;
-        private Structure structure;
-        private Block block;
-        public int PWater;
-        public int PGrass;
-        public int PGravel;
-        public int smoothness = 10;
-        public int heavy;
-        public int worldSizeX = 64;
-        public int worldSizeY = 64;
+        private int PWater;
+        private int PGrass;
+        private int PGravel;
+        private int smoothness = 10;
+        private int heavy;
+        private int worldSizeX = Main.worldSizeY;
+        private int worldSizeY = Main.worldSizeY;
 
         //works with Bits
         [Flags]
@@ -32,20 +29,17 @@ namespace Silent_Island
         }
 
 
-        public WorldGeneration(Main main, Textures textures, Structure structure, Block block)
+        public WorldGeneration(Main main, Structure structure, Block Block)
         {
-            this.texture = textures;
-            this.structure = structure;
-            this.main = main;
-            this.block = block;
+            //this.main = main;
             for (int i = 0; i < worldSizeX; ++i)
             {
                 for (int j = 0; j < worldSizeY; ++j)
                 {
-                    block.BaseLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty, random.Next(1, 3), "");
-                    block.StructureLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty, 0, "");
-                    block.DekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty, random.Next(1, 3), "");
-                    block.ItemLayer[i, j] = new Block(new Vector2(i * 64, j * 64), texture.Empty, 0, "");
+                    Block.BaseLayer[i, j] = new Block(new Vector2(i * 64, j * 64), Textures.Empty, random.Next(1, 3), "", Block.Typ.ground);
+                    Block.StructureLayer[i, j] = new Block(new Vector2(i * 64, j * 64), Textures.Empty, 0, "", Block.Typ.ground);
+                    Block.DekoLayer[i, j] = new Block(new Vector2(i * 64, j * 64), Textures.Empty, random.Next(1, 3), "", Block.Typ.ground);
+                    Block.ItemLayer[i, j] = new Block(new Vector2(i * 64, j * 64), Textures.Empty, 0, "", Block.Typ.ground);
                 }
             }
             
@@ -70,29 +64,29 @@ namespace Silent_Island
                     for (int t = 0; t < smoothness; ++t)
                     {
                         #region Grass/Water
-                        int PGrass = GetSurroundingBlockIDType(block.BaseLayer, i, j, 1);
-                        int PWater = GetSurroundingBlockIDType(block.BaseLayer, i, j, 2);
+                        int PGrass = GetSurroundingBlockIDType(Block.BaseLayer, i, j, 1);
+                        int PWater = GetSurroundingBlockIDType(Block.BaseLayer, i, j, 2);
 
-                        if (block.BaseLayer[i, j].ID == 2 && PGrass > 4)
+                        if (Block.BaseLayer[i, j].ID == 2 && PGrass > 4)
                         {
                             //Grass
-                            SetBlock(block.BaseLayer, i, j, 1);
+                            SetBlock(Block.BaseLayer, i, j, 1);
                         }
-                        else if (block.BaseLayer[i, j].ID == 1 && PWater > 5)
+                        else if (Block.BaseLayer[i, j].ID == 1 && PWater > 5)
                         {
                             //Water
-                            SetBlock(block.BaseLayer, i, j, 2);
+                            SetBlock(Block.BaseLayer, i, j, 2);
                         }
                         else
                         {
                             //No Change
-                            switch (block.BaseLayer[i, j].ID)
+                            switch (Block.BaseLayer[i, j].ID)
                             {
                                 case 1:
-                                    SetBlock(block.BaseLayer, i, j, 1);
+                                    SetBlock(Block.BaseLayer, i, j, 1);
                                     break;
                                 case 2:
-                                    SetBlock(block.BaseLayer, i, j, 2);
+                                    SetBlock(Block.BaseLayer, i, j, 2);
                                     break;
                             }
                         }
@@ -111,22 +105,22 @@ namespace Silent_Island
                     {
                         #region Gravel//Roots
 
-                        if (block.BaseLayer[i, j].ID == 2) break;
+                        if (Block.BaseLayer[i, j].ID == 2) break;
 
-                        int PGravel = GetSurroundingBlockIDType(block.BaseLayer, i, j, 3);
+                        int PGravel = GetSurroundingBlockIDType(Block.BaseLayer, i, j, 3);
 
                         if (PGravel > 4 && random.Next(1, PGravel - PGravel / 2) == 1)
                         {
-                            SetBlock(block.BaseLayer, i, j, 3);
+                            SetBlock(Block.BaseLayer, i, j, 3);
                         }
                         else if (random.Next(1, 30) == 1)
                         {
-                            SetBlock(block.BaseLayer, i, j, 3);
+                            SetBlock(Block.BaseLayer, i, j, 3);
                         }
 
                         if (random.Next(1, 80) == 3)
                         {
-                            SetBlock(block.BaseLayer, i, j, 4);
+                            SetBlock(Block.BaseLayer, i, j, 4);
                         }
 
                         #endregion
@@ -144,9 +138,9 @@ namespace Silent_Island
             {
                 for (int j = 0; j < worldSizeY; ++j)
                 {
-                    if (block.BaseLayer[i, j].ID == 4)
+                    if (Block.BaseLayer[i, j].ID == 4)
                     {
-                        GenerateTree(block.StructureLayer, i, j);
+                        GenerateTree(Block.StructureLayer, i, j);
                     }
                 }
             }
@@ -168,11 +162,11 @@ namespace Silent_Island
 
                     if (x >= 0 && x < structureLayer.GetLength(0) && y >= 0 && y < structureLayer.GetLength(1))
                     {
-                        if (structureLayer[x, y].ID == 0 || structureLayer[x, y].ID == 5) // Only set if no block exists
+                        if (structureLayer[x, y].ID == 0 || structureLayer[x, y].ID == 5) // Only set if no Block exists
                         {
                             if (blockType != 0)
                             {
-                                SetBlock(block.StructureLayer, x, y, pattern[j, i]);
+                                SetBlock(Block.StructureLayer, x, y, pattern[j, i]);
                             }
                         }
                     }
@@ -182,7 +176,7 @@ namespace Silent_Island
 
         public void GenerateTree(Block[,] structureLayer, int i, int j)
         {
-            GenerateStructure(structureLayer, i - 2, j - 4, structure.treePattern);
+            GenerateStructure(structureLayer, i - 2, j - 4, Structure.treePattern);
         }
 
         #endregion
@@ -207,81 +201,81 @@ namespace Silent_Island
             //TODO für später mehrere blockIDs machbar z.B. Kies
             int currentBlockID = 1;
 
-            Directions touchingDirections = GetTouchingBlockDirections(block.BaseLayer, i, j, currentBlockID);
+            Directions touchingDirections = GetTouchingBlockDirections(Block.BaseLayer, i, j, currentBlockID);
 
             //Nur wenn Wasser/ Gravel
-            if (block.BaseLayer[i, j].ID == 2 || block.BaseLayer[i, j].ID == 3)
+            if (Block.BaseLayer[i, j].ID == 2 || Block.BaseLayer[i, j].ID == 3)
                 switch (touchingDirections)
                 {
                     //all
                     // Up, Down, Left, Right
                     case Directions.Up | Directions.Down | Directions.Left | Directions.Right:
-                        SetBlockDeko(block.DekoLayer, i, j, 10);
+                        SetBlockDeko(Block.DekoLayer, i, j, 10);
 
                         break;
 
                     //U 
                     case Directions.Up | Directions.Down | Directions.Left:
-                        SetBlockDeko(block.DekoLayer, i, j, 11);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
+                        SetBlockDeko(Block.DekoLayer, i, j, 11);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
                         break;
                     case Directions.Up | Directions.Down | Directions.Right:
-                        SetBlockDeko(block.DekoLayer, i, j, 11);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
+                        SetBlockDeko(Block.DekoLayer, i, j, 11);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
                         break;
                     case Directions.Up | Directions.Left | Directions.Right:
-                        SetBlockDeko(block.DekoLayer, i, j, 11);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(180);
+                        SetBlockDeko(Block.DekoLayer, i, j, 11);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(180);
                         break;
                     case Directions.Down | Directions.Left | Directions.Right:
-                        SetBlockDeko(block.DekoLayer, i, j, 11);
+                        SetBlockDeko(Block.DekoLayer, i, j, 11);
                         break;
 
                     //H
                     case Directions.Up | Directions.Down:
-                        SetBlockDeko(block.DekoLayer, i, j, 12);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
+                        SetBlockDeko(Block.DekoLayer, i, j, 12);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
                         break;
                     case Directions.Left | Directions.Right:
-                        SetBlockDeko(block.DekoLayer, i, j, 12);
+                        SetBlockDeko(Block.DekoLayer, i, j, 12);
                         break;
 
                     //L
                     case Directions.Up | Directions.Left:
-                        SetBlockDeko(block.DekoLayer, i, j, 13);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-180);
+                        SetBlockDeko(Block.DekoLayer, i, j, 13);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-180);
                         break;
                     case Directions.Up | Directions.Right:
-                        SetBlockDeko(block.DekoLayer, i, j, 13);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
+                        SetBlockDeko(Block.DekoLayer, i, j, 13);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
                         break;
                     case Directions.Down | Directions.Left:
-                        SetBlockDeko(block.DekoLayer, i, j, 13);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
+                        SetBlockDeko(Block.DekoLayer, i, j, 13);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
                         break;
                     case Directions.Down | Directions.Right:
-                        SetBlockDeko(block.DekoLayer, i, j, 13);
+                        SetBlockDeko(Block.DekoLayer, i, j, 13);
                         break;
 
                     //I
                     case Directions.Up:
-                        SetBlockDeko(block.DekoLayer, i, j, 14);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
+                        SetBlockDeko(Block.DekoLayer, i, j, 14);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(-90);
                         break;
                     case Directions.Down:
-                        SetBlockDeko(block.DekoLayer, i, j, 14);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
+                        SetBlockDeko(Block.DekoLayer, i, j, 14);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(90);
                         break;
                     case Directions.Left:
-                        SetBlockDeko(block.DekoLayer, i, j, 14);
-                        block.DekoLayer[i, j].rotation = MathHelper.ToRadians(180);
+                        SetBlockDeko(Block.DekoLayer, i, j, 14);
+                        Block.DekoLayer[i, j].rotation = MathHelper.ToRadians(180);
                         break;
                     case Directions.Right:
-                        SetBlockDeko(block.DekoLayer, i, j, 14);
+                        SetBlockDeko(Block.DekoLayer, i, j, 14);
                         break;
 
                     default:
-                        SetBlockDeko(block.DekoLayer, i, j, 0);
+                        SetBlockDeko(Block.DekoLayer, i, j, 0);
                         break;
 
                 }
@@ -317,19 +311,19 @@ namespace Silent_Island
             int PSM = 200;
 
             //Grass
-            if (block.BaseLayer[i, j].ID == 1)
+            if (Block.BaseLayer[i, j].ID == 1)
             {
                 if (random.Next(1, PMoss) < 5)
                 {
-                    SetBlock(block.DekoLayer, i, j, 7);
+                    SetBlock(Block.DekoLayer, i, j, 7);
                 }
                 else if (random.Next(1, PStone) < 5)
                 {
-                    SetBlock(block.DekoLayer, i, j, 8);
+                    SetBlock(Block.DekoLayer, i, j, 8);
                 }
                 else if (random.Next(1, PSM) < 5)
                 {
-                    SetBlock(block.DekoLayer, i, j, 9);
+                    SetBlock(Block.DekoLayer, i, j, 9);
                 }
             }
         }
@@ -343,7 +337,7 @@ namespace Silent_Island
         #region Methoden
         private void SetBlock(Block[,] objektLayer, int i, int j, int id)
         {
-            objektLayer[i, j] = block.Blocks[id].Clone();
+            objektLayer[i, j] = Block.Blocks[id].Clone();
             objektLayer[i, j].pos = new Vector2(i * 64, j * 64);
             //TODO wichtig?
             objektLayer[i, j].Hitbox = new Rectangle((int)objektLayer[i, j].pos.X, (int)objektLayer[i, j].pos.Y, objektLayer[i, j].texture.Width, objektLayer[i, j].texture.Height);
@@ -352,8 +346,8 @@ namespace Silent_Island
         }
         private void SetBlockDeko(Block[,] objektLayer, int i, int j, int id)
         {
-            objektLayer[i, j] = block.Blocks[id].Clone();
-            block.DekoLayer[i, j].axis = new Vector2(32, 32);
+            objektLayer[i, j] = Block.Blocks[id].Clone();
+            Block.DekoLayer[i, j].axis = new Vector2(32, 32);
             objektLayer[i, j].pos = new Vector2(i * 64 + 32, j * 64 + 32);
             //TODO wichtig?
             objektLayer[i, j].Hitbox = new Rectangle((int)objektLayer[i, j].pos.X, (int)objektLayer[i, j].pos.Y, objektLayer[i, j].texture.Width, objektLayer[i, j].texture.Height);

@@ -20,10 +20,15 @@ namespace Silent_Island
             slotAmount = new string("" + amount);
 
         }
-        public Item(Textures t, Main m) : base(t, m)
-        {
-            this.textures = t;
+        public Item(Main m) : base(m)
+        { 
             this.main = m;
+        }
+        public bool InHand(Item item)
+        {
+            if (UI.HandObjekt.ID == item.ID)
+                return true;
+            return false;
         }
 
         public void ToolAufnehmen(Item item)
@@ -45,20 +50,20 @@ namespace Silent_Island
             }
         }
 
-        public void UpdateAll(Vector2 cam, UI ui)
+        public void UpdateAll()
         {
             for (int i = 0; i < ToolHotbarItem.Length; i++)
             {
-                ToolHotbarItem[i].Update(ui.ToolHotbar.pos, 8 + (i % 2) * 72, 8 + (i / 2) * 72);
+                ToolHotbarItem[i].Update(Main.ui.ToolHotbar.pos, 8 + (i % 2) * 72, 8 + (i / 2) * 72);
             }
             //ExtraHotbarMarker.UpdateUI(ExtraHotbar.pos, 8 + main.ExtraHotbarSlotNum * 72, 8);
         }
-        public void DrawItems(SpriteBatch spriteBatch, SpriteFont font)
+        public void DrawItems()
         {
             for (int i = 0; i < 4; i++)
             {
-                ToolHotbarItem[i].Zeichne(spriteBatch);
-                spriteBatch.DrawString(font, "" + ToolHotbarItem[i].amount, new Vector2(ToolHotbarItem[i].pos.X + 58, ToolHotbarItem[i].pos.Y + 50), new Color(0, 0, 0));
+                ToolHotbarItem[i].Zeichne();
+                Main.spriteBatch.DrawString(Main.font, "" + ToolHotbarItem[i].amount, new Vector2(ToolHotbarItem[i].pos.X + 58, ToolHotbarItem[i].pos.Y + 50), new Color(0, 0, 0));
             }
         }
 
@@ -87,47 +92,47 @@ namespace Silent_Island
         public void LoadAllItems()
         {
 
-            Empty = new Item(Vector2.Zero, textures.Empty, 0, "Empty");
+            Empty = new Item(Vector2.Zero, Textures.Empty, 0, "Empty");
             LoadedItems.Add(0, Empty);
 
-            FishingRod = new Item(Vector2.Zero, textures.FishingRod, 1, "FishingRod");
+            FishingRod = new Item(Vector2.Zero, Textures.FishingRod, 1, "FishingRod");
             LoadedItems.Add(1, FishingRod);
 
-            Fish = new Item(Vector2.Zero, textures.Fish, 2, "Fish");
+            Fish = new Item(Vector2.Zero, Textures.Fish, 2, "Fish");
             LoadedItems.Add(2, Fish);
 
-            Shark = new Item(Vector2.Zero, textures.Shark, 3, "Shark");
+            Shark = new Item(Vector2.Zero, Textures.Shark, 3, "Shark");
             LoadedItems.Add(3, Shark);
 
-            FishingLine = new Item(Vector2.Zero, textures.FishingLine, 4, "FishingLine");
+            FishingLine = new Item(Vector2.Zero, Textures.FishingLine, 4, "FishingLine");
             FishingLine.activ = false;
             LoadedItems.Add(4, FishingLine);
 
-            Shovel = new Item(Vector2.Zero, textures.Shovel, 5, "Shovel");
+            Shovel = new Item(Vector2.Zero, Textures.Shovel, 5, "Shovel");
             LoadedItems.Add(5, Shovel);
 
-            SeaShell1 = new Item(Vector2.Zero, textures.SeaShell1, 6, "SeaShell1");
+            SeaShell1 = new Item(Vector2.Zero, Textures.SeaShell1, 6, "SeaShell1");
             LoadedItems.Add(6, SeaShell1);
 
-            SeaShell2 = new Item(Vector2.Zero, textures.SeaShell2, 7, "SeaShell2");
+            SeaShell2 = new Item(Vector2.Zero, Textures.SeaShell2, 7, "SeaShell2");
             LoadedItems.Add(7, SeaShell2);
 
-            SeaShell3 = new Item(Vector2.Zero, textures.SeaShell3, 8, "SeaShell3");
+            SeaShell3 = new Item(Vector2.Zero, Textures.SeaShell3, 8, "SeaShell3");
             LoadedItems.Add(8, SeaShell3);
 
-            SeaShell4 = new Item(Vector2.Zero, textures.SeaShell4, 9, "SeaShell4");
+            SeaShell4 = new Item(Vector2.Zero, Textures.SeaShell4, 9, "SeaShell4");
             LoadedItems.Add(9, SeaShell4);
 
-            Pistol = new Item(Vector2.Zero, textures.Pistol, 10, "Pistol");
+            Pistol = new Item(Vector2.Zero, Textures.Pistol, 10, "Pistol");
             LoadedItems.Add(10, Pistol);
 
-            Rock = new Item(Vector2.Zero, textures.Rock, 11, "Rock");
+            Rock = new Item(Vector2.Zero, Textures.Rock, 11, "Rock");
             LoadedItems.Add(11, Rock);
 
-            IronIngot = new Item(Vector2.Zero, textures.IronIngot, 12, "IronIngot");
+            IronIngot = new Item(Vector2.Zero, Textures.IronIngot, 12, "IronIngot");
             LoadedItems.Add(12, IronIngot);
 
-            Wood = new Item(Vector2.Zero, textures.Wood, 13, "Wood");
+            Wood = new Item(Vector2.Zero, Textures.Wood, 13, "Wood");
             LoadedItems.Add(13, Wood);
 
             ToolHotbarItem = new Item[4];
@@ -140,7 +145,7 @@ namespace Silent_Island
                 }
                 else
                 {
-                    ToolHotbarItem[i] = new Item(Vector2.Zero, textures.Empty, 0, "Empty");
+                    ToolHotbarItem[i] = new Item(Vector2.Zero, Textures.Empty, 0, "Empty");
                     LoadedItems.Add(14 + i, ToolHotbarItem[i]);
                 }
             }

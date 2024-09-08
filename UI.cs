@@ -5,9 +5,10 @@ using System.Collections.Generic;
 
 namespace Silent_Island
 {
+    //TODO static
     public class UI : Objekt
     {
-        public Dictionary<int, UI> LoadedUIs = new Dictionary<int, UI>();
+        public static Dictionary<int, UI> LoadedUIs = new Dictionary<int, UI>();
 
         private int screenWidth;
         private int screenHeight;
@@ -18,19 +19,18 @@ namespace Silent_Island
             ID = id;
             this.name = name;
         }
-        public UI(Textures t, Main m) : base(t, m)
+        public UI(Main m) : base(m)
         {
-            this.textures = t;
             this.main = m;
-            screenWidth = main.screenWidth; 
-            screenHeight = main.screenHeight;
+            screenWidth = Main.screenWidth; 
+            screenHeight = Main.screenHeight;
         }
-        public void HitboxAllDraw(SpriteBatch s, Texture2D p)
+        public void HitboxAllDraw()
         {
             foreach (var KeyValuePair in LoadedUIs)
             {
                 if(KeyValuePair.Value.activ)
-                KeyValuePair.Value.DrawHitboxOutline(s, p, Color.Blue);
+                KeyValuePair.Value.DrawHitboxOutline(Color.Blue);
             }
         }
         public void HotbarSwitch(int hotbarSlot)
@@ -38,37 +38,37 @@ namespace Silent_Island
 
         }
 
-        public void ZeichneAll(SpriteBatch s)
+        public void ZeichneAll()
         {
             foreach (var KeyValuePair in LoadedUIs)
             {
-                KeyValuePair.Value.Zeichne(s);
+                KeyValuePair.Value.Zeichne();
             }
         }
-        public void UpdateAll(Vector2 cam, Item item)
+        public void UpdateAll(Item item)
         {
             //TODO screenWidth hier zwischenspeichern
-            HandObjekt.Update(main.entity.Player.pos, 38, 16);
-            HandObjekt.texture = item.ToolHotbarItem[main.ToolHotbarSlotNum].texture;
-            HandObjekt.ID = item.ToolHotbarItem[main.ToolHotbarSlotNum].ID;
-            ToolHotbar.Update(cam, screenWidth  - ToolHotbar.texture.Width, screenHeight - ToolHotbar.texture.Height);
-            HotbarMarker.Update(ToolHotbar.pos, 8 + ((main.ToolHotbarSlotNum % 4) % 2 ) * 72, 8 + ((main.ToolHotbarSlotNum % 4) / 2) * 72);
+            HandObjekt.Update(Entity.Player.pos, 38, 16);
+            HandObjekt.texture = item.ToolHotbarItem[Main.ToolHotbarSlotNum].texture;
+            HandObjekt.ID = item.ToolHotbarItem[Main.ToolHotbarSlotNum].ID;
+            ToolHotbar.Update(Main.cameraPosition, screenWidth  - ToolHotbar.texture.Width, screenHeight - ToolHotbar.texture.Height);
+            HotbarMarker.Update(ToolHotbar.pos, 8 + ((Main.ToolHotbarSlotNum % 4) % 2 ) * 72, 8 + ((Main.ToolHotbarSlotNum % 4) / 2) * 72);
 
             ExtraHotbar.Update(ToolHotbar.pos, - ToolHotbar.texture.Width - 100, ExtraHotbar.texture.Height - 8);
-            ExtraHotbarMarker.Update(ExtraHotbar.pos, 8 + main.ExtraHotbarSlotNum * 72, 8);
+            ExtraHotbarMarker.Update(ExtraHotbar.pos, 8 + Main.ExtraHotbarSlotNum * 72, 8);
 
             if (FishingBar.activ)
-                FishingBar.Update(cam, screenWidth / 2 - textures.FishingBar.Width / 2 , screenHeight - 132);
+                FishingBar.Update(Main.cameraPosition, screenWidth / 2 - Textures.FishingBar.Width / 2 , screenHeight - 132);
             if (FishingBarPointer.activ)
-                FishingBarPointer.Update(cam, screenWidth / 2 - 8 + 128f * (float)Math.Sin((main.timeCounter + main.fishingPointerOffset) / 1000 * 2f), screenHeight - 132);
+                FishingBarPointer.Update(Main.cameraPosition, screenWidth / 2 - 8 + 128f * (float)Math.Sin((main.timeCounter + main.fishingPointerOffset) / 1000 * 2f), screenHeight - 132);
             //                                  start                 amplitude               t                  offset                       frequenz
 
-            DebugMenu.Update(new Vector2(cam.X, cam.Y), 0, 0);
+            DebugMenu.Update(new Vector2(Main.cameraPosition.X, Main.cameraPosition.Y), 0, 0);
         }
 
         public UI ToolHotbar;
         public UI HotbarMarker;
-        //public UI Inventory;
+        public UI MenuBackground;
         public UI TopUI;
         public UI MapFrame;
         public UI ExtraHotbar;
@@ -78,49 +78,45 @@ namespace Silent_Island
         public UI Heart;
         public UI EmptyHeart;
         public UI DebugMenu;
-        public UI HandObjekt;
+        public static UI HandObjekt;
 
         public void LoadAllUIs()
         {
-            ToolHotbar = new UI(Vector2.Zero, textures.ToolHotbar, 1, "ToolHotbar");
+            ToolHotbar = new UI(Vector2.Zero, Textures.ToolHotbar, 1, "ToolHotbar");
             ToolHotbar.color = new Color(255, 255, 255, 0.5f);
-            LoadedUIs.Add(0, ToolHotbar);
+            LoadedUIs.Add(1, ToolHotbar);
 
-            HotbarMarker = new UI(Vector2.Zero, textures.HotbarMarker, 2, "HotbarMarker");
-            LoadedUIs.Add(1, HotbarMarker);
+            HotbarMarker = new UI(Vector2.Zero, Textures.HotbarMarker, 2, "HotbarMarker");
+            LoadedUIs.Add(2, HotbarMarker);
 
-            //Inventory = new UI(Vector2.Zero, textures.Inventory);
-            //LoadedUIs.Add(2, Inventory);
-            //Inventory.activ = false;
-
-            TopUI = new UI(Vector2.Zero, textures.TopUI, 3, "TopUI");
+            TopUI = new UI(Vector2.Zero, Textures.TopUI, 3, "TopUI");
             LoadedUIs.Add(3, TopUI);
             TopUI.activ = false;
 
-            MapFrame = new UI(Vector2.Zero, textures.Map, 4, "MapFrame");
+            MapFrame = new UI(Vector2.Zero, Textures.Map, 4, "MapFrame");
             LoadedUIs.Add(4, MapFrame);
             MapFrame.activ = false;
 
-            ExtraHotbar = new UI(Vector2.Zero, textures.ExtraHotbar, 5, "ExtraHotbar");
+            ExtraHotbar = new UI(Vector2.Zero, Textures.ExtraHotbar, 5, "ExtraHotbar");
             ExtraHotbar.color = new Color(255, 255, 255, 0.5f);
             LoadedUIs.Add(5, ExtraHotbar);
 
-            ExtraHotbarMarker = new UI(Vector2.Zero, textures.HotbarMarker, 6, "ExtraHotbarMarker");
+            ExtraHotbarMarker = new UI(Vector2.Zero, Textures.HotbarMarker, 6, "ExtraHotbarMarker");
             LoadedUIs.Add(6, ExtraHotbarMarker);
 
-            FishingBar = new UI(Vector2.Zero, textures.FishingBar, 7, "FishingBar");
+            FishingBar = new UI(Vector2.Zero, Textures.FishingBar, 7, "FishingBar");
             FishingBar.activ = false;
             LoadedUIs.Add(7, FishingBar);
 
-            FishingBarPointer = new UI(Vector2.Zero, textures.FishingBarPointer, 8, "FishingBarPointer");
+            FishingBarPointer = new UI(Vector2.Zero, Textures.FishingBarPointer, 8, "FishingBarPointer");
             FishingBarPointer.activ = false;
             LoadedUIs.Add(8, FishingBarPointer);
 
-            DebugMenu = new UI(Vector2.Zero, textures.DebugMenu, 9, "DebugMenu");
+            DebugMenu = new UI(Vector2.Zero, Textures.DebugMenu, 9, "DebugMenu");
             LoadedUIs.Add(9, DebugMenu);
             DebugMenu.activ = false;
 
-            HandObjekt = new UI(Vector2.Zero, textures.Empty, 10, "HandObjekt");
+            HandObjekt = new UI(Vector2.Zero, Textures.Empty, 10, "HandObjekt");
             LoadedUIs.Add(10, HandObjekt);
 
         }

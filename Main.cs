@@ -13,14 +13,14 @@ namespace Silent_Island
 
         #region Technique Fields
 
-        private GraphicsDeviceManager graphics;
-        public SpriteBatch spriteBatch;
-        public int screenWidth { get; private set; }
-        public int screenHeight { get; private set; }
-        public int worldSizeX { get; private set; }
-        public int worldSizeY { get; private set; }
+        public GraphicsDeviceManager graphics;
+        public static SpriteBatch spriteBatch { get; set; }
+        public static  int screenWidth { get; private set; }
+        public static int screenHeight { get; private set; }
+        public static int worldSizeX { get; private set; }
+        public static int worldSizeY { get; private set; }
 
-        public Random random = new Random();
+        public static Random random = new Random();
 
         // Debugging
         public bool debug;
@@ -38,28 +38,28 @@ namespace Silent_Island
         public WorldGeneration generation { get; private set; }
         public Structure structure { get; private set; }
         public Objekt mainObjekt { get; private set; }
-        public Item item { get; private set; }
-        public Block block { get; private set; }
-        public UI ui { get; private set; }
-        public Entity entity { get; private set; }
-        public Button button { get; private set; }
-        public InventorySystem inventory { get; private set; }
+        public static Item item { get; private set; }
+        public static Block block { get; private set; }
+        public static UI ui { get; private set; }
+        public static Entity entity { get; private set; }
+        public static Button button { get; private set; }
+        public static Inventory inventory { get; private set; }
 
         #endregion
 
         #region Input/Update Management
 
-        private KeyboardState keyboardState;
-        private Vector2 MousePos;
-        private MouseState mouseState;
-        private MouseState previousMouseState;
-        private MouseState currentMouseState;
-        Keys[] keys;
+        public KeyboardState keyboardState;
+        public static Vector2 MousePos {  get; private set; }
+        public MouseState mouseState;
+        public MouseState previousMouseState;
+        public MouseState currentMouseState;
+        private Keys[] keys;
 
-        public double elapsedTime { get; private set; }
-        public double UpdateInterval { get; private set; }
-        public double tickCount { get; private set; }
-        public double timeCounter { get; private set; }
+        private double elapsedTime;
+        private double UpdateInterval;
+        private double tickCount;
+        public double timeCounter;
 
         private double fps;
         private double FPStotalTime;
@@ -69,7 +69,7 @@ namespace Silent_Island
 
         #region Camera Management
 
-        public Vector2 cameraPosition { get; private set; }
+        public static Vector2 cameraPosition { get; private set; }
 
         // Camera Scrolling (Unimplemented)
         // float zoom = 3.0f;
@@ -80,19 +80,19 @@ namespace Silent_Island
         #region Resources
 
         // Sound
-        SoundEffect FishingRodOut;
+        private SoundEffect FishingRodOut;
 
         // Font
-        public SpriteFont font { get; private set; }
+        public static SpriteFont font { get; private set; }
 
         #endregion
 
         #region Gameplay Variables
 
-        public int ToolHotbarSlotNum;
-        public int ExtraHotbarSlotNum;
-        public int fishingPointerOffset;
-        int scrollDelta;
+        public static int ToolHotbarSlotNum;
+        public static int ExtraHotbarSlotNum;
+        public int fishingPointerOffset { get; private set; }
+        public int scrollDelta;
 
         #endregion
 
@@ -138,6 +138,7 @@ namespace Silent_Island
             worldSizeX = 64;
             worldSizeY = 64;
 
+            
             base.Initialize();
         }
 
@@ -158,7 +159,6 @@ namespace Silent_Island
 
             textures = new Textures(Content);
             textures.Initialize(GraphicsDevice);
-            spriteBatch = textures.spriteBatch;
             textures.LoadAllTextures();
 
             #endregion
@@ -167,26 +167,26 @@ namespace Silent_Island
 
             structure = new Structure();
 
-            mainObjekt = new Objekt(textures, this);
+            mainObjekt = new Objekt(this);
 
-            block = new Block(textures, this);
+            block = new Block(this);
             block.LoadAllBlocks();
 
-            item = new Item(textures, this);
+            item = new Item(this);
             item.LoadAllItems();
 
-            ui = new UI(textures, this);
+            ui = new UI(this);
             ui.LoadAllUIs();
 
-            generation = new WorldGeneration(this, textures, structure, block);
+            generation = new WorldGeneration(this, structure, block);
 
-            entity = new Entity(textures, this);
-            entity.LoadAllEnitys(this);
+            entity = new Entity(this);
+            entity.LoadAllEnitys();
 
-            button = new Button(textures, this);
+            button = new Button(this);
             button.LoadAllButton();
 
-            inventory = new InventorySystem(GraphicsDevice);
+            inventory = new Inventory(GraphicsDevice);
 
             inventory.AddItem(item.Fish, 100);
             inventory.AddItem(item.Shark);
@@ -227,48 +227,59 @@ namespace Silent_Island
             if (elapsedTime >= UpdateInterval)
             {
 
-                #region Instant Actions
+                #region Important Actions
 
 
                 bool isMoving = false;
 
-                if (KeyDown(Keys.W) && entity.Player.pos.Y > 0 && !entity.Player.ColideLayer(block.BaseLayer, new Vector2(0, -entity.Player.speed)))
+                if (KeyDown(Keys.W) && Entity.Player.pos.Y > 0 && !Entity.Player.ColideLayer(Block.BaseLayer, new Vector2(0, -Entity.Player.speed)))
                 {
-                    entity.Player.MovePlayer(isMoving, textures.PlayerUp, 0, -entity.Player.speed);
+                    Entity.Player.MovePlayer(isMoving, Textures.PlayerUp, 0, -Entity.Player.speed);
                 }
 
-                if (KeyDown(Keys.S) && entity.Player.pos.Y < worldSizeY * 64 - 96 && !entity.Player.ColideLayer(block.BaseLayer, new Vector2(0, entity.Player.speed)))
+                if (KeyDown(Keys.S) && Entity.Player.pos.Y < worldSizeY * 64 - 96 && !Entity.Player.ColideLayer(Block.BaseLayer, new Vector2(0, Entity.Player.speed)))
                 {
-                    entity.Player.MovePlayer(isMoving, textures.PlayerDown, 0, entity.Player.speed);
+                    Entity.Player.MovePlayer(isMoving, Textures.PlayerDown, 0, Entity.Player.speed);
                 }
 
-                if (KeyDown(Keys.A) && entity.Player.pos.X > 0 && !entity.Player.ColideLayer(block.BaseLayer, new Vector2(-entity.Player.speed, 0)))
+                if (KeyDown(Keys.A) && Entity.Player.pos.X > 0 && !Entity.Player.ColideLayer(Block.BaseLayer, new Vector2(-Entity.Player.speed, 0)))
                 {
-                    entity.Player.MovePlayer(isMoving, textures.PlayerLeft, -entity.Player.speed, 0);
+                    Entity.Player.MovePlayer(isMoving, Textures.PlayerLeft, -Entity.Player.speed, 0);
                     lookingRight = false;
                 }
 
-                if (KeyDown(Keys.D) && entity.Player.pos.X < worldSizeX * 64 - 64 && !entity.Player.ColideLayer(block.BaseLayer, new Vector2(entity.Player.speed, 0)))
+                if (KeyDown(Keys.D) && Entity.Player.pos.X < worldSizeX * 64 - 64 && !Entity.Player.ColideLayer(Block.BaseLayer, new Vector2(Entity.Player.speed, 0)))
                 {
-                    entity.Player.MovePlayer(isMoving, textures.PlayerRight, entity.Player.speed, 0);
+                    Entity.Player.MovePlayer(isMoving, Textures.PlayerRight, Entity.Player.speed, 0);
                     lookingRight = true;
                 }
                 moving = isMoving;
 
+                #endregion
+
+                #region scrole
                 scrollDelta = 0;
                 // UP
                 if (currentMouseState.ScrollWheelValue > previousMouseState.ScrollWheelValue)
                 {
-                    ToolHotbarSlotNum = (ToolHotbarSlotNum - 1 + 4) % 4;
+                    
                     if (inventoryOpen)
+                    {
                         scrollDelta = -1;  // nach oben scrollen
+                    }
+                    else
+                        ToolHotbarSlotNum = (ToolHotbarSlotNum - 1 + 4) % 4;
                 }
                 // DOWN
                 else if (currentMouseState.ScrollWheelValue < previousMouseState.ScrollWheelValue)
                 {
-                    ToolHotbarSlotNum = (ToolHotbarSlotNum + 1) % 4;
                     if (inventoryOpen)
+                    {
                         scrollDelta = 1;  // nach unten scrollen
+                    }
+                    else
+                        ToolHotbarSlotNum = (ToolHotbarSlotNum + 1) % 4;
+                                           
                 }
 
                 // Aktualisiere `previousMouseState` nur, wenn das Mausrad tatsächlich gescrollt wurde
@@ -331,7 +342,7 @@ namespace Silent_Island
                     if (MouseKeyDown(1))
                     {
                         timeCounter = 0;
-                        switch (ui.HandObjekt.ID)
+                        switch (UI.HandObjekt.ID)
                         {
                             //mainItem.FishingRod
                             case 1:
@@ -342,7 +353,7 @@ namespace Silent_Island
                         button.CheckButtonHit(MousePos);
                         for (int i = 0; i < block.takeBlock.Length; i++)
                         {
-                            if (block.takeBlock[i].hit(MousePos))
+                            if (block.takeBlock[i].hit())
                             {
                                 block.tokenBlock = block.takeBlock[i].Clone();
                             }
@@ -363,7 +374,7 @@ namespace Silent_Island
                     {
                         timeCounter = 0;
 
-                        switch (ui.HandObjekt.ID)
+                        switch (UI.HandObjekt.ID)
                         {
                             case 1:
                                 fishingPointerOffset = random.Next(-400, 400);
@@ -387,10 +398,10 @@ namespace Silent_Island
 
                 CameraMove();
 
-                ui.UpdateAll(cameraPosition, item);
-                item.UpdateAll(cameraPosition, ui);
+                ui.UpdateAll(item);
+                item.UpdateAll();
                 button.UpdateAll();
-                inventory.UpdateInventoryInterface(cameraPosition, scrollDelta);
+                inventory.UpdateInventoryInterface(scrollDelta);
 
                 if (debugMenu)
                 {
@@ -400,6 +411,7 @@ namespace Silent_Island
                 }
 
                 #endregion
+
                 elapsedTime = 0;
             }
 
@@ -418,37 +430,37 @@ namespace Silent_Island
             #endregion
 
             //Layer
-            block.ZeichneAll(spriteBatch);
+            block.ZeichneAll();
             //Player
-            entity.Player.Zeichne(spriteBatch);
+            Entity.Player.Zeichne();
             //CreativMode
             if (hitboxOn)
-                block.HitboxAllDraw(spriteBatch, textures.Pixel);
+                block.HitboxAllDraw(spriteBatch, Textures.Pixel);
             if (debugMenu)
                 block.EditorModeDraw(spriteBatch);
 
             //UI
-            ui.ZeichneAll(spriteBatch);
+            ui.ZeichneAll();
 
             //Hitbox
             if (hitboxOn)
             {
-                ui.HitboxAllDraw(spriteBatch, textures.Pixel);
+                ui.HitboxAllDraw();
             }
 
             //Slot
-            item.DrawItems(spriteBatch, font);
+            item.DrawItems();
 
             //Button
-            button.ZeichneAll(spriteBatch);
+            button.ZeichneAll();
 
             //Inventory
             if (inventoryOpen)
-                inventory.DrawInventoryInterface(spriteBatch, font);
-            #region end
+                inventory.DrawInventoryInterface();
+                #region end
             if (debug)
             {
-                spriteBatch.Draw(textures.TestBlock, new Vector2(0, 0), Color.White);
+                spriteBatch.Draw(Textures.TestBlock, new Vector2(0, 0), Color.White);
 
             }
             if (sdebug != null)
@@ -458,7 +470,7 @@ namespace Silent_Island
             if (debugMenu)
             {
                 spriteBatch.DrawString(font, "FPS: " + fps.ToString("0.00"), new Vector2(cameraPosition.X + 264, cameraPosition.Y + 32), Color.White);
-                spriteBatch.DrawString(font, "X: " + entity.Player.pos.X.ToString("0.00") + "Y: " + entity.Player.pos.Y.ToString("0.00"), new Vector2(cameraPosition.X + 264, cameraPosition.Y + 64), Color.White);
+                spriteBatch.DrawString(font, "X: " + Entity.Player.pos.X.ToString("0.00") + "Y: " + Entity.Player.pos.Y.ToString("0.00"), new Vector2(cameraPosition.X + 264, cameraPosition.Y + 64), Color.White);
             }
 
             spriteBatch.End();
@@ -473,7 +485,7 @@ namespace Silent_Island
             float halfScreenHeight = screenHeight / 2;
 
             // Berechne die Zielposition der Kamera basierend auf der Spielerposition
-            Vector2 targetCameraPosition = new Vector2(entity.Player.pos.X - halfScreenWidth, entity.Player.pos.Y - halfScreenHeight);
+            Vector2 targetCameraPosition = new Vector2(Entity.Player.pos.X - halfScreenWidth, Entity.Player.pos.Y - halfScreenHeight);
 
             // Begrenze die Zielposition der Kamera innerhalb der Weltgrenzen
             if (targetCameraPosition.X < 0)
@@ -500,18 +512,7 @@ namespace Silent_Island
             // Interpoliere die Kamera-Position schrittweise in Richtung der Zielposition
             cameraPosition = Vector2.Lerp(cameraPosition, targetCameraPosition, cameraSpeed);
         }
-        public int hitLayerBlock()
-        {
-            int x = (int)(MousePos.X / 64);
-            int y = (int)(MousePos.Y / 64);
-            //TODO für mehrere Layer?
-
-            if (MousePos.X >= 0 && MousePos.X < worldSizeX * 64 && MousePos.Y >= 0 && MousePos.Y < worldSizeY * 64)
-                return block.BaseLayer[x, y].ID;
-
-
-            return 0;
-        }
+        
         public bool KeyDown(Keys key)
         {
             if (keyboardState.IsKeyDown(key))
@@ -535,13 +536,13 @@ namespace Silent_Island
         public bool InReach(float playerReichweiteX, float playerReichweiteY)
         {
             //TODO with rect?
-            float minX = entity.Player.pos.X + (entity.Player.texture.Width / 2) - (playerReichweiteX * 64);
-            float maxX = entity.Player.pos.X + (entity.Player.texture.Width / 2) + (playerReichweiteX * 64);
+            float minX = Entity.Player.pos.X + (Entity.Player.texture.Width / 2) - (playerReichweiteX * 64);
+            float maxX = Entity.Player.pos.X + (Entity.Player.texture.Width / 2) + (playerReichweiteX * 64);
 
             if (MousePos.X >= minX && MousePos.X <= maxX)
             {
-                float minY = entity.Player.pos.Y + (entity.Player.texture.Height / 2) - (playerReichweiteY * 64);
-                float maxY = entity.Player.pos.Y + (entity.Player.texture.Height / 2) + (playerReichweiteY * 64);
+                float minY = Entity.Player.pos.Y + (Entity.Player.texture.Height / 2) - (playerReichweiteY * 64);
+                float maxY = Entity.Player.pos.Y + (Entity.Player.texture.Height / 2) + (playerReichweiteY * 64);
 
                 if (MousePos.Y >= minY && MousePos.Y <= maxY)
                 {
@@ -550,12 +551,7 @@ namespace Silent_Island
             }
             return false;
         }
-        public bool InHand(Item item)
-        {
-            if (ui.HandObjekt.ID == item.ID)
-                return true;
-            return false;
-        }
+        
         public bool Chance(int probability)
         {
             if (random.Next(1, 101) <= probability)
@@ -600,9 +596,9 @@ namespace Silent_Island
 
                 ResetFishing();
             }
-            else if (InReach(4, 2) && hitLayerBlock() == 2)
+            else if (InReach(4, 2) && InputManager.hitLayerBlock() == 2)
             {
-                ui.HandObjekt.texture = textures.FishingRodOut;
+                UI.HandObjekt.texture = Textures.FishingRodOut;
                 ui.FishingBar.activ = true;
                 ui.FishingBarPointer.activ = true;
                 FishingRodOut.Play();
@@ -617,7 +613,7 @@ namespace Silent_Island
         }
         public void ShovelUse()
         {
-            if (InReach(3, 1) && hitLayerBlock() == 3)
+            if (InReach(3, 1) && InputManager.hitLayerBlock() == 3)
             {
                 //TODO schaufel nach unten bewegen
                 if (Chance(13))

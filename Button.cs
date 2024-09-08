@@ -8,7 +8,6 @@ namespace Silent_Island
     public class Button
     {
         private Main main { get; set; }
-        private Textures textures { get; set; }
         public Vector2 pos { get; set; }
         public Vector2 size { get; set; }
         public Texture2D texture { get; set; }
@@ -48,9 +47,8 @@ namespace Silent_Island
             UpdateTextPosition();
         }
 
-        public Button(Textures t, Main m)
+        public Button(Main m)
         {
-            this.textures = t;
             this.main = m;
         }
 
@@ -111,29 +109,29 @@ namespace Silent_Island
         //244
         public void LoadAllButton()
         {
-            DebugLevelDesign = new Button(main.ui.DebugMenu.pos, new Vector2(main.ui.DebugMenu.texture.Width, 64), textures.Slot, main.font, "Level Design", 0);
+            DebugLevelDesign = new Button(Main.ui.DebugMenu.pos, new Vector2(Main.ui.DebugMenu.texture.Width, 64), Textures.Slot, Main.font, "Level Design", 0);
             LoadedButtons.Add(0, DebugLevelDesign);
 
-            Test = new Button(new Vector2(main.ui.DebugMenu.pos.X, main.ui.DebugMenu.pos.Y + 64), new Vector2(main.ui.DebugMenu.texture.Width, 64), textures.Slot, main.font, "Level Design", 1);
+            Test = new Button(new Vector2(Main.ui.DebugMenu.pos.X, Main.ui.DebugMenu.pos.Y + 64), new Vector2(Main.ui.DebugMenu.texture.Width, 64), Textures.Slot, Main.font, "Level Design", 1);
             LoadedButtons.Add(1, Test);
         }
         public void UpdateAll()
         {
             DebugLevelDesign.SetPosition(new Vector2(
-                main.ui.DebugMenu.pos.X - main.ui.DebugMenu.texture.Width / 2,
-                main.ui.DebugMenu.pos.Y - main.ui.DebugMenu.texture.Height / 2
+                Main.ui.DebugMenu.pos.X - Main.ui.DebugMenu.texture.Width / 2,
+                Main.ui.DebugMenu.pos.Y - Main.ui.DebugMenu.texture.Height / 2
             ));
 
             Test.SetPosition(new Vector2(
-                main.ui.DebugMenu.pos.X - main.ui.DebugMenu.texture.Width / 2,
-                main.ui.DebugMenu.pos.Y - main.ui.DebugMenu.texture.Height / 2 + 64
+                Main.ui.DebugMenu.pos.X - Main.ui.DebugMenu.texture.Width / 2,
+                Main.ui.DebugMenu.pos.Y - Main.ui.DebugMenu.texture.Height / 2 + 64
             ));
         }
-        public void ZeichneAll(SpriteBatch s)
+        public void ZeichneAll()
         {
             foreach (var KeyValuePair in LoadedButtons)
             {
-                KeyValuePair.Value.Zeichne(s);
+                KeyValuePair.Value.Zeichne(Main.spriteBatch);
             }
         }
     }
