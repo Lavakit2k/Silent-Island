@@ -21,9 +21,9 @@ namespace Silent_Island
         private Vector2 textSize;
         private Vector2 textPosition;
 
-        public int buttonHit;
+        public static int buttonHit;
 
-        public Dictionary<int, Button> LoadedButtons = new Dictionary<int, Button>();
+        public static Dictionary<int, Button> LoadedButtons = new Dictionary<int, Button>();
 
         public enum Sections
         {
@@ -65,7 +65,7 @@ namespace Silent_Island
         {
             return Hitbox.Contains(maus);
         }
-        public void CheckButtonHit(Vector2 MousePos)
+        public static void CheckButtonHit(Vector2 MousePos)
         {
             foreach (var KeyValuePair in LoadedButtons)
             {
@@ -109,22 +109,22 @@ namespace Silent_Island
         //244
         public void LoadAllButton()
         {
-            DebugLevelDesign = new Button(Main.ui.DebugMenu.pos, new Vector2(Main.ui.DebugMenu.texture.Width, 64), Textures.Slot, Main.font, "Level Design", 0);
+            DebugLevelDesign = new Button(UI.DebugMenu.pos, new Vector2(UI.DebugMenu.texture.Width, 64), Textures.Slot, Main.font, "Level Design", 0);
             LoadedButtons.Add(0, DebugLevelDesign);
 
-            Test = new Button(new Vector2(Main.ui.DebugMenu.pos.X, Main.ui.DebugMenu.pos.Y + 64), new Vector2(Main.ui.DebugMenu.texture.Width, 64), Textures.Slot, Main.font, "Level Design", 1);
+            Test = new Button(new Vector2(UI.DebugMenu.pos.X, UI.DebugMenu.pos.Y + 64), new Vector2(UI.DebugMenu.texture.Width, 64), Textures.Slot, Main.font, "Level Design", 1);
             LoadedButtons.Add(1, Test);
         }
         public void UpdateAll()
         {
             DebugLevelDesign.SetPosition(new Vector2(
-                Main.ui.DebugMenu.pos.X - Main.ui.DebugMenu.texture.Width / 2,
-                Main.ui.DebugMenu.pos.Y - Main.ui.DebugMenu.texture.Height / 2
+                UI.DebugMenu.pos.X - UI.DebugMenu.texture.Width / 2,
+                UI.DebugMenu.pos.Y - UI.DebugMenu.texture.Height / 2
             ));
 
             Test.SetPosition(new Vector2(
-                Main.ui.DebugMenu.pos.X - Main.ui.DebugMenu.texture.Width / 2,
-                Main.ui.DebugMenu.pos.Y - Main.ui.DebugMenu.texture.Height / 2 + 64
+                UI.DebugMenu.pos.X - UI.DebugMenu.texture.Width / 2,
+                UI.DebugMenu.pos.Y - UI.DebugMenu.texture.Height / 2 + 64
             ));
         }
         public void ZeichneAll()

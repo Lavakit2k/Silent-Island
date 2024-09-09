@@ -21,7 +21,7 @@ namespace Silent_Island
         private int screenWidth;
         private int screenHeight;
 
-        public int scrollOffset;
+        public static int scrollOffset;
         private int maxScrollOffset;
         private int itemsPerPage = 5;  // Anzahl der Elemente, die gleichzeitig angezeigt werden können
 

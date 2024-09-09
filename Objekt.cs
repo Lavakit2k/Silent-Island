@@ -50,7 +50,7 @@ namespace Silent_Island
         }
         public bool hit()
         {
-            return this.Hitbox.Contains(Main.MousePos);
+            return this.Hitbox.Contains(InputManager.MousePos);
         }
         public static bool colideObjekt(Objekt objekt1, Objekt objekt2)
         {

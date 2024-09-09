@@ -77,7 +77,7 @@ namespace Silent_Island
         public UI FishingBarPointer;
         public UI Heart;
         public UI EmptyHeart;
-        public UI DebugMenu;
+        public static UI DebugMenu;
         public static UI HandObjekt;
 
         public void LoadAllUIs()

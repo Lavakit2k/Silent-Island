@@ -44,17 +44,14 @@ namespace Silent_Island
         public static Entity entity { get; private set; }
         public static Button button { get; private set; }
         public static Inventory inventory { get; private set; }
+        public InputManager inputManager { get; private set; }
 
         #endregion
 
         #region Input/Update Management
 
-        public KeyboardState keyboardState;
-        public static Vector2 MousePos {  get; private set; }
-        public MouseState mouseState;
-        public MouseState previousMouseState;
-        public MouseState currentMouseState;
-        private Keys[] keys;
+        
+        
 
         private double elapsedTime;
         private double UpdateInterval;
@@ -91,8 +88,8 @@ namespace Silent_Island
 
         public static int ToolHotbarSlotNum;
         public static int ExtraHotbarSlotNum;
-        public int fishingPointerOffset { get; private set; }
-        public int scrollDelta;
+        public int fishingPointerOffset;
+        
 
         #endregion
 
@@ -103,12 +100,18 @@ namespace Silent_Island
 
         public bool inventoryOpen;
 
-        public bool lookingRight;
-
-        private bool debugMenu = false;
-        private bool hitboxOn = false;
+        public bool debugMenu = false;
+        public bool hitboxOn = false;
 
         #endregion
+
+        public enum GameState
+        {
+            Menu,
+            NewGame,
+            LoadGame,
+            Playing
+        }
 
         #endregion
 
@@ -186,6 +189,8 @@ namespace Silent_Island
             button = new Button(this);
             button.LoadAllButton();
 
+            inputManager = new InputManager(this);
+
             inventory = new Inventory(GraphicsDevice);
 
             inventory.AddItem(item.Fish, 100);
@@ -199,13 +204,8 @@ namespace Silent_Island
         protected override void Update(GameTime gameTime)
         {
             #region Technik
+            inputManager.Update();
 
-            //Input
-            keyboardState = Keyboard.GetState();
-            previousMouseState = currentMouseState;
-            currentMouseState = Mouse.GetState();
-            keys = keyboardState.GetPressedKeys();
-            MousePos = new Vector2(currentMouseState.X + cameraPosition.X, currentMouseState.Y + cameraPosition.Y);
             //Time
             elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds;
             timeCounter += gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -227,172 +227,16 @@ namespace Silent_Island
             if (elapsedTime >= UpdateInterval)
             {
 
-                #region Important Actions
+                inputManager.Move();
+                inputManager.LogicUpdate();
 
-
-                bool isMoving = false;
-
-                if (KeyDown(Keys.W) && Entity.Player.pos.Y > 0 && !Entity.Player.ColideLayer(Block.BaseLayer, new Vector2(0, -Entity.Player.speed)))
-                {
-                    Entity.Player.MovePlayer(isMoving, Textures.PlayerUp, 0, -Entity.Player.speed);
-                }
-
-                if (KeyDown(Keys.S) && Entity.Player.pos.Y < worldSizeY * 64 - 96 && !Entity.Player.ColideLayer(Block.BaseLayer, new Vector2(0, Entity.Player.speed)))
-                {
-                    Entity.Player.MovePlayer(isMoving, Textures.PlayerDown, 0, Entity.Player.speed);
-                }
-
-                if (KeyDown(Keys.A) && Entity.Player.pos.X > 0 && !Entity.Player.ColideLayer(Block.BaseLayer, new Vector2(-Entity.Player.speed, 0)))
-                {
-                    Entity.Player.MovePlayer(isMoving, Textures.PlayerLeft, -Entity.Player.speed, 0);
-                    lookingRight = false;
-                }
-
-                if (KeyDown(Keys.D) && Entity.Player.pos.X < worldSizeX * 64 - 64 && !Entity.Player.ColideLayer(Block.BaseLayer, new Vector2(Entity.Player.speed, 0)))
-                {
-                    Entity.Player.MovePlayer(isMoving, Textures.PlayerRight, Entity.Player.speed, 0);
-                    lookingRight = true;
-                }
-                moving = isMoving;
-
-                #endregion
-
-                #region scrole
-                scrollDelta = 0;
-                // UP
-                if (currentMouseState.ScrollWheelValue > previousMouseState.ScrollWheelValue)
-                {
-                    
-                    if (inventoryOpen)
-                    {
-                        scrollDelta = -1;  // nach oben scrollen
-                    }
-                    else
-                        ToolHotbarSlotNum = (ToolHotbarSlotNum - 1 + 4) % 4;
-                }
-                // DOWN
-                else if (currentMouseState.ScrollWheelValue < previousMouseState.ScrollWheelValue)
-                {
-                    if (inventoryOpen)
-                    {
-                        scrollDelta = 1;  // nach unten scrollen
-                    }
-                    else
-                        ToolHotbarSlotNum = (ToolHotbarSlotNum + 1) % 4;
-                                           
-                }
-
-                // Aktualisiere `previousMouseState` nur, wenn das Mausrad tatsächlich gescrollt wurde
-                if (currentMouseState.ScrollWheelValue != previousMouseState.ScrollWheelValue)
-                {
-                    previousMouseState = currentMouseState;
-                }
-              
-                #endregion
-
-                #region Logic
-                if (moving)
-                {
-                    ResetFishing();
-                }
-
-                //TODO Speichern
-                if (KeyDown(Keys.O))
-                {
-
-                }
-                if (KeyDown(Keys.P))
-                {
-
-                }
-
-                #endregion
-
-                #region Delayed Actions
-
-                //waiting
                 if (timeCounter > 400)
                 {
-
-                    if (KeyDown(Keys.F3) && !KeyDown(Keys.B))
-                    {
-                        debugMenu = !debugMenu;
-                        ui.DebugMenu.activ = !ui.DebugMenu.activ;
-                        button.DebugLevelDesign.activ = !button.DebugLevelDesign.activ;
-                        button.Test.activ = !button.Test.activ;
-                        timeCounter = 0;
-                    }
-                    if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                    {
-                        Exit();
-                    }
-                    if (KeyDown(Keys.F3) && KeyDown(Keys.B))
-                    {
-                        hitboxOn = !hitboxOn;
-                        timeCounter = 0;
-                    }
-                    if (KeyDown(Keys.E))
-                    {
-                        inventoryOpen = !inventoryOpen;
-                        timeCounter = 200;
-                        inventory.scrollOffset = 0;
-                    }
-
-                    //leftclick
-                    if (MouseKeyDown(1))
-                    {
-                        timeCounter = 0;
-                        switch (UI.HandObjekt.ID)
-                        {
-                            //mainItem.FishingRod
-                            case 1:
-                                break;
-                            default:
-                                break;
-                        }
-                        button.CheckButtonHit(MousePos);
-                        for (int i = 0; i < block.takeBlock.Length; i++)
-                        {
-                            if (block.takeBlock[i].hit())
-                            {
-                                block.tokenBlock = block.takeBlock[i].Clone();
-                            }
-                        }
-                        if (KeyDown(Keys.LeftAlt))
-                        {
-                            block.EditorModeGetBlock(MousePos);
-                            timeCounter = 200;
-                        }
-                        if (KeyDown(Keys.LeftShift))
-                        {
-                            block.EditorModeSetBlock(MousePos);
-                            timeCounter = 300;
-                        }
-                    }
-                    //rightclick
-                    else if (MouseKeyDown(2))
-                    {
-                        timeCounter = 0;
-
-                        switch (UI.HandObjekt.ID)
-                        {
-                            case 1:
-                                fishingPointerOffset = random.Next(-400, 400);
-                                FishingUse();
-                                timeCounter = 200;
-                                break;
-                            case 5:
-                                ShovelUse();
-                                timeCounter = 200;
-                                break;
-                            default:
-                                break;
-                        }
-
-                    }
+                    inputManager.Scrole();
+                    inputManager.CheckKeyInputs();
+                    inputManager.CheckMouseInputs(block);
                 }
 
-                #endregion
 
                 #region Positioning
 
@@ -401,7 +245,7 @@ namespace Silent_Island
                 ui.UpdateAll(item);
                 item.UpdateAll();
                 button.UpdateAll();
-                inventory.UpdateInventoryInterface(scrollDelta);
+                inventory.UpdateInventoryInterface(InputManager.scrollDelta);
 
                 if (debugMenu)
                 {
@@ -513,38 +357,20 @@ namespace Silent_Island
             cameraPosition = Vector2.Lerp(cameraPosition, targetCameraPosition, cameraSpeed);
         }
         
-        public bool KeyDown(Keys key)
-        {
-            if (keyboardState.IsKeyDown(key))
-            {
-                return true;
-            }
-            else { return false; }
-        }
-        public bool MouseKeyDown(int button)
-        {
-            if (button == 1)
-            {
-                return currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released;
-            }
-            else if (button == 2)
-            {
-                return currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released;
-            }
-            return false;
-        }
+        
+        
         public bool InReach(float playerReichweiteX, float playerReichweiteY)
         {
             //TODO with rect?
             float minX = Entity.Player.pos.X + (Entity.Player.texture.Width / 2) - (playerReichweiteX * 64);
             float maxX = Entity.Player.pos.X + (Entity.Player.texture.Width / 2) + (playerReichweiteX * 64);
 
-            if (MousePos.X >= minX && MousePos.X <= maxX)
+            if (InputManager.MousePos.X >= minX && InputManager.MousePos.X <= maxX)
             {
                 float minY = Entity.Player.pos.Y + (Entity.Player.texture.Height / 2) - (playerReichweiteY * 64);
                 float maxY = Entity.Player.pos.Y + (Entity.Player.texture.Height / 2) + (playerReichweiteY * 64);
 
-                if (MousePos.Y >= minY && MousePos.Y <= maxY)
+                if (InputManager.MousePos.Y >= minY && InputManager.MousePos.Y <= maxY)
                 {
                     return true;
                 }
@@ -596,7 +422,7 @@ namespace Silent_Island
 
                 ResetFishing();
             }
-            else if (InReach(4, 2) && InputManager.hitLayerBlock() == 2)
+            else if (InReach(4, 2) && inputManager.hitLayerBlock() == 2)
             {
                 UI.HandObjekt.texture = Textures.FishingRodOut;
                 ui.FishingBar.activ = true;
@@ -613,7 +439,7 @@ namespace Silent_Island
         }
         public void ShovelUse()
         {
-            if (InReach(3, 1) && InputManager.hitLayerBlock() == 3)
+            if (InReach(3, 1) && inputManager.hitLayerBlock() == 3)
             {
                 //TODO schaufel nach unten bewegen
                 if (Chance(13))
